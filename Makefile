@@ -1,11 +1,13 @@
-all: libsmplugin.so
+all: build/libsmplugin.so
 
-smplugin.o: smplugin.c
-	gcc -std=c11 -pthread -fPIC -c -Igodot-headers smplugin.c -o smplugin.o
+build/smplugin.o: smplugin.c
+	gcc -std=c11 -pthread -fPIC -c -Igodot-headers smplugin.c -o build/smplugin.o
 
-libsmplugin.so: smplugin.o
-	gcc -Wl,--no-as-needed -L. -Wl,-rpath=. -lsqueak -rdynamic -shared smplugin.o -o libsmplugin.so
+build/libsmplugin.so: build/smplugin.o
+	gcc -Wl,--no-as-needed -L. -Wl,-rpath=sqPlugin -lsqueak -rdynamic -shared build/smplugin.o -o build/libsmplugin.so
 
 .PHONY: clean
 clean:
-	rm -rf smplugin.o libsmplugin.so
+	rm -rf build
+
+$(shell mkdir -p build)

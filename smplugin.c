@@ -2,7 +2,9 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#define __USE_XOPEN_EXTENDED
 #include <string.h>
+#include <libgen.h>
 
 const char *get_node_notification_name(int notification) {
   // copied from godot-headers/api.json (Node)
@@ -110,6 +112,7 @@ const char *get_node_notification_name(int notification) {
 
 const godot_gdnative_core_api_struct *api = NULL;
 const godot_gdnative_ext_pluginscript_api_struct *pluginscript_api = NULL;
+const char* lib_path = NULL;
 
 godot_pluginscript_language_data* smalltalk_lang_init() {
   printf("smalltalk_lang_init\n");
@@ -189,11 +192,16 @@ godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const go
   return false;
 }
 
-const char* godot_string_name_to_c_str(const godot_string_name *name) {
-  const godot_string gs = api->godot_string_name_get_name(name);
-  const godot_char_string gcs = api->godot_string_ascii(&gs);
+const char* godot_string_to_c_str(const godot_string* gstr) {
+  const godot_char_string gcs = api->godot_string_ascii(gstr);
   // TODO: does this have to be freed?
   return api->godot_char_string_get_data(&gcs);
+
+}
+
+const char* godot_string_name_to_c_str(const godot_string_name *name) {
+  const godot_string gs = api->godot_string_name_get_name(name);
+  return godot_string_to_c_str(&gs);
 }
 
 int call_count = 0;
@@ -295,6 +303,9 @@ void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
   printf("found pluginscript api v%i.%i\n", pluginscript_api->version.major, pluginscript_api->version.minor);
 
   pluginscript_api->godot_pluginscript_register_language(&smalltalk_language_desc);
+
+  lib_path = godot_string_to_c_str(p_options->active_library_path);
+  printf("active library path: %s\n", lib_path);
 }
 
 void GDN_EXPORT godot_gdnative_terminate(godot_gdnative_terminate_options *p_options) {
@@ -311,11 +322,27 @@ typedef struct {
 } Args;
 
 void* run_squeak(void* a) {
+  if (lib_path == NULL) {
+    printf("lib_path is not set\n");
+    return 0;
+  }
+
+  const char* image_name = "image/squeak.image";
+  char* lib_path_d = strdup(lib_path);
+  char* lib_dir = dirname(lib_path_d);
+  const int path_len = strlen(lib_dir) + 1 + strlen(image_name);
+  char* image_path = (char*) malloc(path_len + 1);
+  snprintf(image_path, path_len + 1, "%s/%s", lib_dir, image_name);
+  printf("Image path: %s\n", image_path);
+
   printf("running squeak in separate thread\n");
   fflush(stdout);
-  char* fake_argv[] = {"fake_name", "/home/leo/Uni/Master/PX/squeak/shared/Squeak6.0alpha-20582-64bit.image"};
+  char* fake_argv[] = {"fake_name", image_path};
   char* fake_envp[] = {NULL};
   squeak_main(2, fake_argv, fake_envp);
+
+  free(lib_path_d);
+  free(image_path);
   return 0;
 }
 

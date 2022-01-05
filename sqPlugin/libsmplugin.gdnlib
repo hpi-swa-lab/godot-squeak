@@ -1,0 +1,14 @@
+[general]
+
+singleton=true
+load_once=true
+symbol_prefix="godot_"
+reloadable=false
+
+[entry]
+
+X11.64="res://sqPlugin/libsmplugin.so"
+
+[dependencies]
+
+X11.64=[ "res://sqPlugin/libsqueak.so" ]

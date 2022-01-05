@@ -1,0 +1,4 @@
+- godot will attempt to load a .image file. Since squeak images share that extension,
+  we need to put plugin files including the squeak file into a folder with a .gdignore file
+- https://godotengine.org/article/look-gdnative-architecture
+- godot does **not** load dependencies for you, normal rpath rules still apply
