@@ -1,49 +1,303 @@
 #include <gdnative_api_struct.gen.h>
-/* #include <string.h> */
 #include <stdio.h>
 #include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
 
-/* typedef struct user_data_struct { */
-/* 	char data[256]; */
-/* } user_data_struct; */
-
-// GDNative supports a large collection of functions for calling back
-// into the main Godot executable. In order for your module to have
-// access to these functions, GDNative provides your application with
-// a struct containing pointers to all these functions.
-/* const godot_gdnative_core_api_struct *api = NULL; */
-/* const godot_gdnative_ext_nativescript_api_struct *nativescript_api = NULL; */
-
-// These are forward declarations for the functions we'll be implementing
-// for our object. A constructor and destructor are both necessary.
-/* GDCALLINGCONV void *simple_constructor(godot_object *p_instance, void *p_method_data); */
-/* GDCALLINGCONV void simple_destructor(godot_object *p_instance, void *p_method_data, void *p_user_data); */
-/* godot_variant simple_get_data(godot_object *p_instance, void *p_method_data, void *p_user_data, int p_num_args, godot_variant **p_args); */
-
-// `gdnative_init` is a function that initializes our dynamic library.
-// Godot will give it a pointer to a structure that contains various bits of
-// information we may find useful among which the pointers to our API structures.
-void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
-	/* api = p_options->api_struct; */
-
-	/* // Find NativeScript extensions. */
-	/* for (int i = 0; i < api->num_extensions; i++) { */
-	/* 	switch (api->extensions[i]->type) { */
-	/* 		case GDNATIVE_EXT_NATIVESCRIPT: { */
-	/* 			nativescript_api = (godot_gdnative_ext_nativescript_api_struct *)api->extensions[i]; */
-	/* 		}; break; */
-	/* 		default: */
-	/* 			break; */
-	/* 	}; */
-	/* }; */
-  printf("library init\n");
+const char *get_node_notification_name(int notification) {
+  // copied from godot-headers/api.json (Node)
+  const char *name;
+  switch(notification) {
+    case 1015:
+      name = "NOTIFICATION_APP_PAUSED";
+      break;
+    case 1014:
+      name = "NOTIFICATION_APP_RESUMED";
+      break;
+    case 1012:
+      name = "NOTIFICATION_CRASH";
+      break;
+    case 21:
+      name = "NOTIFICATION_DRAG_BEGIN";
+      break;
+    case 22:
+      name = "NOTIFICATION_DRAG_END";
+      break;
+    case 10:
+      name = "NOTIFICATION_ENTER_TREE";
+      break;
+    case 11:
+      name = "NOTIFICATION_EXIT_TREE";
+      break;
+    case 20:
+      name = "NOTIFICATION_INSTANCED";
+      break;
+    case 26:
+      name = "NOTIFICATION_INTERNAL_PHYSICS_PROCESS";
+      break;
+    case 25:
+      name = "NOTIFICATION_INTERNAL_PROCESS";
+      break;
+    case 12:
+      name = "NOTIFICATION_MOVED_IN_PARENT";
+      break;
+    case 1013:
+      name = "NOTIFICATION_OS_IME_UPDATE";
+      break;
+    case 1009:
+      name = "NOTIFICATION_OS_MEMORY_WARNING";
+      break;
+    case 18:
+      name = "NOTIFICATION_PARENTED";
+      break;
+    case 23:
+      name = "NOTIFICATION_PATH_CHANGED";
+      break;
+    case 14:
+      name = "NOTIFICATION_PAUSED";
+      break;
+    case 16:
+      name = "NOTIFICATION_PHYSICS_PROCESS";
+      break;
+    case 27:
+      name = "NOTIFICATION_POST_ENTER_TREE";
+      break;
+    case 17:
+      name = "NOTIFICATION_PROCESS";
+      break;
+    case 13:
+      name = "NOTIFICATION_READY";
+      break;
+    case 1010:
+      name = "NOTIFICATION_TRANSLATION_CHANGED";
+      break;
+    case 19:
+      name = "NOTIFICATION_UNPARENTED";
+      break;
+    case 15:
+      name = "NOTIFICATION_UNPAUSED";
+      break;
+    case 1011:
+      name = "NOTIFICATION_WM_ABOUT";
+      break;
+    case 1004:
+      name = "NOTIFICATION_WM_FOCUS_IN";
+      break;
+    case 1005:
+      name = "NOTIFICATION_WM_FOCUS_OUT";
+      break;
+    case 1007:
+      name = "NOTIFICATION_WM_GO_BACK_REQUEST";
+      break;
+    case 1002:
+      name = "NOTIFICATION_WM_MOUSE_ENTER";
+      break;
+    case 1003:
+      name = "NOTIFICATION_WM_MOUSE_EXIT";
+      break;
+    case 1006:
+      name = "NOTIFICATION_WM_QUIT_REQUEST";
+      break;
+    case 1008:
+      name = "NOTIFICATION_WM_UNFOCUS_REQUEST";
+      break;
+    default:
+      name = "UNKNOWN NOTIFICATION";
+      break;
+  }
+  return name;
 }
 
-// `gdnative_terminate` which is called before the library is unloaded.
-// Godot will unload the library when no object uses it anymore.
+const godot_gdnative_core_api_struct *api = NULL;
+const godot_gdnative_ext_pluginscript_api_struct *pluginscript_api = NULL;
+
+godot_pluginscript_language_data* smalltalk_lang_init() {
+  printf("smalltalk_lang_init\n");
+  return NULL;
+}
+
+void smalltalk_lang_finish() {
+  printf("smalltalk_lang_finish\n");
+}
+
+void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, const godot_string *p_variable, const godot_variant *p_value) {
+  printf("add_global_constant");
+}
+
+godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_language_data *p_data, const godot_string *p_path, const godot_string *p_source, godot_error *r_error) {
+  printf("smalltalk_script_init\n");
+
+  godot_pluginscript_script_manifest manifest = {
+    .data = NULL,
+    .is_tool = false,
+  };
+
+  api->godot_string_name_new_data(&manifest.name, "");
+  api->godot_string_name_new_data(&manifest.base, "");
+  api->godot_dictionary_new(&manifest.member_lines);
+  api->godot_array_new(&manifest.methods);
+  api->godot_array_new(&manifest.signals);
+  api->godot_array_new(&manifest.properties);
+
+  godot_dictionary process_fake;
+  api->godot_dictionary_new(&process_fake);
+
+  godot_string name_key;
+  api->godot_string_new(&name_key);
+  api->godot_string_parse_utf8(&name_key, "name");
+  godot_variant name_key_var;
+  api->godot_variant_new_string(&name_key_var, &name_key);
+
+  godot_string name_value;
+  api->godot_string_new(&name_value);
+  api->godot_string_parse_utf8(&name_value, "_process");
+  godot_variant name_value_var;
+  api->godot_variant_new_string(&name_value_var, &name_value);
+
+  api->godot_dictionary_set(&process_fake, &name_key_var, &name_value_var);
+
+  godot_variant process_fake_var;
+  api->godot_variant_new_dictionary(&process_fake_var, &process_fake);
+  api->godot_array_push_back(&manifest.methods, &process_fake_var);
+
+  return manifest;
+}
+
+void smalltalk_script_finish(godot_pluginscript_script_data *p_data) {
+  printf("smalltalk_script_finish\n");
+}
+
+// if this function returns NULL, Godot considers the initialization failed
+godot_pluginscript_instance_data *smalltalk_instance_init(godot_pluginscript_script_data *p_data, godot_object *p_owner) {
+  printf("smalltalk_instance_init\n");
+  void* temp = malloc(1);
+  return temp;
+}
+
+void smalltalk_instance_finish(godot_pluginscript_instance_data *p_data) {
+  free(p_data);
+  printf("smalltalk_instance_finish\n");
+}
+
+godot_bool smalltalk_set_prop(godot_pluginscript_instance_data *p_data, const godot_string *p_name, const godot_variant *p_value) {
+  printf("smalltalk_set_prop\n");
+  return false;
+}
+
+godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const godot_string *p_name, godot_variant *r_ret) {
+  printf("smalltalk_get_prop\n");
+  return false;
+}
+
+const char* godot_string_name_to_c_str(const godot_string_name *name) {
+  const godot_string gs = api->godot_string_name_get_name(name);
+  const godot_char_string gcs = api->godot_string_ascii(&gs);
+  // TODO: does this have to be freed?
+  return api->godot_char_string_get_data(&gcs);
+}
+
+int call_count = 0;
+int notification_count = 0; 
+
+godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
+    const godot_string_name *p_method, const godot_variant **p_args,
+    int p_argcount, godot_variant_call_error *r_error) {
+  const char* method_name = godot_string_name_to_c_str(p_method);
+
+  if (strcmp(method_name, "_process") == 0) {
+    if (++call_count % 100 == 0) {
+      printf("_process has been called %i times\n", call_count);
+    }
+  } else {
+    printf("smalltalk_call_method %s\n", method_name);
+  }
+
+  godot_variant var;
+  api->godot_variant_new_nil(&var);
+  return var;
+}
+
+void smalltalk_notification(godot_pluginscript_instance_data *p_data, int p_notification) {
+  const char* notification_name = get_node_notification_name(p_notification);
+
+  if (strcmp(notification_name, "NOTIFICATION_PROCESS") == 0) {
+    if (++notification_count % 100 == 0) {
+      printf("NOTIFICATION_PROCESS occurred %i times\n", call_count);
+    }
+  } else {
+    printf("smalltalk_call_method %s\n", notification_name);
+  }
+}
+
+// required fields are in modules/gdnative/pluginscript/register_types.cpp:_check_language_desc 
+static godot_pluginscript_language_desc smalltalk_language_desc = {
+  .name = "Smalltalk",
+  .type = "Smalltalk",
+  // default extension, used for creating new files
+  .extension = "st",
+  // used in places where different extensions are possible, like validating file names
+  .recognized_extensions = (const char*[]){"st", NULL},
+  // called when the ScriptServer is initialized, once in Main::setup
+  .init = &smalltalk_lang_init,
+  // called when the ScriptServer is deinitialzed, once in Main::cleanup
+  .finish = &smalltalk_lang_finish,
+  // optional
+  /* .reserved_words = (const char *[]){NULL}, */
+  // optional
+  /* .comment_delimiters = (const char *[]){NULL}, */
+  // optional
+  /* .string_delimiters = (const char *[]){NULL}, */
+  // appears to enable naming the resource. probably not something we need
+  .has_named_classes = false,
+  // builtin scripts are saved in the scene, but we want to save them separately
+  .supports_builtin_mode = false,
+  .add_global_constant = &smalltalk_add_global_constant,
+
+  .script_desc = {
+    // called when PluginScript resource is reloaded (e.g. on editor refocus)
+    .init = &smalltalk_script_init,
+    // called in PluginScript destructor
+    .finish = &smalltalk_script_finish,
+
+    .instance_desc = {
+      // called when PluginScriptInstance is created
+      .init = &smalltalk_instance_init,
+      // called in PluginScriptInstance destructor
+      .finish = &smalltalk_instance_finish,
+      // these methods are how outside code calls the script
+      // Gdscript function equivalents like _process will be called correctly if call_method exposes them
+      .set_prop = &smalltalk_set_prop,
+      .get_prop = &smalltalk_get_prop,
+      .call_method = &smalltalk_call_method,
+      .notification = &smalltalk_notification,
+    }
+  }
+};
+
+void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
+  printf("library init\n");
+
+  api = p_options->api_struct;
+
+  for (int i = 0; i < api->num_extensions; ++i) {
+    switch (api->extensions[i]->type) {
+      case GDNATIVE_EXT_PLUGINSCRIPT:
+        pluginscript_api = (godot_gdnative_ext_pluginscript_api_struct*) api->extensions[i];
+        break;
+    }
+  }
+
+  if (pluginscript_api == NULL) {
+    printf("pluginscript api is missing!\n");
+    return;
+  }
+  
+  printf("found pluginscript api v%i.%i\n", pluginscript_api->version.major, pluginscript_api->version.minor);
+
+  pluginscript_api->godot_pluginscript_register_language(&smalltalk_language_desc);
+}
+
 void GDN_EXPORT godot_gdnative_terminate(godot_gdnative_terminate_options *p_options) {
-	/* api = NULL; */
-	/* nativescript_api = NULL; */
   printf("library term\n");
 }
 
@@ -85,61 +339,9 @@ void start_squeak() {
   /* printf("Thread joined\n"); */
 }
 
-// `nativescript_init` is the most important function. Godot calls
-// this function as part of loading a GDNative library and communicates
-// back to the engine what objects we make available.
 void GDN_EXPORT godot_nativescript_init(void *p_handle) {
   printf("library nativescript init\n");
-  /* start_squeak(); */
-	/* godot_instance_create_func create = { NULL, NULL, NULL }; */
-	/* create.create_func = &simple_constructor; */
-
-	/* godot_instance_destroy_func destroy = { NULL, NULL, NULL }; */
-	/* destroy.destroy_func = &simple_destructor; */
-
-	/* // We first tell the engine which classes are implemented by calling this. */
-	/* // * The first parameter here is the handle pointer given to us. */
-	/* // * The second is the name of our object class. */
-	/* // * The third is the type of object in Godot that we 'inherit' from; */
-	/* //   this is not true inheritance but it's close enough. */
-	/* // * Finally, the fourth and fifth parameters are descriptions */
-	/* //   for our constructor and destructor, respectively. */
-	/* nativescript_api->godot_nativescript_register_class(p_handle, "SIMPLE", "Reference", create, destroy); */
-
-	/* godot_instance_method get_data = { NULL, NULL, NULL }; */
-	/* get_data.method = &simple_get_data; */
-
-	/* godot_method_attributes attributes = { GODOT_METHOD_RPC_MODE_DISABLED }; */
-
-	/* // We then tell Godot about our methods by calling this for each */
-	/* // method of our class. In our case, this is just `get_data`. */
-	/* // * Our first parameter is yet again our handle pointer. */
-	/* // * The second is again the name of the object class we're registering. */
-	/* // * The third is the name of our function as it will be known to GDScript. */
-	/* // * The fourth is our attributes setting (see godot_method_rpc_mode enum in */
-	/* //   `godot_headers/nativescript/godot_nativescript.h` for possible values). */
-	/* // * The fifth and final parameter is a description of which function */
-	/* //   to call when the method gets called. */
-	/* nativescript_api->godot_nativescript_register_method(p_handle, "SIMPLE", "get_data", attributes, get_data); */
 }
-
-// In our constructor, allocate memory for our structure and fill
-// it with some data. Note that we use Godot's memory functions
-// so the memory gets tracked and then return the pointer to
-// our new structure. This pointer will act as our instance
-// identifier in case multiple objects are instantiated.
-/* GDCALLINGCONV void *simple_constructor(godot_object *p_instance, void *p_method_data) { */
-/* 	user_data_struct *user_data = api->godot_alloc(sizeof(user_data_struct)); */
-/* 	strcpy(user_data->data, "World from GDNative!"); */
-
-/* 	return user_data; */
-/* } */
-
-// The destructor is called when Godot is done with our
-// object and we free our instances' member data.
-/* GDCALLINGCONV void simple_destructor(godot_object *p_instance, void *p_method_data, void *p_user_data) { */
-/* 	api->godot_free(p_user_data); */
-/* } */
 
 void GDN_EXPORT godot_gdnative_singleton() {
   printf("library singleton\n");
