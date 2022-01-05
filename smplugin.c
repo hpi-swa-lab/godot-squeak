@@ -127,6 +127,27 @@ void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, con
   printf("add_global_constant");
 }
 
+void godot_variant_new_string_with_value(godot_variant *var, const char* s) {
+  godot_string gs;
+  api->godot_string_new(&gs);
+  api->godot_string_parse_utf8(&gs,s);
+  api->godot_variant_new_string(var, &gs);
+  api->godot_string_destroy(&gs);
+}
+
+void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {
+  godot_variant key_var;
+  godot_variant val_var;
+
+  godot_variant_new_string_with_value(&key_var, key);
+  godot_variant_new_string_with_value(&val_var, val);
+
+  api->godot_dictionary_set(dict, &key_var, &val_var);
+
+  api->godot_variant_destroy(&key_var);
+  api->godot_variant_destroy(&val_var);
+}
+
 godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_language_data *p_data, const godot_string *p_path, const godot_string *p_source, godot_error *r_error) {
   printf("smalltalk_script_init\n");
 
@@ -143,25 +164,15 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
   api->godot_array_new(&manifest.properties);
 
   godot_dictionary process_fake;
+
   api->godot_dictionary_new(&process_fake);
-
-  godot_string name_key;
-  api->godot_string_new(&name_key);
-  api->godot_string_parse_utf8(&name_key, "name");
-  godot_variant name_key_var;
-  api->godot_variant_new_string(&name_key_var, &name_key);
-
-  godot_string name_value;
-  api->godot_string_new(&name_value);
-  api->godot_string_parse_utf8(&name_value, "_process");
-  godot_variant name_value_var;
-  api->godot_variant_new_string(&name_value_var, &name_value);
-
-  api->godot_dictionary_set(&process_fake, &name_key_var, &name_value_var);
+  godot_dictionary_set_strings(&process_fake, "name", "_process");
 
   godot_variant process_fake_var;
   api->godot_variant_new_dictionary(&process_fake_var, &process_fake);
   api->godot_array_push_back(&manifest.methods, &process_fake_var);
+
+  api->godot_dictionary_destroy(&process_fake);
 
   return manifest;
 }
@@ -193,15 +204,17 @@ godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const go
 }
 
 const char* godot_string_to_c_str(const godot_string* gstr) {
-  const godot_char_string gcs = api->godot_string_ascii(gstr);
-  // TODO: does this have to be freed?
-  return api->godot_char_string_get_data(&gcs);
-
+  godot_char_string gcs = api->godot_string_ascii(gstr);
+  const char* s = api->godot_char_string_get_data(&gcs);
+  api->godot_char_string_destroy(&gcs);
+  return s;
 }
 
 const char* godot_string_name_to_c_str(const godot_string_name *name) {
-  const godot_string gs = api->godot_string_name_get_name(name);
-  return godot_string_to_c_str(&gs);
+  godot_string gs = api->godot_string_name_get_name(name);
+  const char* s = godot_string_to_c_str(&gs);
+  api->godot_string_destroy(&gs);
+  return s;
 }
 
 int call_count = 0;
@@ -304,7 +317,7 @@ void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
 
   pluginscript_api->godot_pluginscript_register_language(&smalltalk_language_desc);
 
-  lib_path = godot_string_to_c_str(p_options->active_library_path);
+  lib_path = strdup(godot_string_to_c_str(p_options->active_library_path));
   printf("active library path: %s\n", lib_path);
 }
 
@@ -339,7 +352,7 @@ void* run_squeak(void* a) {
   fflush(stdout);
   char* fake_argv[] = {"fake_name", image_path};
   char* fake_envp[] = {NULL};
-  squeak_main(2, fake_argv, fake_envp);
+  /* squeak_main(2, fake_argv, fake_envp); */
 
   free(lib_path_d);
   free(image_path);
