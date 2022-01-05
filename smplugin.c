@@ -1,11 +1,11 @@
 #include <gdnative_api_struct.gen.h>
 #include <stdio.h>
-#include <pthread.h>
 #include <stdlib.h>
 #define __USE_XOPEN_EXTENDED
 #include <string.h>
-#include <libgen.h>
+
 #include "gdnativeUtils.h"
+#include "squeakUtils.h"
 
 const godot_gdnative_core_api_struct *api = NULL;
 const godot_gdnative_ext_pluginscript_api_struct *pluginscript_api = NULL;
@@ -13,6 +13,7 @@ const char* lib_path = NULL;
 
 godot_pluginscript_language_data* smalltalk_lang_init() {
   printf("smalltalk_lang_init\n");
+  start_squeak_thread(lib_path);
   return NULL;
 }
 
@@ -163,6 +164,9 @@ void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
   api = p_options->api_struct;
   init_gdnative_utils(api);
 
+  lib_path = strdup(godot_string_to_c_str(p_options->active_library_path));
+  printf("Active library path: %s\n", lib_path);
+
   for (int i = 0; i < api->num_extensions; ++i) {
     switch (api->extensions[i]->type) {
       case GDNATIVE_EXT_PLUGINSCRIPT:
@@ -172,74 +176,17 @@ void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
   }
 
   if (pluginscript_api == NULL) {
-    printf("pluginscript api is missing!\n");
+    printf("PluginScript API is missing!\n");
     return;
   }
   
-  printf("found pluginscript api v%i.%i\n", pluginscript_api->version.major, pluginscript_api->version.minor);
+  printf("Found PluginScript API v%i.%i\n", pluginscript_api->version.major, pluginscript_api->version.minor);
 
   pluginscript_api->godot_pluginscript_register_language(&smalltalk_language_desc);
-
-  lib_path = strdup(godot_string_to_c_str(p_options->active_library_path));
-  printf("active library path: %s\n", lib_path);
 }
 
 void GDN_EXPORT godot_gdnative_terminate(godot_gdnative_terminate_options *p_options) {
   printf("library term\n");
-}
-
-int squeak_main(int argc, char **argv, char **envp);
-int osCogStackPageHeadroom();
-
-typedef struct {
-  int argc;
-  char **argv;
-  char **envp;
-} Args;
-
-void* run_squeak(void* a) {
-  if (lib_path == NULL) {
-    printf("lib_path is not set\n");
-    return 0;
-  }
-
-  const char* image_name = "image/squeak.image";
-  char* lib_path_d = strdup(lib_path);
-  char* lib_dir = dirname(lib_path_d);
-  const int path_len = strlen(lib_dir) + 1 + strlen(image_name);
-  char* image_path = (char*) malloc(path_len + 1);
-  snprintf(image_path, path_len + 1, "%s/%s", lib_dir, image_name);
-  printf("Image path: %s\n", image_path);
-
-  printf("running squeak in separate thread\n");
-  fflush(stdout);
-  char* fake_argv[] = {"fake_name", image_path};
-  char* fake_envp[] = {NULL};
-  /* squeak_main(2, fake_argv, fake_envp); */
-
-  free(lib_path_d);
-  free(image_path);
-  return 0;
-}
-
-void start_squeak() {
-  osCogStackPageHeadroom();
-  pthread_t thread;
-  pthread_attr_t tattr;
-  size_t size;
-  pthread_attr_init(&tattr);
-  pthread_attr_getstacksize(&tattr, &size);
-  pthread_attr_setstacksize(&tattr, size * 4);
-  /* printf("Calling from runner\n"); */
-  /* Args args = { argc, argv, envp  }; */
-  Args args = {0, 0, 0};
-  printf("Starting thread\n");
-  pthread_create(&thread, &tattr, run_squeak, (void*) &args);
-  printf("Detaching thread\n");
-  pthread_detach(thread);
-  /* printf("Joining thread\n"); */
-  /* pthread_join(thread, NULL); */
-  /* printf("Thread joined\n"); */
 }
 
 void GDN_EXPORT godot_nativescript_init(void *p_handle) {
@@ -248,5 +195,4 @@ void GDN_EXPORT godot_nativescript_init(void *p_handle) {
 
 void GDN_EXPORT godot_gdnative_singleton() {
   printf("library singleton\n");
-  start_squeak();
 }

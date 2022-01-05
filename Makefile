@@ -1,6 +1,6 @@
 BUILDDIR=build
 TARGET=$(BUILDDIR)/libsmplugin.so
-SOURCES=smplugin.c gdnativeUtils.c
+SOURCES=smplugin.c gdnativeUtils.c squeakUtils.c
 OBJECTS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.o))
 DEPS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.d))
 
