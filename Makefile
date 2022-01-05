@@ -1,13 +1,27 @@
-all: build/libsmplugin.so
+BUILDDIR=build
+TARGET=$(BUILDDIR)/libsmplugin.so
+SOURCES=smplugin.c gdnativeUtils.c
+OBJECTS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.o))
+DEPS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.d))
 
-build/smplugin.o: smplugin.c
-	gcc -std=c11 -pthread -fPIC -c -Igodot-headers smplugin.c -o build/smplugin.o
+CC=gcc
+CFLAGS=-std=c11 -Wall 
 
-build/libsmplugin.so: build/smplugin.o
-	gcc -Wl,--no-as-needed -L. -Wl,-rpath=sqPlugin -lsqueak -rdynamic -shared build/smplugin.o -o build/libsmplugin.so
+all: $(TARGET)
+
+$(BUILDDIR)/%.o: %.c
+	$(CC) $(CFLAGS) -pthread -fPIC -c -Igodot-headers $< -o $@
+
+$(TARGET): $(OBJECTS)
+	$(CC) -Wl,--no-as-needed -L. -Wl,-rpath=sqPlugin -lsqueak -rdynamic -shared $(OBJECTS) -o $@
 
 .PHONY: clean
 clean:
 	rm -rf build
 
-$(shell mkdir -p build)
+$(BUILDDIR)/%.d: %.c
+	$(CC) $(CFLAGS) -MM -MG -MF $@ -MP -MT $@ -MT $(<:.c=.o) $<
+
+include $(DEPS)
+
+$(shell mkdir -p $(BUILDDIR))
