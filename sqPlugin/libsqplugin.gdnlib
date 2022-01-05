@@ -7,7 +7,7 @@ reloadable=false
 
 [entry]
 
-X11.64="res://sqPlugin/libsmplugin.so"
+X11.64="res://sqPlugin/libsqplugin.so"
 
 [dependencies]
 
