@@ -158,7 +158,7 @@ static godot_pluginscript_language_desc smalltalk_language_desc = {
   }
 };
 
-void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
+void GDN_EXPORT sqplug_gdnative_init(godot_gdnative_init_options *p_options) {
   printf("library init\n");
 
   api = p_options->api_struct;
@@ -185,14 +185,14 @@ void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *p_options) {
   pluginscript_api->godot_pluginscript_register_language(&smalltalk_language_desc);
 }
 
-void GDN_EXPORT godot_gdnative_terminate(godot_gdnative_terminate_options *p_options) {
+void GDN_EXPORT sqplug_gdnative_terminate(godot_gdnative_terminate_options *p_options) {
   printf("library term\n");
 }
 
-void GDN_EXPORT godot_nativescript_init(void *p_handle) {
+void GDN_EXPORT sqplug_nativescript_init(void *p_handle) {
   printf("library nativescript init\n");
 }
 
-void GDN_EXPORT godot_gdnative_singleton() {
+void GDN_EXPORT sqplug_gdnative_singleton() {
   printf("library singleton\n");
 }
