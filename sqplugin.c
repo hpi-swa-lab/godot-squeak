@@ -13,7 +13,7 @@ const char* lib_path = NULL;
 
 godot_pluginscript_language_data* smalltalk_lang_init() {
   printf("smalltalk_lang_init\n");
-  start_squeak_thread(lib_path);
+  /* start_squeak_thread(lib_path); */
   return NULL;
 }
 
@@ -25,11 +25,19 @@ void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, con
   printf("add_global_constant");
 }
 
+typedef struct {
+  char* path;
+} SmalltalkScriptData;
+
 godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_language_data *p_data, const godot_string *p_path, const godot_string *p_source, godot_error *r_error) {
   printf("smalltalk_script_init\n");
+  printf("\tpath: %s\n", godot_string_to_c_str(p_path));
+
+  SmalltalkScriptData *data = malloc(sizeof(SmalltalkScriptData));
+  data->path = strdup(godot_string_to_c_str(p_path));
 
   godot_pluginscript_script_manifest manifest = {
-    .data = NULL,
+    .data = data,
     .is_tool = false,
   };
 
@@ -56,18 +64,26 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
 void smalltalk_script_finish(godot_pluginscript_script_data *p_data) {
   printf("smalltalk_script_finish\n");
+  free(((SmalltalkScriptData*) p_data)->path);
+  free(p_data);
 }
+
+typedef struct {
+  godot_object *owner;
+} SmalltalkInstanceData;
 
 // if this function returns NULL, Godot considers the initialization failed
 godot_pluginscript_instance_data *smalltalk_instance_init(godot_pluginscript_script_data *p_data, godot_object *p_owner) {
   printf("smalltalk_instance_init\n");
-  void* temp = malloc(1);
-  return temp;
+  printf("\tscript path: %s\n", ((SmalltalkScriptData*) p_data)->path);
+  SmalltalkInstanceData* data = malloc(sizeof(SmalltalkInstanceData));
+  data->owner = p_owner;
+  return data;
 }
 
 void smalltalk_instance_finish(godot_pluginscript_instance_data *p_data) {
-  free(p_data);
   printf("smalltalk_instance_finish\n");
+  free(p_data);
 }
 
 godot_bool smalltalk_set_prop(godot_pluginscript_instance_data *p_data, const godot_string *p_name, const godot_variant *p_value) {
