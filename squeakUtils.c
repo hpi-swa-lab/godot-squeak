@@ -1,6 +1,7 @@
 #include "squeakUtils.h"
 
 #include <pthread.h>
+#include <semaphore.h>
 #include <stdio.h>
 #define __USE_XOPEN_EXTENDED
 #include <string.h>
@@ -58,3 +59,33 @@ void start_squeak_thread(const char* lib_path) {
   free(lib_path_copy);
 }
 
+static sem_t sem_callbacks;
+
+void init_squeak(const char* lib_path) {
+  sem_init(&sem_callbacks, 0, 0);
+
+  start_squeak_thread(lib_path);
+
+  printf("Waiting for Squeak FFI callbacks...\n");
+  sem_wait(&sem_callbacks);
+  printf("Received Squeak FFI callbacks\n");
+}
+
+void (*test_callback)() = NULL;
+
+void init_squeak_callbacks(void (*callback)()) {
+  test_callback = callback;
+  sem_post(&sem_callbacks);
+}
+
+void call_test_callback() {
+  if (test_callback == NULL) {
+    printf("test callback is not initialized\n");
+  } else {
+    test_callback();
+  }
+}
+
+void finish_squeak() {
+  sem_destroy(&sem_callbacks);
+}

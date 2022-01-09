@@ -13,12 +13,13 @@ const char* lib_path = NULL;
 
 godot_pluginscript_language_data* smalltalk_lang_init() {
   printf("smalltalk_lang_init\n");
-  /* start_squeak_thread(lib_path); */
+  init_squeak(lib_path);
   return NULL;
 }
 
 void smalltalk_lang_finish() {
   printf("smalltalk_lang_finish\n");
+  finish_squeak();
 }
 
 void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, const godot_string *p_variable, const godot_variant *p_value) {
@@ -110,6 +111,7 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     }
   } else {
     printf("smalltalk_call_method %s\n", method_name);
+    call_test_callback();
   }
 
   godot_variant var;
