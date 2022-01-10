@@ -15,4 +15,4 @@ runMessageListenerHighPrio: aBoolean
 				m type = self messageTypeSignal ifTrue: [Transcript showln: 'signal received'].
 				self signalMessage: m].
 			Processor yield] repeat]
-	forkAt: (aBoolean ifTrue: [Processor userBackgroundPriority] ifFalse: [Processor highIOPriority]) named: '[Godot message listener]'
+	forkAt: (aBoolean ifFalse: [Processor userBackgroundPriority] ifTrue: [Processor highIOPriority]) named: '[Godot message listener]'
