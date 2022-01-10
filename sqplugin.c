@@ -100,6 +100,8 @@ godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const go
 int call_count = 0;
 int notification_count = 0; 
 
+extern int complicated_timed_call();
+
 godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     const godot_string_name *p_method, const godot_variant **p_args,
     int p_argcount, godot_variant_call_error *r_error) {
@@ -111,7 +113,8 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     }
   } else {
     printf("smalltalk_call_method %s\n", method_name);
-    call_test_callback();
+    // call_test_callback();
+    complicated_timed_call();
   }
 
   godot_variant var;

@@ -1,3 +1,7 @@
 [submodule "godot-headers"]
 	path = godot-headers
 	url = git@github.com:godotengine/godot-headers.git
+[submodule "lfqueue"]
+	path = lfqueue
+	url = git@github.com:Taymindis/lfqueue.git
+	ignore = dirty
