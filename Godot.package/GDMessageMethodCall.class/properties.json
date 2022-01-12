@@ -7,7 +7,7 @@
 	"commentStamp" : "",
 	"instvars" : [
 		 ],
-	"name" : "GDMessageInstanceRequest",
+	"name" : "GDMessageMethodCall",
 	"pools" : [
 		 ],
 	"super" : "ExternalStructure",

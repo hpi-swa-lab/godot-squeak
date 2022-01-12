@@ -1,13 +1,19 @@
 {
 	"class" : {
-		"exampleListener" : "tobe 1/10/2022 21:38",
+		"exampleListener" : "lege 1/12/2022 18:28",
+		"instance" : "lege 1/10/2022 17:31",
 		"moduleName" : "lege 1/8/2022 00:48" },
 	"instance" : {
-		"initSqueakCallbacks:" : "lege 1/8/2022 00:55",
-		"messageTypeInstance" : "tobe 1/10/2022 20:57",
-		"messageTypeSignal" : "tobe 1/10/2022 20:57",
+		"handleMessage:" : "lege 1/12/2022 18:21",
+		"handleMethodCall:" : "lege 1/12/2022 19:18",
+		"handleNewInstance:" : "lege 1/12/2022 18:32",
+		"handleNewScript:" : "lege 1/12/2022 18:59",
+		"initialize" : "lege 1/12/2022 19:17",
+		"messageTypeMethodCall" : "lege 1/12/2022 19:14",
+		"messageTypeNewInstance" : "lege 1/12/2022 16:29",
+		"messageTypeNewScript" : "lege 1/12/2022 16:29",
 		"readMessage" : "tobe 1/10/2022 21:01",
-		"runMessageListener" : "tobe 1/10/2022 21:26",
-		"runMessageListenerHighPrio:" : "tobe 1/10/2022 21:47",
-		"signalMessage:" : "tobe 1/10/2022 21:01",
-		"voidCallback:" : "lege 1/8/2022 01:09" } }
+		"registerScriptForPath:source:" : "lege 1/10/2022 18:14",
+		"registerScriptFromGodotForPath:source:" : "lege 1/10/2022 18:07",
+		"runMessageListenerHighPrio:" : "lege 1/12/2022 18:18",
+		"signalMessage:" : "tobe 1/10/2022 21:01" } }

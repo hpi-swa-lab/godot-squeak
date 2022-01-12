@@ -4,6 +4,6 @@ fields
 
 	^ #(
 		(type 'long')
-		(data 'void*')
+		(data 'GDMessageData*')
 		(sem 'char[32]')
 	)
