@@ -1,4 +1,4 @@
 message types
 messageTypeMethodCall
 
-	^ 2
+	^ 3

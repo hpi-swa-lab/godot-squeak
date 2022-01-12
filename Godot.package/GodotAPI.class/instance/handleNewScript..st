@@ -1,4 +1,4 @@
 message handling
 handleNewScript: newScriptData
 
-	Transcript showln: 'new script: '; showln: newScriptData scriptPath fromCString
+	Transcript cr; show: 'new script: '; show: newScriptData scriptName fromCString

@@ -4,6 +4,7 @@ fields
 
 	^ #(
 		(newScriptMessage GDMessageNewScript)
+		(scriptReloadMessage GDMessageScriptReload)
 		(newInstanceMessage GDMessageNewInstance)
 		(methodCallMessage GDMessageMethodCall)
 	)

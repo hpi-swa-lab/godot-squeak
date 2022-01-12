@@ -1,4 +1,4 @@
 message types
 messageTypeNewInstance
 
-	^ 1
+	^ 2
