@@ -11,4 +11,4 @@ X11.64="res://sqPlugin/libsqplugin.so"
 
 [dependencies]
 
-X11.64=[ "res://sqPlugin/libsqueak.so" ]
+X11.64=[ "res://sqPlugin/libsqueak.so", "res://sqPlugin/liblfqueue.so" ]

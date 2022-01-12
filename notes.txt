@@ -25,3 +25,10 @@
       This works because calling dlopen multiple times on the same library will always return the same handle.
       - wait -- why can't I just load sqPlugin from within Smalltalk a second time?
         - turns out, I can
+
+- icons for classes and methods are determined in ToolIcons
+
+- PluginScriptLanguage does not implement make_template. Due to further implementation details, this means that PluginScript scripts are not automatically loaded when they are created
+- ResourceFormatSaverPluginScript does not reload scripts on save. There is an option for that, but it is only respected by the gdscript saver
+  - solution a: modify godot source
+  - solution b: abuse the template generation function for that

@@ -6,6 +6,8 @@ const char* godot_string_to_c_str(const godot_string* gstr);
 
 const char* godot_string_name_to_c_str(const godot_string_name *name); 
 
+void godot_string_new_with_value(godot_string* gs, const char* s);
+
 void godot_variant_new_string_with_value(godot_variant *var, const char* s); 
 
 void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val); 

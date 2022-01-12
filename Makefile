@@ -13,14 +13,14 @@ $(BUILDDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -pthread -fPIC -c -Igodot-headers $< -o $@
 
 liblfqueue.so:
-	cd lfqueue && mkdir -p build && cd build && cmake .. && make && cp liblfqueue.so "../.."
+	cd lfqueue && mkdir -p build && cd build && cmake .. && make && cp liblfqueue.so "../../build"
 
 $(TARGET): $(OBJECTS) liblfqueue.so
-	$(CC) -Wl,--no-as-needed -L. -Wl,-rpath=sqPlugin -lsqueak -rdynamic -llfqueue -shared $(OBJECTS) -o $@
+	$(CC) -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin -lsqueak -llfqueue -rdynamic -shared $(OBJECTS) -o $@
 
 .PHONY: clean
 clean:
-	rm -rf build liblfqueue.so
+	rm -rf build
 
 $(BUILDDIR)/%.d: %.c
 	$(CC) $(CFLAGS) -MM -MG -MF $@ -MP -MT $@ -MT $(<:.c=.o) $<

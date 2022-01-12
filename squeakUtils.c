@@ -8,6 +8,8 @@
 #include <stdlib.h>
 #include <libgen.h>
 
+#include "sqMessage.h"
+
 int squeak_main(int argc, char **argv, char **envp);
 int osCogStackPageHeadroom();
 
@@ -59,33 +61,29 @@ void start_squeak_thread(const char* lib_path) {
   free(lib_path_copy);
 }
 
-static sem_t sem_callbacks;
-
 void init_squeak(const char* lib_path) {
-  sem_init(&sem_callbacks, 0, 0);
-
   start_squeak_thread(lib_path);
-
-  printf("Waiting for Squeak FFI callbacks...\n");
-  sem_wait(&sem_callbacks);
-  printf("Received Squeak FFI callbacks\n");
-}
-
-void (*test_callback)() = NULL;
-
-void init_squeak_callbacks(void (*callback)()) {
-  test_callback = callback;
-  sem_post(&sem_callbacks);
-}
-
-void call_test_callback() {
-  if (test_callback == NULL) {
-    printf("test callback is not initialized\n");
-  } else {
-    test_callback();
-  }
 }
 
 void finish_squeak() {
-  sem_destroy(&sem_callbacks);
+}
+
+void squeak_new_script(const char* script_name) {
+  message_data_t data;
+  data.new_script.script_name = script_name;
+  send_message(SQP_NEW_SCRIPT, &data);
+}
+
+void squeak_reload_script(const char* script_path, const char* script_source) {
+  message_data_t data;
+  data.script_reload.script_path = script_path;
+  data.script_reload.script_source = script_source;
+  send_message(SQP_SCRIPT_RELOAD, &data);
+}
+void squeak_call_method(const char* method_name) {
+  message_data_t data;
+  // is this strdup really necessary here?
+  data.function_call.method_name = strdup(method_name);
+  send_message(SQP_FUNCTION_CALL, &data);
+  free((void*) data.function_call.method_name);
 }

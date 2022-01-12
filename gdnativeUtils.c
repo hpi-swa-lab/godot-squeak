@@ -20,10 +20,14 @@ const char* godot_string_name_to_c_str(const godot_string_name *name) {
   return s;
 }
 
+void godot_string_new_with_value(godot_string* gs, const char* s) {
+  api->godot_string_new(gs);
+  api->godot_string_parse_utf8(gs, s);
+}
+
 void godot_variant_new_string_with_value(godot_variant *var, const char* s) {
   godot_string gs;
-  api->godot_string_new(&gs);
-  api->godot_string_parse_utf8(&gs,s);
+  godot_string_new_with_value(&gs, s);
   api->godot_variant_new_string(var, &gs);
   api->godot_string_destroy(&gs);
 }

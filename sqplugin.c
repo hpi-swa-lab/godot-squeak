@@ -22,6 +22,17 @@ void smalltalk_lang_finish() {
   finish_squeak();
 }
 
+godot_string smalltalk_get_template_source_code(godot_pluginscript_language_data *p_data, const godot_string *p_class_name, const godot_string *p_base_class_name) {
+  godot_string template;
+  // this is a suboptimal place to trigger generating the class in squeak, but Godot forces this
+  char* temp = strdup(godot_string_to_c_str(p_class_name));
+  squeak_new_script(temp);
+  free(temp);
+
+  godot_string_new_with_value(&template, "test template for");
+  return template;
+}
+
 void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, const godot_string *p_variable, const godot_variant *p_value) {
   printf("add_global_constant");
 }
@@ -59,6 +70,10 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
   api->godot_array_push_back(&manifest.methods, &process_fake_var);
 
   api->godot_dictionary_destroy(&process_fake);
+
+  char* script_source = strdup(godot_string_to_c_str(p_source));
+  squeak_reload_script(data->path, script_source);
+  free(script_source);
 
   return manifest;
 }
@@ -100,8 +115,6 @@ godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const go
 int call_count = 0;
 int notification_count = 0; 
 
-extern int complicated_timed_call();
-
 godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     const godot_string_name *p_method, const godot_variant **p_args,
     int p_argcount, godot_variant_call_error *r_error) {
@@ -113,8 +126,7 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     }
   } else {
     printf("smalltalk_call_method %s\n", method_name);
-    // call_test_callback();
-    complicated_timed_call();
+    squeak_call_method(method_name);
   }
 
   godot_variant var;
@@ -130,7 +142,7 @@ void smalltalk_notification(godot_pluginscript_instance_data *p_data, int p_noti
       printf("NOTIFICATION_PROCESS occurred %i times\n", call_count);
     }
   } else {
-    printf("smalltalk_call_method %s\n", notification_name);
+    printf("smalltalk_notification %s\n", notification_name);
   }
 }
 
@@ -152,14 +164,16 @@ static godot_pluginscript_language_desc smalltalk_language_desc = {
   /* .comment_delimiters = (const char *[]){NULL}, */
   // optional
   /* .string_delimiters = (const char *[]){NULL}, */
-  // appears to enable naming the resource. probably not something we need
+  // this enables naming classes Godot's script creation dialog.
+  // the name entered there will be passed to the template creation function
   .has_named_classes = false,
   // builtin scripts are saved in the scene, but we want to save them separately
   .supports_builtin_mode = false,
+  .get_template_source_code = &smalltalk_get_template_source_code,
   .add_global_constant = &smalltalk_add_global_constant,
 
   .script_desc = {
-    // called when PluginScript resource is reloaded (e.g. on editor refocus)
+    // called when PluginScript resource is reloaded (e.g. when the file has changed and the editor is refocused)
     .init = &smalltalk_script_init,
     // called in PluginScript destructor
     .finish = &smalltalk_script_finish,
