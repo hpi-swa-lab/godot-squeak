@@ -1,4 +1,5 @@
 message handling
 handleScriptReload: scriptReloadData
 
-	Transcript cr; show: 'script reload: '; show: scriptReloadData scriptPath fromCString; show: ' source: '; show: scriptReloadData scriptSource fromCString
+	Transcript cr; show: 'script reload: '; show: scriptReloadData scriptPath fromCString; show: ' source: '; show: scriptReloadData scriptSource fromCString.
+	^ ExternalAddress new

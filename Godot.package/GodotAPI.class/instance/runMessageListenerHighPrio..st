@@ -5,7 +5,7 @@ runMessageListenerHighPrio: aBoolean
 		[ | message |
 			message := self readMessage.
 			message isNull ifFalse: [
-				self handleMessage: message.
+				message result: (self handleMessage: message).
 				self signalMessage: message
 				"Transcript showln: message type.
 				message type = self messageTypeFunctionCall ifTrue: [

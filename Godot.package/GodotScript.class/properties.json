@@ -1,0 +1,14 @@
+{
+	"category" : "Godot",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GodotScript",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
