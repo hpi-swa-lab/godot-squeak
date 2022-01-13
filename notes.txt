@@ -30,5 +30,6 @@
 
 - PluginScriptLanguage does not implement make_template. Due to further implementation details, this means that PluginScript scripts are not automatically loaded when they are created
 - ResourceFormatSaverPluginScript does not reload scripts on save. There is an option for that, but it is only respected by the gdscript saver
+  https://github.com/godotengine/godot/issues/19653
   - solution a: modify godot source
   - solution b: abuse the template generation function for that

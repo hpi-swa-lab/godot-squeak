@@ -24,12 +24,15 @@ void smalltalk_lang_finish() {
 
 godot_string smalltalk_get_template_source_code(godot_pluginscript_language_data *p_data, const godot_string *p_class_name, const godot_string *p_base_class_name) {
   godot_string template;
-  // this is a suboptimal place to trigger generating the class in squeak, but Godot forces this
-  char* temp = strdup(godot_string_to_c_str(p_class_name));
-  squeak_new_script(temp);
-  free(temp);
+  //
+  char* class_name = strdup(godot_string_to_c_str(p_class_name));
+  char* template_str = squeak_new_script(class_name);
 
-  godot_string_new_with_value(&template, "test template for");
+  godot_string_new_with_value(&template, template_str);
+
+  free(class_name);
+  free(template_str);
+
   return template;
 }
 

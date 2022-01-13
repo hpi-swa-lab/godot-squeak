@@ -68,10 +68,10 @@ void init_squeak(const char* lib_path) {
 void finish_squeak() {
 }
 
-void squeak_new_script(const char* script_name) {
+char* squeak_new_script(const char* script_name) {
   message_data_t data;
   data.new_script.script_name = script_name;
-  send_message(SQP_NEW_SCRIPT, &data);
+  return send_message(SQP_NEW_SCRIPT, &data);
 }
 
 void squeak_reload_script(const char* script_path, const char* script_source) {

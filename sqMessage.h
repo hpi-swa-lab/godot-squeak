@@ -3,7 +3,7 @@
 enum MessageType {
   SQP_NEW_SCRIPT = 0,
   SQP_SCRIPT_RELOAD = 1,
-	SQP_NEW_INSTANCE = 2,
+  SQP_NEW_INSTANCE = 2,
   SQP_FUNCTION_CALL = 3,
 };
 
@@ -26,4 +26,4 @@ typedef union {
   } function_call;
 } message_data_t;
 
-void send_message(enum MessageType type, message_data_t *data);
+void* send_message(enum MessageType type, message_data_t *data);
