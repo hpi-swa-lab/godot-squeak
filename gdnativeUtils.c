@@ -81,6 +81,10 @@ void godot_print_variant(const godot_variant* message) {
   api->godot_print(&str);
 }
 
+godot_variant_type godot_get_variant_type(const godot_variant* variant) {
+  return api->godot_variant_get_type(variant);
+}
+
 // TODO: complete this list
 #define NUM_SPECIAL_METHODS 3
 static const char* special_methods[NUM_SPECIAL_METHODS] = {
