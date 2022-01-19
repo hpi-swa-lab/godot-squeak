@@ -2,5 +2,6 @@ fields
 fields
 	" self defineFields "
 	^ #(
-		(a int)
+		(scriptPath 'char*')
+		(owner 'GDObject*')
 	)

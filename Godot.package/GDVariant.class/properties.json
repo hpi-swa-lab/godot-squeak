@@ -3,15 +3,12 @@
 	"classinstvars" : [
 		 ],
 	"classvars" : [
-		"Instance" ],
+		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"scriptRegistry",
-		"messageHandlers",
-		"pathToClass",
-		"instances" ],
-	"name" : "GodotAPI",
+		 ],
+	"name" : "GDVariant",
 	"pools" : [
 		 ],
-	"super" : "ExternalLibrary",
+	"super" : "ExternalTypeAlias",
 	"type" : "normal" }

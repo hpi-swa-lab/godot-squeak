@@ -2,6 +2,10 @@ initialization
 initialize
 
 	super initialize.
+	
+	pathToClass := Dictionary new.
+	instances := PluggableDictionary new.
+	instances hashBlock: [:val | val getHandle hash].
 
 	messageHandlers := Dictionary new.
 	messageHandlers at: self messageTypeNewScript put:
@@ -12,3 +16,7 @@ initialize
 		[:message | self handleNewInstance: (message data newInstanceMessage)].
 	messageHandlers at: self messageTypeMethodCall put:
 		[:message | self handleMethodCall: (message data methodCallMessage)].
+	
+	SystemChangeNotifier uniqueInstance
+		notify: self
+		ofAllSystemChangesUsing: #systemChangeEvent:

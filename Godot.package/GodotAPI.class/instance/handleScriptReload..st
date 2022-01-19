@@ -1,5 +1,8 @@
 message handling
 handleScriptReload: scriptReloadData
 
-	Transcript cr; show: 'script reload: '; show: scriptReloadData scriptPath fromCString; show: ' source: '; show: scriptReloadData scriptSource fromCString.
+	| definitions |
+	definitions := TonelParser parseStream: scriptReloadData scriptSource fromCString readStream.
+	definitions do: #load.
+	self associatePath: scriptReloadData scriptPath fromCString withClass: (Smalltalk classNamed: definitions first name).
 	^ ExternalAddress new

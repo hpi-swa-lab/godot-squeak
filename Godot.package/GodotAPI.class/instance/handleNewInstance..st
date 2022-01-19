@@ -1,5 +1,5 @@
 message handling
 handleNewInstance: newInstanceData
 
-	Transcript showln: newInstanceData a.
+	instances at: newInstanceData owner put: (self classForPath: newInstanceData scriptPath fromCString) new.
 	^ ExternalAddress new
