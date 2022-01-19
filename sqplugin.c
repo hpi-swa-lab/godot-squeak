@@ -42,14 +42,14 @@ void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, con
 
 typedef struct {
   char* path;
-} SmalltalkScriptData;
+} smalltalk_script_data_t;
 
 godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_language_data *p_data, const godot_string *p_path, const godot_string *p_source, godot_error *r_error) {
   printf("smalltalk_script_init\n");
   printf("\tpath: %s\n", godot_string_to_c_str(p_path));
 
-  SmalltalkScriptData *data = malloc(sizeof(SmalltalkScriptData));
-  data->path = strdup(godot_string_to_c_str(p_path));
+  smalltalk_script_data_t *data = malloc(sizeof(smalltalk_script_data_t));
+  data->path = strdup(godot_globalize_path(godot_string_to_c_str(p_path)));
 
   godot_pluginscript_script_manifest manifest = {
     .data = data,
@@ -83,25 +83,28 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
 void smalltalk_script_finish(godot_pluginscript_script_data *p_data) {
   printf("smalltalk_script_finish\n");
-  free(((SmalltalkScriptData*) p_data)->path);
+  free(((smalltalk_script_data_t*) p_data)->path);
   free(p_data);
 }
 
 typedef struct {
   godot_object *owner;
-} SmalltalkInstanceData;
+} smalltalk_instance_data_t;
 
 // if this function returns NULL, Godot considers the initialization failed
 godot_pluginscript_instance_data *smalltalk_instance_init(godot_pluginscript_script_data *p_data, godot_object *p_owner) {
   printf("smalltalk_instance_init\n");
-  printf("\tscript path: %s\n", ((SmalltalkScriptData*) p_data)->path);
-  SmalltalkInstanceData* data = malloc(sizeof(SmalltalkInstanceData));
+  printf("\tscript path: %s\n", ((smalltalk_script_data_t*) p_data)->path);
+  smalltalk_instance_data_t* data = malloc(sizeof(smalltalk_instance_data_t));
   data->owner = p_owner;
+  printf("owner: %p\n", p_owner);
+  squeak_new_instance(((smalltalk_script_data_t*) p_data)->path, p_owner);
   return data;
 }
 
 void smalltalk_instance_finish(godot_pluginscript_instance_data *p_data) {
   printf("smalltalk_instance_finish\n");
+  // TODO: destroy smalltalk object
   free(p_data);
 }
 
@@ -129,7 +132,9 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     }
   } else {
     printf("smalltalk_call_method %s\n", method_name);
-    squeak_call_method(method_name);
+    squeak_call_method(
+        godot_is_special_method(method_name) ? &method_name[1] : method_name,
+        ((smalltalk_instance_data_t*)p_data)->owner, p_args, p_argcount);
   }
 
   godot_variant var;
@@ -197,7 +202,7 @@ static godot_pluginscript_language_desc smalltalk_language_desc = {
 };
 
 void GDN_EXPORT sqplug_gdnative_init(godot_gdnative_init_options *p_options) {
-  printf("library init\n");
+  printf("Initializing sqplugin library\n");
 
   api = p_options->api_struct;
   init_gdnative_utils(api);
@@ -225,6 +230,7 @@ void GDN_EXPORT sqplug_gdnative_init(godot_gdnative_init_options *p_options) {
 
 void GDN_EXPORT sqplug_gdnative_terminate(godot_gdnative_terminate_options *p_options) {
   printf("library term\n");
+  finish_gdnative_utils();
 }
 
 void GDN_EXPORT sqplug_nativescript_init(void *p_handle) {

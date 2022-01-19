@@ -1,4 +1,5 @@
 #include <semaphore.h>
+#include <gdnative_api_struct.gen.h>
 
 enum MessageType {
   SQP_NEW_SCRIPT = 0,
@@ -18,12 +19,16 @@ typedef union {
   } script_reload;
 
   struct {
-    int a;
+    const char* script_path;
+    const godot_object* owner;
   } new_instance;
 
   struct {
     const char* method_name;
-  } function_call;
+    const godot_object* owner;
+    const godot_variant** args;
+    int arg_count;
+  } method_call;
 } message_data_t;
 
 void* send_message(enum MessageType type, message_data_t *data);

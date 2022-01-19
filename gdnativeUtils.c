@@ -1,9 +1,23 @@
 #include "gdnativeUtils.h"
 
+#include <string.h>
+
 static const godot_gdnative_core_api_struct* api = NULL;
+
+static godot_variant project_settings;
+static godot_string globalize_path_method_name;
 
 void init_gdnative_utils(const godot_gdnative_core_api_struct* api_struct) {
   api = api_struct;
+
+  godot_object *obj = api->godot_global_get_singleton("ProjectSettings");
+  api->godot_variant_new_object(&project_settings, obj);
+  godot_string_new_with_value(&globalize_path_method_name, "globalize_path");
+}
+
+void finish_gdnative_utils() {
+  api->godot_variant_destroy(&project_settings);
+  api->godot_string_destroy(&globalize_path_method_name);
 }
 
 const char* godot_string_to_c_str(const godot_string* gstr) {
@@ -15,6 +29,13 @@ const char* godot_string_to_c_str(const godot_string* gstr) {
 
 const char* godot_string_name_to_c_str(const godot_string_name *name) {
   godot_string gs = api->godot_string_name_get_name(name);
+  const char* s = godot_string_to_c_str(&gs);
+  api->godot_string_destroy(&gs);
+  return s;
+}
+
+const char* godot_variant_string_to_c_str(const godot_variant *var) {
+  godot_string gs = api->godot_variant_as_string(var);
   const char* s = godot_string_to_c_str(&gs);
   api->godot_string_destroy(&gs);
   return s;
@@ -43,6 +64,38 @@ void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const
 
   api->godot_variant_destroy(&key_var);
   api->godot_variant_destroy(&val_var);
+}
+
+const char* godot_globalize_path(const char *path) {
+  godot_variant arg;
+  const godot_variant* argp = &arg;
+  godot_variant_new_string_with_value(&arg, path);
+
+  godot_variant_call_error err;
+  godot_variant result = api->godot_variant_call(&project_settings, &globalize_path_method_name, &argp, 1, &err);
+  return godot_variant_string_to_c_str(&result);
+}
+
+void godot_print_variant(const godot_variant* message) {
+  godot_string str = api->godot_variant_as_string(message);
+  api->godot_print(&str);
+}
+
+// TODO: complete this list
+#define NUM_SPECIAL_METHODS 3
+static const char* special_methods[NUM_SPECIAL_METHODS] = {
+  "_enter_tree",
+  "_ready",
+  "_process",
+};
+
+bool godot_is_special_method(const char *method_name) {
+  for (int i = 0; i < NUM_SPECIAL_METHODS; ++i) {
+    if (strcmp(method_name, special_methods[i]) == 0) {
+      return true;
+    }
+  }
+  return false;
 }
 
 const char *get_node_notification_name(int notification) {

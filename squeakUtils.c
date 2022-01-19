@@ -9,6 +9,7 @@
 #include <libgen.h>
 
 #include "sqMessage.h"
+#include "gdnativeUtils.h"
 
 int squeak_main(int argc, char **argv, char **envp);
 int osCogStackPageHeadroom();
@@ -80,10 +81,24 @@ void squeak_reload_script(const char* script_path, const char* script_source) {
   data.script_reload.script_source = script_source;
   send_message(SQP_SCRIPT_RELOAD, &data);
 }
-void squeak_call_method(const char* method_name) {
+
+void squeak_new_instance(const char* script_path, const godot_object* owner) {
+  message_data_t data;
+  data.new_instance.script_path = script_path;
+  data.new_instance.owner = owner;
+  send_message(SQP_NEW_INSTANCE, &data);
+}
+
+void squeak_call_method(const char* method_name, const godot_object* owner, const godot_variant** args, int arg_count) {
   message_data_t data;
   // is this strdup really necessary here?
-  data.function_call.method_name = strdup(method_name);
+  data.method_call.method_name = strdup(method_name);
+  data.method_call.owner = owner;
+  /* int test_arg = 42; */
+  /* int* test_arg_p = &test_arg; */
+  /* data.method_call.args = (const godot_variant**)&test_arg_p; */
+  data.method_call.args = args;
+  data.method_call.arg_count = arg_count;
   send_message(SQP_FUNCTION_CALL, &data);
-  free((void*) data.function_call.method_name);
+  free((void*) data.method_call.method_name);
 }

@@ -33,3 +33,5 @@
   https://github.com/godotengine/godot/issues/19653
   - solution a: modify godot source
   - solution b: abuse the template generation function for that
+
+- godot might allow property hinting, see godot_nativescript_register_property or the script manifest
