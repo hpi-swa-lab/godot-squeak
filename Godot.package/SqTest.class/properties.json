@@ -1,14 +1,14 @@
 {
-	"category" : "Godot",
+	"category" : "Godot-Scripts",
 	"classinstvars" : [
 		 ],
 	"classvars" : [
-		"VariantClasses" ],
+		 ],
 	"commentStamp" : "",
 	"instvars" : [
 		 ],
-	"name" : "GDVariant",
+	"name" : "SqTest",
 	"pools" : [
 		 ],
-	"super" : "ExternalStructure",
+	"super" : "GodotScript",
 	"type" : "normal" }
