@@ -2,5 +2,5 @@ as yet unclassified
 fields
 	" self defineFields "
 	^ #(
-		(dummy void)
+		(do_not_touch_that 'uint8_t[24]')
 	)
