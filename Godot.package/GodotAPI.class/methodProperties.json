@@ -5,12 +5,12 @@
 		"moduleName" : "lege 1/8/2022 00:48" },
 	"instance" : {
 		"associatePath:withClass:" : "lege 1/14/2022 00:16",
-		"callMethod:with:on:" : "lege 1/14/2022 19:36",
+		"callMethod:with:on:" : "lege 1/20/2022 00:07",
 		"classForPath:" : "lege 1/14/2022 01:32",
 		"convertToSelector:" : "lege 1/15/2022 00:32",
 		"getVariantType:" : "lege 1/19/2022 19:39",
-		"handleMessage:" : "lege 1/14/2022 18:13",
-		"handleMethodCall:" : "lege 1/15/2022 00:28",
+		"handleMessage:" : "lege 1/20/2022 00:43",
+		"handleMethodCall:" : "lege 1/20/2022 00:43",
 		"handleNewInstance:" : "lege 1/14/2022 12:00",
 		"handleNewScript:" : "lege 1/13/2022 16:23",
 		"handleScriptReload:" : "lege 1/19/2022 20:16",
@@ -28,5 +28,7 @@
 		"signalMessage:" : "tobe 1/10/2022 21:01",
 		"systemChangeEvent:" : "lege 1/13/2022 23:36",
 		"tempGodotPrintVariant:" : "lege 1/19/2022 19:32",
+		"variantNewNil:" : "lege 1/20/2022 00:38",
+		"variantNewString:value:" : "lege 1/20/2022 00:47",
 		"variantToCString:" : "lege 1/19/2022 20:41",
 		"writeClassToFile:" : "lege 1/13/2022 23:37" } }

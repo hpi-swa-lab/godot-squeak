@@ -6,4 +6,5 @@ fields
 		(owner 'GDObject*')
 		(args 'void*')
 		(argCount int)
+		(result 'GDVariant*')
 	)
