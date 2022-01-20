@@ -7,5 +7,5 @@ handleMethodCall: methodCallData
 		with: (methodCallData allArgsAsVariants collect: #unwrap)
 		on: (instances at: methodCallData owner).
 	GodotAPI showln: 'result ', result class, ' ', result.
-	result putIntoGDVariant: methodCallData result.
+	result insertIntoGDVariant: methodCallData result.
 	^ ExternalAddress new

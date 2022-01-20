@@ -1,8 +1,13 @@
 {
 	"class" : {
 		"fields" : "lege 1/19/2022 19:40",
-		"initialize" : "lege 1/20/2022 17:30",
+		"initialize" : "lege 1/20/2022 17:36",
+		"variantBoolean" : "lege 1/20/2022 17:34",
 		"variantClassFor:" : "lege 1/19/2022 19:46",
+		"variantFloat" : "lege 1/20/2022 17:32",
+		"variantInteger" : "lege 1/20/2022 17:34",
+		"variantNil" : "lege 1/20/2022 17:35",
 		"variantString" : "lege 1/20/2022 17:30" },
 	"instance" : {
-		 } }
+		"unwrap" : "lege 1/19/2022 19:48",
+		"variantClass" : "lege 1/19/2022 19:44" } }

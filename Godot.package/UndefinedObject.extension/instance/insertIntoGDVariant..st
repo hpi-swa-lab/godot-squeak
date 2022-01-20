@@ -1,4 +1,4 @@
 *Godot
-putIntoGDVariant: aVariant
+insertIntoGDVariant: aVariant
 
 	GodotAPI instance variantNewNil: aVariant

@@ -1,0 +1,4 @@
+*Godot
+fromGDVariant: aVariant
+
+	^ nil

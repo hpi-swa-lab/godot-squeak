@@ -1,0 +1,4 @@
+constants
+variantBoolean
+
+	^ 1

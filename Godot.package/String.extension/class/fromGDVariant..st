@@ -1,4 +1,4 @@
 *Godot
 fromGDVariant: aVariant
 
-	^ GodotAPI instance variantToCString: aVariant
+	^ GodotAPI instance variantToString: aVariant
