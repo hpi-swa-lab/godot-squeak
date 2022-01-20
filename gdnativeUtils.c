@@ -60,6 +60,30 @@ void godot_variant_new_nil(godot_variant* variant) {
   api->godot_variant_new_nil(variant);
 }
 
+bool godot_variant_bool_extract(godot_variant* variant) {
+  return api->godot_variant_as_bool(variant);
+}
+
+void godot_variant_bool_insert(godot_variant* variant, const bool value) {
+  api->godot_variant_new_bool(variant, value);
+}
+
+int64_t godot_variant_int_extract(godot_variant* variant) {
+  return api->godot_variant_as_int(variant);
+}
+
+void godot_variant_int_insert(godot_variant* variant, const int64_t value) {
+  api->godot_variant_new_int(variant, value);
+}
+
+double godot_variant_real_extract(godot_variant* variant) {
+  return api->godot_variant_as_real(variant);
+}
+
+void godot_variant_real_insert(godot_variant* variant, const double value) {
+  api->godot_variant_new_real(variant, value);
+}
+
 void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {
   godot_variant key_var;
   godot_variant val_var;

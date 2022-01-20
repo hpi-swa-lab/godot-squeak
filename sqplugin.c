@@ -141,6 +141,8 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
         ((smalltalk_instance_data_t*)p_data)->owner, p_args, p_argcount, &ret);
   }
 
+  // TODO: limited error messages are possible by modifying r_error
+
   /* api->godot_variant_new_nil(&var); */
   return ret;
 }
