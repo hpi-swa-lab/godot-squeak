@@ -7,4 +7,6 @@ systemChangeEvent: anEvent
 		ifFalse: [anEvent itemKind = SystemChangeNotifier classKind ifTrue: [anEvent item]].
 	
 	class ifNotNil: [
-		((class inheritsFrom: GodotScript) and: anEvent class ~= AddedEvent) ifTrue: [self writeClassToFile: class]]
+		((class inheritsFrom: GodotScript)
+			and: anEvent class ~= AddedEvent
+			and: anEvent class ~= RemovedEvent) ifTrue: [self writeClassToFile: class]]
