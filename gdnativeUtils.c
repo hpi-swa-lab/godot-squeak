@@ -20,6 +20,7 @@ void finish_gdnative_utils() {
   api->godot_string_destroy(&globalize_path_method_name);
 }
 
+// TODO: change all of these godot_ prefixes, bit confusing
 const char* godot_string_to_c_str(const godot_string* gstr) {
   godot_char_string gcs = api->godot_string_ascii(gstr);
   const char* s = api->godot_char_string_get_data(&gcs);
@@ -51,6 +52,10 @@ void godot_variant_new_string_with_value(godot_variant *var, const char* s) {
   godot_string_new_with_value(&gs, s);
   api->godot_variant_new_string(var, &gs);
   api->godot_string_destroy(&gs);
+}
+
+void godot_variant_new_nil(godot_variant* variant) {
+  api->godot_variant_new_nil(variant);
 }
 
 void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {

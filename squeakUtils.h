@@ -7,4 +7,4 @@ void finish_squeak();
 char* squeak_new_script(const char* script_name);
 void squeak_reload_script(const char* script_path, const char* script_source);
 void squeak_new_instance(const char* script_path, const godot_object* owner);
-void squeak_call_method(const char* method_name, const godot_object* owner, const godot_variant** args, int arg_count);
+void squeak_call_method(const char* method_name, const godot_object* owner, const godot_variant** args, int arg_count, godot_variant* result);

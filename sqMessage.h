@@ -28,6 +28,7 @@ typedef union {
     const godot_object* owner;
     const godot_variant** args;
     int arg_count;
+    godot_variant* result;
   } method_call;
 } message_data_t;
 

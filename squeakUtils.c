@@ -89,7 +89,7 @@ void squeak_new_instance(const char* script_path, const godot_object* owner) {
   send_message(SQP_NEW_INSTANCE, &data);
 }
 
-void squeak_call_method(const char* method_name, const godot_object* owner, const godot_variant** args, int arg_count) {
+void squeak_call_method(const char* method_name, const godot_object* owner, const godot_variant** args, int arg_count, godot_variant* result) {
   message_data_t data;
   // is this strdup really necessary here?
   data.method_call.method_name = strdup(method_name);
@@ -99,6 +99,13 @@ void squeak_call_method(const char* method_name, const godot_object* owner, cons
   /* data.method_call.args = (const godot_variant**)&test_arg_p; */
   data.method_call.args = args;
   data.method_call.arg_count = arg_count;
+  data.method_call.result = result;
   send_message(SQP_FUNCTION_CALL, &data);
+  printf("method call result: ");
+  if (result != NULL) {
+    printf("received godot variant that is not NULL. type: %i\n", godot_get_variant_type(result));
+  } else {
+    printf("NULL\n");
+  }
   free((void*) data.method_call.method_name);
 }

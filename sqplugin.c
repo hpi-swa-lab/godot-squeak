@@ -126,20 +126,22 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     int p_argcount, godot_variant_call_error *r_error) {
   const char* method_name = godot_string_name_to_c_str(p_method);
 
+  godot_variant ret;
+
   if (strcmp(method_name, "_process") == 0) {
     if (++call_count % 100 == 0) {
       printf("_process has been called %i times\n", call_count);
+      api->godot_variant_new_nil(&ret);
     }
   } else {
     printf("smalltalk_call_method %s\n", method_name);
     squeak_call_method(
         godot_is_special_method(method_name) ? &method_name[1] : method_name,
-        ((smalltalk_instance_data_t*)p_data)->owner, p_args, p_argcount);
+        ((smalltalk_instance_data_t*)p_data)->owner, p_args, p_argcount, &ret);
   }
 
-  godot_variant var;
-  api->godot_variant_new_nil(&var);
-  return var;
+  /* api->godot_variant_new_nil(&var); */
+  return ret;
 }
 
 void smalltalk_notification(godot_pluginscript_instance_data *p_data, int p_notification) {
