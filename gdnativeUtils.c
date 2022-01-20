@@ -24,7 +24,9 @@ void finish_gdnative_utils() {
 const char* godot_string_to_c_str(const godot_string* gstr) {
   godot_char_string gcs = api->godot_string_ascii(gstr);
   const char* s = api->godot_char_string_get_data(&gcs);
-  api->godot_char_string_destroy(&gcs);
+  // getting weird behaviour if the following line is included.
+  // unclear if it necessary
+  /* api->godot_char_string_destroy(&gcs); */
   return s;
 }
 
@@ -79,6 +81,10 @@ const char* godot_globalize_path(const char *path) {
   godot_variant_call_error err;
   godot_variant result = api->godot_variant_call(&project_settings, &globalize_path_method_name, &argp, 1, &err);
   return godot_variant_string_to_c_str(&result);
+}
+
+const char* godot_get_project_root() {
+  return godot_globalize_path("res://");
 }
 
 void godot_print_variant(const godot_variant* message) {

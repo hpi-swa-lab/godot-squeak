@@ -74,6 +74,7 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
   api->godot_dictionary_destroy(&process_fake);
 
+  /* api->godot_print(p_source); */
   char* script_source = strdup(godot_string_to_c_str(p_source));
   squeak_reload_script(data->path, script_source);
   free(script_source);
