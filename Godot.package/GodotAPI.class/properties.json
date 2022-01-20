@@ -6,7 +6,6 @@
 		"Instance" ],
 	"commentStamp" : "",
 	"instvars" : [
-		"scriptRegistry",
 		"messageHandlers",
 		"pathToClass",
 		"instances" ],

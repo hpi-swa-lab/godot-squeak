@@ -1,14 +1,15 @@
 as yet unclassified
-instantiateGodotScriptNamed: name
+instantiateGodotScriptNamed: aSymbol
 
 	| class |
-	GodotScript subclass: (name asSymbol)
+	GodotScript subclass: aSymbol
 		instanceVariableNames: ''
 		classVariableNames: ''
 		poolDictionaries: ''
 		category: 'Godot-Scripts'.
 	
-	class := Smalltalk classNamed: name.
+	class := Smalltalk classNamed: aSymbol.
 	class compile: self readyCode.
 	class compile: self processCode.
+	^ class
 	
