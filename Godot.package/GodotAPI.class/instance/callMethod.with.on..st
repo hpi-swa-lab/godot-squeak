@@ -5,5 +5,5 @@ callMethod: aSymbol with: arguments on: anInstance
 			ifTrue: [
 				anInstance perform: aSymbol withArguments: arguments]
 			ifFalse: [
-				Transcript showln: 'received message for '; show: anInstance class; show: ' that it doesn''t understand: '; show: aSymbol.
+				GodotAPI showln: 'received message for ', anInstance class, ' that it doesn''t understand: ', aSymbol.
 				nil].

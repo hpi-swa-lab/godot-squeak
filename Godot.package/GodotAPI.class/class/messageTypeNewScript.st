@@ -1,4 +1,4 @@
-message types
+constants
 messageTypeNewScript
 
 	^ 0

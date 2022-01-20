@@ -1,4 +1,4 @@
-as yet unclassified
+constants
 processCode
 	^ 'process: delta
 	^ nil'

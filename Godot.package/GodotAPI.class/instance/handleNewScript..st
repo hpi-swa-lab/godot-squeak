@@ -3,7 +3,7 @@ handleNewScript: newScriptData
 
 	| name class source |
 	name := newScriptData scriptName fromCString asSymbol.
-	Transcript cr; show: 'new script: '; show: name.
+	GodotAPI showln: 'new script: ', name.
 	class := self instantiateGodotScriptNamed: name.
 	source := (TonelWriter sourceCodeOf: class) utf8Encoded.
 	"[2 seconds wait] fork"

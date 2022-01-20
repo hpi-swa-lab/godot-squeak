@@ -9,7 +9,7 @@ instantiateGodotScriptNamed: aSymbol
 		category: 'Godot-Scripts'.
 	
 	class := Smalltalk classNamed: aSymbol.
-	class compile: self readyCode.
-	class compile: self processCode.
+	class compile: GodotAPI readyCode.
+	class compile: GodotAPI processCode.
 	^ class
 	

@@ -1,4 +1,4 @@
-message types
+constants
 messageTypeMethodCall
 
 	^ 3

@@ -1,4 +1,4 @@
-message types
+constants
 messageTypeNewInstance
 
 	^ 2
