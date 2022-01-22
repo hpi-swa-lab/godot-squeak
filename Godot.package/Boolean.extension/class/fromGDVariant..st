@@ -1,4 +1,4 @@
 *Godot
 fromGDVariant: aVariant
 
-	^ GodotAPI instance variantToBoolean: aVariant
+	^ GDApi instance variantToBoolean: aVariant

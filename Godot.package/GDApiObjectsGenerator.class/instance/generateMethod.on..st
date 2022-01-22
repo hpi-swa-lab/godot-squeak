@@ -1,0 +1,5 @@
+generating
+generateMethod: methodSpec on: class
+
+	((methodSpec at: 'name') beginsWith: '_') ifFalse: [
+		(self allSourcesFor: methodSpec) do: [:source | class compile: source]]

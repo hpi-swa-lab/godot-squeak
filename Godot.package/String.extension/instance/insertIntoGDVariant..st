@@ -1,4 +1,4 @@
 *Godot
 insertIntoGDVariant: aVariant
 
-	GodotAPI instance variant: aVariant insertString: self
+	GDApi instance variant: aVariant insertString: self

@@ -1,0 +1,19 @@
+{
+	"category" : "Godot-Internal",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		"ObjectCategories" ],
+	"commentStamp" : "",
+	"instvars" : [
+		"stream",
+		"topLevel",
+		"dependants",
+		"progress",
+		"progressStep",
+		"objectSpecsByName" ],
+	"name" : "GDApiObjectsGenerator",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

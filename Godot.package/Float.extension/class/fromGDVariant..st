@@ -1,4 +1,4 @@
 *Godot
 fromGDVariant: aVariant
 
-	^ GodotAPI instance variantToFloat: aVariant
+	^ GDApi instance variantToFloat: aVariant

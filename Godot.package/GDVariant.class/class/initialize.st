@@ -1,4 +1,4 @@
-as yet unclassified
+class initialization
 initialize
 
 	VariantClasses := Dictionary withAll: {
@@ -7,4 +7,5 @@ initialize
 		self variantInteger -> Integer.
 		self variantFloat -> Float.
 		self variantString -> String.
+		self variantObject -> GDBaseObject.
 	}

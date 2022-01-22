@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"internalVariant" ],
+	"name" : "GDBaseObject",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
