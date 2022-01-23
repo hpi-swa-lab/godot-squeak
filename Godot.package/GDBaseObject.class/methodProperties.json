@@ -2,6 +2,8 @@
 	"class" : {
 		"fromGDVariant:" : "lege 1/22/2022 22:49" },
 	"instance" : {
-		"call:with:" : "lege 1/22/2022 22:46",
+		"asGDVariant" : "lege 1/23/2022 11:49",
+		"call:with:" : "lege 1/23/2022 10:55",
+		"insertIntoGDVariant:" : "lege 1/23/2022 11:04",
 		"internalVariant" : "lege 1/22/2022 22:40",
 		"internalVariant:" : "lege 1/22/2022 22:41" } }

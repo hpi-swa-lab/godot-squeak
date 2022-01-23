@@ -1,24 +1,32 @@
 ffi
-callMethod: methodName onVariant: aVariant with: aSequence
+callMethod: methodName onVariant: aVariant with: argsSequence
 
 	"TODO: All of the variants and strings here need to be destroyed"
-	| callError result methodNameGDString |
-	callError := GDVariantCallError allocate.
-
+	"TODO: this a chunky func, make it a less chunky func"
+	| callError result methodNameGDString variants argsPointer |
 	methodNameGDString := GDString allocate.
 	methodName insertIntoGDString: methodNameGDString.
-		
-	"argVariants := GDVariant allocate: aSequence size.
-	argVariantPointers := ExternalType void asPointerType allocate: aSequence size.
-	aSequence withIndexDo: [:arg :index || variant |
-		variant := argVariants at: index.
+	
+	variants := GDVariant allocateExternal: argsSequence size.
+	argsPointer := ExternalType void asPointerType allocate: argsSequence size.
+	argsSequence withIndexDo: [:arg :index || variant |
+		variant := variants at: index.
 		arg insertIntoGDVariant: variant.
-		(argVariantPointers) at: index put: variant]."
+		argsPointer at: index put: variant getHandle].
+	
+	callError := GDVariantCallError allocate.
 	
 	result := self callMethodOnVariant: aVariant
 		name: methodNameGDString
-		args: (ExternalType int asPointerType allocate)
-		argCount: aSequence size
+		args: argsPointer
+		argCount: argsSequence size
 		err: callError.
+		
 	callError errorType ~= GDApi variantCallErrorOk ifTrue: [self error: 'Variant method call failed with ', callError errorType].
+	
+	"TODO: should probably use an ensure here"
+	methodNameGDString destroy.
+	variants do: #destroy.
+	argsPointer free.
+	
 	^ result.
