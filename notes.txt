@@ -37,3 +37,5 @@
 - godot might allow property hinting, see godot_nativescript_register_property or the script manifest
 
 - godot_variant_call returns a godot_variant on the stack. who owns it? do I need to destroy it?
+
+- creating an array of pointers may require allocating the contents externally. see FFI-Tests>>test22ArrayForVoidPointers

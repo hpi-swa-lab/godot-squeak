@@ -88,6 +88,13 @@ godot_variant godot_variant_call(godot_variant* variant, const godot_string* met
   return api->godot_variant_call(variant, method_name, args, arg_count, error);
 }
 
+void godot_variant_destroy(godot_variant *variant) {
+  api->godot_variant_destroy(variant);
+}
+
+void godot_string_destroy(godot_string *str) {
+  api->godot_string_destroy(str);
+}
 
 void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {
   godot_variant key_var;
