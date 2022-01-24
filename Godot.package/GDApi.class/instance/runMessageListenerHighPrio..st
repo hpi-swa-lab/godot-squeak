@@ -1,6 +1,7 @@
 message handling
 runMessageListenerHighPrio: aBoolean
 
+	"TODO: split all message handling off into a separate class"
 	[
 		[ | message |
 			message := self readMessage.

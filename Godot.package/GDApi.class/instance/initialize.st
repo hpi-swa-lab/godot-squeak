@@ -3,7 +3,7 @@ initialize
 
 	super initialize.
 	
-	scriptLoadingActive := false.
+	modificationListeningDisabled := false.
 	
 	pathToClass := Dictionary new.
 	instances := PluggableDictionary new.

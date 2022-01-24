@@ -9,7 +9,7 @@
 		"messageHandlers",
 		"pathToClass",
 		"instances",
-		"scriptLoadingActive" ],
+		"modificationListeningDisabled" ],
 	"name" : "GDApi",
 	"pools" : [
 		 ],

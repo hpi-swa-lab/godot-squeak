@@ -7,4 +7,4 @@ sourceFor: name args: argSpecs defaultArgs: defaultArgSpecs
 	
 	^ '{1}{2}
 	
-	^ self call: ''{3}'' with: \{{4}\}' format: {methodName. argStrings first. name.  argStrings second}
+	^ self callOnVariant: ''{3}'' with: \{{4}\}' format: {methodName. argStrings first. name.  argStrings second}

@@ -1,9 +1,11 @@
 {
 	"class" : {
-		"fromGDVariant:" : "lege 1/22/2022 22:49" },
+		"fromGDVariant:" : "lege 1/22/2022 22:49",
+		"toolIcon" : "lege 1/23/2022 16:13" },
 	"instance" : {
 		"asGDVariant" : "lege 1/23/2022 11:49",
-		"call:with:" : "lege 1/23/2022 10:55",
+		"callMethod:with:" : "lege 1/23/2022 17:48",
+		"callOnVariant:with:" : "lege 1/23/2022 16:19",
 		"insertIntoGDVariant:" : "lege 1/23/2022 11:04",
 		"internalVariant" : "lege 1/22/2022 22:40",
 		"internalVariant:" : "lege 1/22/2022 22:41" } }
