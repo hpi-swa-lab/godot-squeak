@@ -24,13 +24,15 @@ void smalltalk_lang_finish() {
 
 godot_string smalltalk_get_template_source_code(godot_pluginscript_language_data *p_data, const godot_string *p_class_name, const godot_string *p_base_class_name) {
   godot_string template;
-  //
+  // TODO: are this strdups necessary?
   char* class_name = strdup(godot_string_to_c_str(p_class_name));
-  char* template_str = squeak_new_script(class_name);
+  char* parent_name = strdup(godot_string_to_c_str(p_base_class_name));
+  char* template_str = squeak_new_script(class_name, parent_name);
 
   godot_string_new_with_value(&template, template_str);
 
   free(class_name);
+  free(parent_name);
   free(template_str);
 
   return template;
@@ -140,6 +142,8 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
         godot_is_special_method(method_name) ? &method_name[1] : method_name,
         ((smalltalk_instance_data_t*)p_data)->owner, p_args, p_argcount, &ret);
   }
+
+  fprintf(stderr, "method returned with %i\n", r_error->error);
 
   // TODO: limited error messages are possible by modifying r_error
 

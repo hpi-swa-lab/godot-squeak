@@ -69,9 +69,10 @@ void init_squeak(const char* lib_path) {
 void finish_squeak() {
 }
 
-char* squeak_new_script(const char* script_name) {
+char* squeak_new_script(const char* script_name, const char* parent_name) {
   message_data_t data;
   data.new_script.script_name = script_name;
+  data.new_script.parent_name = parent_name;
   return send_message(SQP_NEW_SCRIPT, &data);
 }
 
@@ -94,9 +95,6 @@ void squeak_call_method(const char* method_name, const godot_object* owner, cons
   // is this strdup really necessary here?
   data.method_call.method_name = strdup(method_name);
   data.method_call.owner = owner;
-  /* int test_arg = 42; */
-  /* int* test_arg_p = &test_arg; */
-  /* data.method_call.args = (const godot_variant**)&test_arg_p; */
   data.method_call.args = args;
   data.method_call.arg_count = arg_count;
   data.method_call.result = result;

@@ -39,3 +39,32 @@
 - godot_variant_call returns a godot_variant on the stack. who owns it? do I need to destroy it?
 
 - creating an array of pointers may require allocating the contents externally. see FFI-Tests>>test22ArrayForVoidPointers
+
+- if a script file is deleted, should the corresponding class be removed as well? or only the mapping between the class and the file?
+
+- problem: if a method is called on a godot object that has a smalltalk script attached, it attempts to call all functions in the smalltalk script, even the ones that are defined by the engine. the latter ones should not be forwarded to squeak but instead be handled as if no script was attached
+  - easy solution: set the error code in the function call to CALL_ERROR_INVALID_METHOD
+    this will make godot perform the method on the underlying object
+    - this means that we should ONLY perform user defined messages (ie defined in a subclass of an generated godot api class) within squeak
+    - a check whether this function is user defined can be relatively easily implemented on the squeak side, but should eventually be done on the C side to prevent unnecessary FFI calls
+
+- Fun problem: The messages arrive in a queue and are handled one by one and one at a time by a message listener.
+  This is fine as long as only one message needs to be handled at a time.
+  However, in some circumstances it might be possible that this is not the case, with a deadlock being the result.
+  For example:
+  A Squeak script calls a function on a Godot object which in turn triggers a signal.
+  One of the receivers of the signal is another Squeak script or is a function that calls a Squeak script, meaning that the Squeak VM must now handle another message.
+  But because the VM is already processing the old message that triggered the new message, it cannot handle the new message.
+  And since Godot is waiting for the new message to be handled, it will never complete the first function call on which Squeak is waiting.
+  Now Godot and Squeak are waiting for each other to complete their requests and we a good ol' fashioned deadlock.
+  - This would never happen if we had proper threaded FFI Callbacks >:(
+  - The obvious solution is to have multiple listener active. I see two ways to do this
+    - Have a pool of listeners. If the last available listeners starts to handle a message, it spawns a new listener
+      This might have an impact on performance if a lot of listeners compete for processing time, since they all wait busily
+    - Have a "listener stack", where each listener has a child listener which it activates when it starts to process a new message and deactivates when it stops
+      This would circumvent the potential performance issue of the first solution, but will likely be some synchronization issues, especially if Godot can send messages from multiple threads.
+  - NOTE: Godot signals are handled synchronously unless CONNECT_DEFERRED is specified
+
+- on Godot multithreading: https://godotengine.org/article/why-does-godot-use-servers-and-rids
+
+- ugly: functions that are called from squeak which are neither defined in squeak nor part of the godot api (eg defined in gdscript) are red in squeak

@@ -11,6 +11,7 @@ enum MessageType {
 typedef union {
   struct {
     const char* script_name;
+    const char* parent_name;
   } new_script;
 
   struct {

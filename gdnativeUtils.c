@@ -84,6 +84,10 @@ void godot_variant_real_insert(godot_variant* variant, const double value) {
   api->godot_variant_new_real(variant, value);
 }
 
+void godot_variant_object_insert(godot_variant* variant, const godot_object* object) {
+  api->godot_variant_new_object(variant, object);
+}
+
 godot_variant godot_variant_call(godot_variant* variant, const godot_string* method_name, const godot_variant** args, const godot_int arg_count, godot_variant_call_error* error) {
   return api->godot_variant_call(variant, method_name, args, arg_count, error);
 }
