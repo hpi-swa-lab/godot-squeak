@@ -56,7 +56,7 @@
   One of the receivers of the signal is another Squeak script or is a function that calls a Squeak script, meaning that the Squeak VM must now handle another message.
   But because the VM is already processing the old message that triggered the new message, it cannot handle the new message.
   And since Godot is waiting for the new message to be handled, it will never complete the first function call on which Squeak is waiting.
-  Now Godot and Squeak are waiting for each other to complete their requests and we a good ol' fashioned deadlock.
+  Now Godot and Squeak are waiting for each other to complete their requests and we have a good ol' fashioned deadlock.
   - This would never happen if we had proper threaded FFI Callbacks >:(
   - The obvious solution is to have multiple listener active. I see two ways to do this
     - Have a pool of listeners. If the last available listeners starts to handle a message, it spawns a new listener
@@ -68,3 +68,7 @@
 - on Godot multithreading: https://godotengine.org/article/why-does-godot-use-servers-and-rids
 
 - ugly: functions that are called from squeak which are neither defined in squeak nor part of the godot api (eg defined in gdscript) are red in squeak
+
+- most of the builtin godot types can be generated, because it seems that variants that contain them correctly work with call()
+  - hmm, so it seems that trying to do something like myVectorTwo.call("length") fails.
+    it looks like the function lookup fails, but maybe i'm missing something?

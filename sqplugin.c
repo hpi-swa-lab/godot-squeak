@@ -44,6 +44,7 @@ void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, con
 
 typedef struct {
   char* path;
+  script_functions_t* functions;
 } smalltalk_script_data_t;
 
 godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_language_data *p_data, const godot_string *p_path, const godot_string *p_source, godot_error *r_error) {
@@ -52,6 +53,16 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
   smalltalk_script_data_t *data = malloc(sizeof(smalltalk_script_data_t));
   data->path = strdup(godot_globalize_path(godot_string_to_c_str(p_path)));
+
+  char* script_source = strdup(godot_string_to_c_str(p_source));
+  data->functions = squeak_reload_script(data->path, script_source);
+  free(script_source);
+
+  // TODO: put the script functions into manifest.methods
+
+  for (int i = 0; i < data->functions->num_names; ++i) {
+    printf("\t-> %s\n", data->functions->names[i]);
+  }
 
   godot_pluginscript_script_manifest manifest = {
     .data = data,
@@ -76,22 +87,20 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
   api->godot_dictionary_destroy(&process_fake);
 
-  /* api->godot_print(p_source); */
-  char* script_source = strdup(godot_string_to_c_str(p_source));
-  squeak_reload_script(data->path, script_source);
-  free(script_source);
-
   return manifest;
 }
 
 void smalltalk_script_finish(godot_pluginscript_script_data *p_data) {
   printf("smalltalk_script_finish\n");
-  free(((smalltalk_script_data_t*) p_data)->path);
+  smalltalk_script_data_t* data = ((smalltalk_script_data_t*) p_data);
+  free(data->path);
+  destroy_script_functions(data->functions);
   free(p_data);
 }
 
 typedef struct {
   godot_object *owner;
+  script_functions_t* functions;
 } smalltalk_instance_data_t;
 
 // if this function returns NULL, Godot considers the initialization failed
@@ -100,6 +109,7 @@ godot_pluginscript_instance_data *smalltalk_instance_init(godot_pluginscript_scr
   printf("\tscript path: %s\n", ((smalltalk_script_data_t*) p_data)->path);
   smalltalk_instance_data_t* data = malloc(sizeof(smalltalk_instance_data_t));
   data->owner = p_owner;
+  data->functions = ((smalltalk_script_data_t*) p_data)->functions;
   printf("owner: %p\n", p_owner);
   squeak_new_instance(((smalltalk_script_data_t*) p_data)->path, p_owner);
   return data;
@@ -129,7 +139,26 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     int p_argcount, godot_variant_call_error *r_error) {
   const char* method_name = godot_string_name_to_c_str(p_method);
 
+  smalltalk_instance_data_t* data = (smalltalk_instance_data_t*) p_data;
+
   godot_variant ret;
+
+  // TODO allow handling of special godot functions like ready and process
+  bool can_handle_method = false;
+  for (int i = 0; i < data->functions->num_names; ++i) {
+    if(strcmp(method_name, data->functions->names[i]) == 0) {
+      can_handle_method = true;
+      break;
+    }
+  }
+  if (!can_handle_method) {
+    if (strcmp(method_name, "_process") != 0) {
+      printf("Cannot handle method %s\n", method_name);
+    }
+    r_error->error = GODOT_CALL_ERROR_CALL_ERROR_INVALID_METHOD;
+    api->godot_variant_new_nil(&ret);
+    return ret;
+  }
 
   if (strcmp(method_name, "_process") == 0) {
     if (++call_count % 100 == 0) {
@@ -140,7 +169,7 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     printf("smalltalk_call_method %s\n", method_name);
     squeak_call_method(
         godot_is_special_method(method_name) ? &method_name[1] : method_name,
-        ((smalltalk_instance_data_t*)p_data)->owner, p_args, p_argcount, &ret);
+        data->owner, p_args, p_argcount, &ret);
   }
 
   fprintf(stderr, "method returned with %i\n", r_error->error);

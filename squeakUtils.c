@@ -69,6 +69,13 @@ void init_squeak(const char* lib_path) {
 void finish_squeak() {
 }
 
+void destroy_script_functions(script_functions_t* script_functions) {
+  for (int i = 0; i < script_functions->num_names; ++i) {
+    free(script_functions->names[i]);
+  }
+  free(script_functions);
+}
+
 char* squeak_new_script(const char* script_name, const char* parent_name) {
   message_data_t data;
   data.new_script.script_name = script_name;
@@ -76,11 +83,11 @@ char* squeak_new_script(const char* script_name, const char* parent_name) {
   return send_message(SQP_NEW_SCRIPT, &data);
 }
 
-void squeak_reload_script(const char* script_path, const char* script_source) {
+script_functions_t* squeak_reload_script(const char* script_path, const char* script_source) {
   message_data_t data;
   data.script_reload.script_path = script_path;
   data.script_reload.script_source = script_source;
-  send_message(SQP_SCRIPT_RELOAD, &data);
+  return send_message(SQP_SCRIPT_RELOAD, &data);
 }
 
 void squeak_new_instance(const char* script_path, const godot_object* owner) {
