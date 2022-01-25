@@ -1,4 +1,4 @@
 as yet unclassified
-convertToSelector: aString
+godotToSqueakMethodName: aString
 
 	^ (aString copyReplaceAll: '_' with: ':') asSymbol
