@@ -76,6 +76,25 @@ void destroy_script_functions(script_functions_t* script_functions) {
   free(script_functions);
 }
 
+// TODO: complete this list
+// TODO: consider remapping every method to the proper smalltalk selector
+//       (colons instead of underscores)
+#define NUM_SPECIAL_METHODS 3
+static const char* special_methods[NUM_SPECIAL_METHODS][2] = {
+  {"_enter_tree", "enterTree_"},
+  {"_ready", "ready"},
+  {"_process", "process_"},
+};
+
+const char* remap_method_name(const char* method_name) {
+  for (int i = 0; i < NUM_SPECIAL_METHODS; ++i) {
+    if (strcmp(method_name, special_methods[i][0]) == 0) {
+      return special_methods[i][1];
+    }
+  }
+  return method_name;
+}
+
 char* squeak_new_script(const char* script_name, const char* parent_name) {
   message_data_t data;
   data.new_script.script_name = script_name;

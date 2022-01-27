@@ -132,23 +132,6 @@ godot_variant_type godot_get_variant_type(const godot_variant* variant) {
   return api->godot_variant_get_type(variant);
 }
 
-// TODO: complete this list
-#define NUM_SPECIAL_METHODS 3
-static const char* special_methods[NUM_SPECIAL_METHODS] = {
-  "_enter_tree",
-  "_ready",
-  "_process",
-};
-
-bool godot_is_special_method(const char *method_name) {
-  for (int i = 0; i < NUM_SPECIAL_METHODS; ++i) {
-    if (strcmp(method_name, special_methods[i]) == 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
 const char *get_node_notification_name(int notification) {
   // copied from godot-headers/api.json (Node)
   const char *name;

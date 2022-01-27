@@ -95,7 +95,7 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
 void smalltalk_script_finish(godot_pluginscript_script_data *p_data) {
   printf("smalltalk_script_finish\n");
-  printf("DON'T FORGET TO FREE THE STUFF HERE YO");
+  printf("DON'T FORGET TO FREE THE STUFF HERE YO\n");
   /* smalltalk_script_data_t* data = ((smalltalk_script_data_t*) p_data); */
   /* if (data->path != NULL) { */
   /*   free(data->path); */
@@ -148,7 +148,7 @@ int notification_count = 0;
 godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     const godot_string_name *p_method, const godot_variant **p_args,
     int p_argcount, godot_variant_call_error *r_error) {
-  const char* method_name = godot_string_name_to_c_str(p_method);
+  const char* method_name = remap_method_name(godot_string_name_to_c_str(p_method));
 
   smalltalk_instance_data_t* data = (smalltalk_instance_data_t*) p_data;
 
@@ -178,9 +178,7 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     }
   } else {
     printf("smalltalk_call_method %s\n", method_name);
-    squeak_call_method(
-        godot_is_special_method(method_name) ? &method_name[1] : method_name,
-        data->owner, p_args, p_argcount, &ret);
+    squeak_call_method(method_name, data->owner, p_args, p_argcount, &ret);
   }
 
   fprintf(stderr, "method returned with %i\n", r_error->error);

@@ -10,6 +10,8 @@ typedef struct {
 
 void destroy_script_functions(script_functions_t* script_functions);
 
+const char* remap_method_name(const char* method_name);
+
 // TODO: move these to sqMessage
 char* squeak_new_script(const char* script_name, const char* parent_name);
 script_functions_t* squeak_reload_script(const char* script_path, const char* script_source);
