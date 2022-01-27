@@ -12,7 +12,7 @@ all: $(TARGET)
 
 # requires a symlink to run.sh called smalltalkCI (https://github.com/hpi-swa/smalltalkCI)
 $(GDNATIVE_BINDINGS):
-	OUTPUT_FILE="${CURDIR}/$@" smalltalkCI -s "Squeak64-5.3" generateGDNativeCBindingsConfig.ston
+	SPEC_FILE="${CURDIR}/godot-headers/gdnative_api.json" OUTPUT_FILE="${CURDIR}/$@" smalltalkCI -s "Squeak64-5.3" generateGDNativeCBindingsConfig.ston
 
 $(BUILDDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -pthread -fPIC -c -Igodot-headers $< -o $@

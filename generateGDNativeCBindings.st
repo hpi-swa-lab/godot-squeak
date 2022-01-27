@@ -1,8 +1,9 @@
-| apiMethods apiSpec sourceTemplate methodStrings source sourceHeader filename |
+| specFilename apiMethods apiSpec sourceTemplate methodStrings source sourceHeader filename |
 
-Transcript show: 'Reading method specs...'; cr.
+specFilename := OSProcess thisOSProcess environmentAt: 'SPEC_FILE'.
+Transcript show: ('Reading method specs from {1}...' format: {specFilename}); cr.
 apiSpec := (Json readFrom:
-  (FileStream readOnlyFileNamed: '/home/leo/Uni/Master/PX/godot-plugin/plugin/godot-headers/gdnative_api.json')) core.
+  (FileStream readOnlyFileNamed: specFilename)) core.
 
 apiMethods := OrderedCollection new.
 [apiSpec notNil] whileTrue: [ | apiIdentifier |
