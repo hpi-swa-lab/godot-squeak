@@ -6,6 +6,13 @@ SmalltalkCISpec {
       #usernameEnvVar : '',
       #passwordEnvVar : '',
       #platforms : [ #squeak ]
+    },
+    SCIMonticelloLoadSpec {
+      #url : 'http://www.squeaksource.com/OSProcess',
+      #packages : ['OSProcess'],
+      #usernameEnvVar : '',
+      #passwordEnvVar : '',
+      #platforms : [ #squeak ]
     }
   ],
   #preTesting : 'generateGDNativeCBindings.st',

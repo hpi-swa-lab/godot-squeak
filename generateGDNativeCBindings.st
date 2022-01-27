@@ -1,13 +1,16 @@
-| apiMethods apiSpec sourceTemplate methodStrings source sourceHeader |
+| apiMethods apiSpec sourceTemplate methodStrings source sourceHeader filename |
 
+Transcript show: 'Reading method specs...'; cr.
 apiSpec := (Json readFrom:
   (FileStream readOnlyFileNamed: '/home/leo/Uni/Master/PX/godot-plugin/plugin/godot-headers/gdnative_api.json')) core.
+
 apiMethods := OrderedCollection new.
 [apiSpec notNil] whileTrue: [ | apiIdentifier |
   apiIdentifier := 'api_{1}_{2}' format: {apiSpec version major. apiSpec version minor.}.
   apiMethods addAll: (apiSpec api collect: [:method | {apiIdentifier. method}]).
   apiSpec := apiSpec at: 'next' ].
 
+Transcript show: 'Generating source...'; cr.
 sourceTemplate := '{1} {2}({3}) \{
   {4}{5}->{2}({6});
 \}'.
@@ -30,4 +33,8 @@ methodStrings := apiMethods collect: [:methodSpec | | method |
 
 source := sourceHeader, String crlfcrlf, (methodStrings joinSeparatedBy: String crlfcrlf).
 
-FileStream forceNewFileNamed: 'gdnativeSqueakBindings.gen.c' do: [:stream | stream nextPutAll: source withUnixLineEndings utf8Encoded]
+filename := OSProcess thisOSProcess environmentAt: 'OUTPUT_FILE'.
+Transcript show: ('Writing source to {1}...' format: {filename}); cr.
+FileStream forceNewFileNamed: filename do: [:stream | stream nextPutAll: source withUnixLineEndings utf8Encoded].
+
+Transcript show: 'Done'; cr.
