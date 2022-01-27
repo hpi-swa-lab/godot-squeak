@@ -154,6 +154,14 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
 
   godot_variant ret;
 
+  if (strcmp(method_name, "process_") == 0) {
+    if (++call_count % 100 == 0) {
+      printf("_process has been called %i times\n", call_count);
+    }
+    api->godot_variant_new_nil(&ret);
+    return ret;
+  }
+
   // TODO allow handling of special godot functions like ready and process
   bool can_handle_method = false;
   for (int i = 0; i < data->functions->num_names; ++i) {
@@ -163,23 +171,14 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     }
   }
   if (!can_handle_method) {
-    if (strcmp(method_name, "_process") != 0) {
-      printf("Cannot handle method %s\n", method_name);
-    }
+    printf("Cannot handle method %s\n", method_name);
     r_error->error = GODOT_CALL_ERROR_CALL_ERROR_INVALID_METHOD;
     api->godot_variant_new_nil(&ret);
     return ret;
   }
 
-  if (strcmp(method_name, "_process") == 0) {
-    if (++call_count % 100 == 0) {
-      printf("_process has been called %i times\n", call_count);
-      api->godot_variant_new_nil(&ret);
-    }
-  } else {
-    printf("smalltalk_call_method %s\n", method_name);
-    squeak_call_method(method_name, data->owner, p_args, p_argcount, &ret);
-  }
+  printf("smalltalk_call_method %s\n", method_name);
+  squeak_call_method(method_name, data->owner, p_args, p_argcount, &ret);
 
   fprintf(stderr, "method returned with %i\n", r_error->error);
 

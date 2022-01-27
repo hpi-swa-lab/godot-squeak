@@ -52,50 +52,6 @@ void godot_variant_new_string_with_value(godot_variant *var, const char* s) {
   api->godot_string_destroy(&gs);
 }
 
-/* void godot_variant_new_nil(godot_variant* variant) { */
-/*   api->godot_variant_new_nil(variant); */
-/* } */
-
-bool godot_variant_bool_extract(godot_variant* variant) {
-  return api->godot_variant_as_bool(variant);
-}
-
-void godot_variant_bool_insert(godot_variant* variant, const bool value) {
-  api->godot_variant_new_bool(variant, value);
-}
-
-int64_t godot_variant_int_extract(godot_variant* variant) {
-  return api->godot_variant_as_int(variant);
-}
-
-void godot_variant_int_insert(godot_variant* variant, const int64_t value) {
-  api->godot_variant_new_int(variant, value);
-}
-
-double godot_variant_real_extract(godot_variant* variant) {
-  return api->godot_variant_as_real(variant);
-}
-
-void godot_variant_real_insert(godot_variant* variant, const double value) {
-  api->godot_variant_new_real(variant, value);
-}
-
-void godot_variant_object_insert(godot_variant* variant, const godot_object* object) {
-  api->godot_variant_new_object(variant, object);
-}
-
-/* godot_variant godot_variant_call(godot_variant* variant, const godot_string* method_name, const godot_variant** args, const godot_int arg_count, godot_variant_call_error* error) { */
-/*   return api->godot_variant_call(variant, method_name, args, arg_count, error); */
-/* } */
-
-/* void godot_variant_destroy(godot_variant *variant) { */
-/*   api->godot_variant_destroy(variant); */
-/* } */
-
-/* void godot_string_destroy(godot_string *str) { */
-/*   api->godot_string_destroy(str); */
-/* } */
-
 void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {
   godot_variant key_var;
   godot_variant val_var;
@@ -126,10 +82,6 @@ const char* godot_get_project_root() {
 void godot_print_variant(const godot_variant* message) {
   godot_string str = api->godot_variant_as_string(message);
   api->godot_print(&str);
-}
-
-godot_variant_type godot_get_variant_type(const godot_variant* variant) {
-  return api->godot_variant_get_type(variant);
 }
 
 const char *get_node_notification_name(int notification) {

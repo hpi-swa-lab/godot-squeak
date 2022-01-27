@@ -19,6 +19,4 @@ const char* godot_globalize_path(const char *path);
 
 void godot_print_variant(const godot_variant* message);
 
-godot_variant_type godot_get_variant_type(const godot_variant* variant);
-
 const char *get_node_notification_name(int notification);

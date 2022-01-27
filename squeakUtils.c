@@ -126,10 +126,5 @@ void squeak_call_method(const char* method_name, const godot_object* owner, cons
   data.method_call.result = result;
   send_message(SQP_FUNCTION_CALL, &data);
   printf("method call result: ");
-  if (result != NULL) {
-    printf("received godot variant that is not NULL. type: %i\n", godot_get_variant_type(result));
-  } else {
-    printf("NULL\n");
-  }
   free((void*) data.method_call.method_name);
 }
