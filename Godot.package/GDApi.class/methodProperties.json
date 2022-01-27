@@ -1,7 +1,7 @@
 {
 	"class" : {
 		"exampleListener" : "lege 1/23/2022 00:24",
-		"generateAPIObjects" : "lege 1/20/2022 19:24",
+		"generateGDNativeApi:" : "lege 1/27/2022 09:57",
 		"instance" : "lege 1/10/2022 17:31",
 		"messageTypeMethodCall" : "lege 1/20/2022 17:23",
 		"messageTypeNewInstance" : "lege 1/20/2022 17:23",
@@ -15,7 +15,7 @@
 		"variantCallErrorOk" : "lege 1/22/2022 18:28" },
 	"instance" : {
 		"associatePath:withClass:" : "lege 1/14/2022 00:16",
-		"callMethod:onVariant:with:" : "lege 1/23/2022 15:27",
+		"callMethod:onVariant:with:" : "lege 1/27/2022 01:53",
 		"callMethod:with:on:" : "lege 1/20/2022 20:48",
 		"callMethodOnVariant:name:args:argCount:err:" : "lege 1/22/2022 20:16",
 		"classForPath:" : "lege 1/14/2022 01:32",
@@ -42,7 +42,7 @@
 		"runMessageListenerHighPrio:" : "lege 1/23/2022 15:30",
 		"signalMessage:" : "tobe 1/10/2022 21:01",
 		"squeakToGodotMethodName:" : "lege 1/25/2022 18:12",
-		"systemChangeEvent:" : "lege 1/23/2022 17:09",
+		"systemChangeEvent:" : "lege 1/27/2022 12:10",
 		"variant:insertBoolean:" : "lege 1/20/2022 18:29",
 		"variant:insertFloat:" : "lege 1/20/2022 18:20",
 		"variant:insertInt:" : "lege 1/20/2022 18:21",
@@ -50,7 +50,6 @@
 		"variant:insertString:" : "lege 1/20/2022 18:20",
 		"variantCopyTo:from:" : "lege 1/23/2022 11:03",
 		"variantFromGDObject:" : "lege 1/23/2022 16:44",
-		"variantNewNil:" : "lege 1/20/2022 00:38",
 		"variantToBoolean:" : "lege 1/20/2022 18:29",
 		"variantToFloat:" : "lege 1/20/2022 18:13",
 		"variantToInt:" : "lege 1/20/2022 17:48",

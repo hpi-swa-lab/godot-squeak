@@ -1,4 +1,4 @@
 *Godot
 insertIntoGDVariant: aVariant
 
-	GDApi instance variant: aVariant insertFloat: self
+	GDApi instance variantNewReal: aVariant with: self.

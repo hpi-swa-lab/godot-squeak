@@ -7,5 +7,6 @@ initialize
 		self variantInteger -> Integer.
 		self variantFloat -> Float.
 		self variantString -> String.
+		self variantVector2 -> GDVector2.
 		self variantObject -> GDBaseObject.
 	}

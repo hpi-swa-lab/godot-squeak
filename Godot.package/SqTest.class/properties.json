@@ -10,5 +10,5 @@
 	"name" : "SqTest",
 	"pools" : [
 		 ],
-	"super" : "GodotScript",
+	"super" : "GodotNode2D",
 	"type" : "normal" }

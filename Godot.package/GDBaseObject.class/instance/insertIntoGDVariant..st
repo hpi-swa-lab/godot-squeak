@@ -1,4 +1,4 @@
 as yet unclassified
 insertIntoGDVariant: aVariant
 
-	GDApi instance variantCopyTo: aVariant from: self internalVariant
+	GDApi instance variantNewCopy: aVariant with: self internalVariant

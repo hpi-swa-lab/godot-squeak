@@ -1,5 +1,5 @@
 as yet unclassified
 testFunc: arg
-  GodotAPI instance tempGodotPrintVariant: arg.
-  Transcript showln: ('variant type ', (GodotAPI instance getVariantType: arg), ' ', arg unwrap).
-	^ nil
+
+	GDApi showln: 'variant:  ' , arg.
+	^ 'this string was modified in squeak: est yay: ' , arg

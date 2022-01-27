@@ -16,11 +16,16 @@ callMethod: methodName onVariant: aVariant with: argsSequence
 	
 	callError := GDVariantCallError allocate.
 	
-	result := self callMethodOnVariant: aVariant
+	result := self variantCall: aVariant
+		with: methodNameGDString
+		with: argsPointer
+		with: argsSequence size
+		with: callError.
+	"result := self callMethodOnVariant: aVariant
 		name: methodNameGDString
 		args: argsPointer
 		argCount: argsSequence size
-		err: callError.
+		err: callError."
 		
 	callError errorType ~= GDApi variantCallErrorOk ifTrue: [self error: 'Variant method call failed with ', callError errorType].
 	

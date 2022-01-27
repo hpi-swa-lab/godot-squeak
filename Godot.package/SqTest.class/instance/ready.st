@@ -1,4 +1,5 @@
 as yet unclassified
 ready
-  Transcript showln: 'YAY'.
+
+	Transcript showln: 'ready was called on SqTest'.
 	^ nil

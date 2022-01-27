@@ -1,4 +1,4 @@
 *Godot
 fromGDVariant: aVariant
 
-	^ GDApi instance variantToFloat: aVariant
+	^ GDApi instance variantAsReal: aVariant

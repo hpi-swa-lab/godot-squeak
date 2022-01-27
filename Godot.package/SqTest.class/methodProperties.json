@@ -2,6 +2,17 @@
 	"class" : {
 		 },
 	"instance" : {
+		"boolTest:" : "",
+		"builtinTest:" : "",
+		"gdscriptDefinedCall:" : "",
+		"getNode:property:" : "",
+		"getNodeName:" : "",
+		"getSelfName" : "",
+		"nestedCallInner:" : "",
+		"nestedCallOuter:node:" : "",
+		"nilTest:" : "",
+		"numbersTest:and:" : "",
 		"process:" : "",
 		"ready" : "",
+		"stringTest:" : "",
 		"testFunc:" : "" } }

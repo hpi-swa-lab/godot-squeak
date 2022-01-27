@@ -1,4 +1,4 @@
 *Godot
 insertIntoGDVariant: aVariant
 
-	GDApi instance variant: aVariant insertBoolean: self
+	GDApi instance variantNewBool: aVariant with: self
