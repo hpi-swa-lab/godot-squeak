@@ -1,22 +1,18 @@
+#include "apiStructDecl.h"
 #include "gdnativeUtils.h"
 
 #include <string.h>
-
-static const godot_gdnative_core_api_struct* api = NULL;
 
 static godot_variant project_settings;
 static godot_string globalize_path_method_name;
 
 void init_gdnative_utils(const godot_gdnative_core_api_struct* api_struct) {
-  api = api_struct;
-
   godot_object *obj = api->godot_global_get_singleton("ProjectSettings");
   api->godot_variant_new_object(&project_settings, obj);
   godot_string_new_with_value(&globalize_path_method_name, "globalize_path");
 }
 
-void finish_gdnative_utils() {
-  api->godot_variant_destroy(&project_settings);
+void finish_gdnative_utils() { api->godot_variant_destroy(&project_settings);
   api->godot_string_destroy(&globalize_path_method_name);
 }
 
@@ -56,9 +52,9 @@ void godot_variant_new_string_with_value(godot_variant *var, const char* s) {
   api->godot_string_destroy(&gs);
 }
 
-void godot_variant_new_nil(godot_variant* variant) {
-  api->godot_variant_new_nil(variant);
-}
+/* void godot_variant_new_nil(godot_variant* variant) { */
+/*   api->godot_variant_new_nil(variant); */
+/* } */
 
 bool godot_variant_bool_extract(godot_variant* variant) {
   return api->godot_variant_as_bool(variant);
@@ -88,17 +84,17 @@ void godot_variant_object_insert(godot_variant* variant, const godot_object* obj
   api->godot_variant_new_object(variant, object);
 }
 
-godot_variant godot_variant_call(godot_variant* variant, const godot_string* method_name, const godot_variant** args, const godot_int arg_count, godot_variant_call_error* error) {
-  return api->godot_variant_call(variant, method_name, args, arg_count, error);
-}
+/* godot_variant godot_variant_call(godot_variant* variant, const godot_string* method_name, const godot_variant** args, const godot_int arg_count, godot_variant_call_error* error) { */
+/*   return api->godot_variant_call(variant, method_name, args, arg_count, error); */
+/* } */
 
-void godot_variant_destroy(godot_variant *variant) {
-  api->godot_variant_destroy(variant);
-}
+/* void godot_variant_destroy(godot_variant *variant) { */
+/*   api->godot_variant_destroy(variant); */
+/* } */
 
-void godot_string_destroy(godot_string *str) {
-  api->godot_string_destroy(str);
-}
+/* void godot_string_destroy(godot_string *str) { */
+/*   api->godot_string_destroy(str); */
+/* } */
 
 void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {
   godot_variant key_var;

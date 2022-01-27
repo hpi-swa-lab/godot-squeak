@@ -72,3 +72,6 @@
 - most of the builtin godot types can be generated, because it seems that variants that contain them correctly work with call()
   - hmm, so it seems that trying to do something like myVectorTwo.call("length") fails.
     it looks like the function lookup fails, but maybe i'm missing something?
+  - so previously I assumed that `myVectorTwo.call("length")` would call call_ptr() with "length" as the method name.
+    however, it actually calls it with "call" as the method name, with "length" being an argument.
+    The error message says something along of "Vector2 does not have a length method", which is misleading and likely a bug

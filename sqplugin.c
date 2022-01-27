@@ -4,10 +4,13 @@
 #define __USE_XOPEN_EXTENDED
 #include <string.h>
 
+#include "apiStructDecl.h"
 #include "gdnativeUtils.h"
 #include "squeakUtils.h"
 
 const godot_gdnative_core_api_struct *api = NULL;
+const godot_gdnative_core_1_1_api_struct *api_1_1 = NULL;
+const godot_gdnative_core_1_2_api_struct *api_1_2 = NULL;
 const godot_gdnative_ext_pluginscript_api_struct *pluginscript_api = NULL;
 const char* lib_path = NULL;
 
@@ -92,10 +95,18 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
 void smalltalk_script_finish(godot_pluginscript_script_data *p_data) {
   printf("smalltalk_script_finish\n");
-  smalltalk_script_data_t* data = ((smalltalk_script_data_t*) p_data);
-  free(data->path);
-  destroy_script_functions(data->functions);
-  free(p_data);
+  printf("DON'T FORGET TO FREE THE STUFF HERE YO");
+  /* smalltalk_script_data_t* data = ((smalltalk_script_data_t*) p_data); */
+  /* if (data->path != NULL) { */
+  /*   free(data->path); */
+  /*   data->path = NULL; */
+  /* } */
+  /* if (data->functions != NULL) { */
+  /*   destroy_script_functions(data->functions); */
+  /*   data->functions = NULL; */
+  /* } */
+  /* free(p_data); */
+  /* p_data = NULL; */
 }
 
 typedef struct {
@@ -243,7 +254,11 @@ void GDN_EXPORT sqplug_gdnative_init(godot_gdnative_init_options *p_options) {
   printf("Initializing sqplugin library\n");
 
   api = p_options->api_struct;
+  /* api_1_1 = (const godot_gdnative_core_1_1_api_struct*) api->next; */
+  /* api_1_2 = (const godot_gdnative_core_1_2_api_struct*) api_1_1->next; */
   init_gdnative_utils(api);
+
+  printf(p_options->in_editor ? "Starting in editor\n" : "Starting in running game\n");
 
   lib_path = strdup(godot_string_to_c_str(p_options->active_library_path));
   printf("Active library path: %s\n", lib_path);

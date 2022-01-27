@@ -1,11 +1,11 @@
 BUILDDIR=build
 TARGET=$(BUILDDIR)/libsqplugin.so
-SOURCES=sqplugin.c gdnativeUtils.c squeakUtils.c sqMessage.c
+SOURCES=sqplugin.c gdnativeUtils.c squeakUtils.c sqMessage.c gdnativeSqueakBindings.gen.c
 OBJECTS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.o))
 DEPS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.d))
 
 CC=gcc
-CFLAGS=-std=c11 -Wall 
+CFLAGS=-std=c11 -Wall -g
 
 all: $(TARGET)
 
@@ -16,7 +16,7 @@ liblfqueue.so:
 	cd lfqueue && mkdir -p build && cd build && cmake .. && make && cp liblfqueue.so "../../build"
 
 $(TARGET): $(OBJECTS) liblfqueue.so
-	$(CC) -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin -lsqueak -llfqueue -rdynamic -shared $(OBJECTS) -o $@
+	$(CC) $(CFLAGS) -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin -lsqueak -llfqueue -rdynamic -shared $(OBJECTS) -o $@
 
 .PHONY: clean
 clean:
