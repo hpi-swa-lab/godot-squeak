@@ -1,4 +1,4 @@
 as yet unclassified
 destroy
 
-	GDApi instance destroyVariant: self
+	GDApi instance variantDestroy: self

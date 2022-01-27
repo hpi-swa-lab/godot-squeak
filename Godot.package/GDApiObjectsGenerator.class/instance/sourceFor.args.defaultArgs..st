@@ -6,5 +6,6 @@ sourceFor: name args: argSpecs defaultArgs: defaultArgSpecs
 	argStrings := self sourceStringsForArgSpecs: argSpecs defaultArgSpecs: defaultArgSpecs methodName: methodName.
 	
 	^ '{1}{2}
+	<generated>
 	
 	^ self callOnVariant: ''{3}'' with: \{{4}\}' format: {methodName. argStrings first. name.  argStrings second}

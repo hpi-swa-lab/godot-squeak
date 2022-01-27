@@ -1,4 +1,4 @@
-ffi
+utility
 callMethod: methodName onVariant: aVariant with: argsSequence
 
 	"TODO: All of the variants and strings here need to be destroyed"
@@ -21,11 +21,6 @@ callMethod: methodName onVariant: aVariant with: argsSequence
 		with: argsPointer
 		with: argsSequence size
 		with: callError.
-	"result := self callMethodOnVariant: aVariant
-		name: methodNameGDString
-		args: argsPointer
-		argCount: argsSequence size
-		err: callError."
 		
 	callError errorType ~= GDApi variantCallErrorOk ifTrue: [self error: 'Variant method call failed with ', callError errorType].
 	

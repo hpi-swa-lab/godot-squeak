@@ -1,4 +1,4 @@
 as yet unclassified
 destroy
 
-	GDApi instance destroyString: self
+	GDApi instance stringDestroy: self

@@ -2,20 +2,12 @@ generating
 generate
 
 	| objectSpecs |
-	progress := ProgressMorph label: 'Generating Godot API objects...'.
-	progress subLabel: 'Reading spec...'.
-	progress openInWorld.
+	self withProgressDo: [
+		objectSpecs := Json readFrom: stream.
+		progressStep := 1.0 / (objectSpecs size + 1).
+		progress incrDone: progressStep.
 	
-	objectSpecs := Json readFrom: stream.
-	progressStep := 1.0 / objectSpecs size.
+		objectSpecsByName := (objectSpecs collect: [:spec | (spec at: #name) asSymbol -> spec]) asDictionary.
 	
-	objectSpecsByName := (objectSpecs collect: [:spec | (spec at: #name) asSymbol -> spec]) asDictionary.
-	
-	self determineDependencies: objectSpecs.
-	topLevel do: [:spec | self generateObjectTree: spec inCategory: GDApiObjectsGenerator baseCategory].
-	"objectSpecs do: [:spec |
-		progress subLabel: spec name.
-		self generateObject: spec.
-		progress incrDone: progressStep]."
-	
-	progress delete.
+		self determineDependencies: objectSpecs.
+		topLevel do: [:spec | self generateObjectTree: spec inCategory: GDApiObjectsGenerator baseCategory]]
