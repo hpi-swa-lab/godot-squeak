@@ -1,4 +1,4 @@
-as yet unclassified
+file synchronization
 doWithoutModificationListening: aBlock
 
 	modificationListeningDisabled := true.

@@ -1,4 +1,4 @@
-as yet unclassified
+generating
 generateGDNativeApi: aPath
 
 	| apiSpec methods source sourceTemplate types |

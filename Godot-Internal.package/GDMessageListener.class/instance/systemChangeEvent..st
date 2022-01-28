@@ -1,4 +1,4 @@
-file synchronisation
+file synchronization
 systemChangeEvent: anEvent
 
 	| class |

@@ -1,4 +1,4 @@
-file synchronisation
+file synchronization
 pathForClass: aClass
 	
 	^ pathToClass keyAtValue: aClass

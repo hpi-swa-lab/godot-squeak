@@ -1,0 +1,17 @@
+{
+	"category" : "Godot-Internal",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"messageHandlers",
+		"pathToClass",
+		"instances",
+		"modificationListeningDisabled" ],
+	"name" : "GDMessageListener",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

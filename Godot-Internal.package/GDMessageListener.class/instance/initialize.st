@@ -10,13 +10,13 @@ initialize
 	instances hashBlock: [:val | val getHandle hash].
 
 	messageHandlers := Dictionary new.
-	messageHandlers at: GDApi messageTypeNewScript put:
+	messageHandlers at: GDMessageListener messageTypeNewScript put:
 		[:message | self handleNewScript: message data newScriptMessage].
-	messageHandlers at: GDApi messageTypeScriptReload put:
+	messageHandlers at: GDMessageListener messageTypeScriptReload put:
 		[:message | self handleScriptReload: (message data scriptReloadMessage)].
-	messageHandlers at: GDApi messageTypeNewInstance put:
+	messageHandlers at: GDMessageListener messageTypeNewInstance put:
 		[:message | self handleNewInstance: (message data newInstanceMessage)].
-	messageHandlers at: GDApi messageTypeMethodCall put:
+	messageHandlers at: GDMessageListener messageTypeMethodCall put:
 		[:message | self handleMethodCall: (message data methodCallMessage)].
 	
 	SystemChangeNotifier uniqueInstance

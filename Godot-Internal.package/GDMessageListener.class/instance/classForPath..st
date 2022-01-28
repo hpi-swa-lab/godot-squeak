@@ -1,4 +1,4 @@
-as yet unclassified
+file synchronization
 classForPath: path
 
 	^ pathToClass at: path

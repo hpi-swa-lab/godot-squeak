@@ -9,7 +9,7 @@ handleScriptReload: scriptReloadData
 	self loadDefinitions: definitions.
 	
 	"TODO a similar packing thing happens in callMethod:onVariant:with:, maybe extract?"
-	functionNames := definitions allButFirst collect: [:definition | self squeakToGodotMethodName: definition selector].
+	functionNames := definitions allButFirst collect: [:definition | GDMessageListener squeakToGodotMethodName: definition selector].
 	scriptFunctions := GDScriptFunctions allocateExternal.
 	scriptFunctions numNames: functionNames size.
 	scriptFunctions names: (ExternalType void asPointerType allocateExternal: functionNames size).

@@ -1,4 +1,4 @@
-as yet unclassified
+method remapping
 squeakToGodotMethodName: aString
 
 	^ aString copyReplaceAll: ':' with: '_'

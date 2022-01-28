@@ -1,4 +1,4 @@
-as yet unclassified
+file synchronization
 associatePath: aPath withClass: aClass
 
 	pathToClass keysAndValuesRemove: [:key :value | value = aClass].

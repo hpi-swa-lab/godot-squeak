@@ -9,8 +9,8 @@ instantiateGodotScriptNamed: name parent: parentName
 			poolDictionaries: ''
 			category: 'Godot-Scripts'.
 	
-		class compile: GDApi readyCode.
-		class compile: GDApi processCode.
+		class compile: GDMessageListener readyCode classified: GDMessageListener scriptMethodCategory.
+		class compile: GDMessageListener processCode classified: GDMessageListener scriptMethodCategory.
 	
 		class]
 	

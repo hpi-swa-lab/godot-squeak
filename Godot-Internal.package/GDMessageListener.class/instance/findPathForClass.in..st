@@ -1,4 +1,4 @@
-as yet unclassified
+file synchronization
 findPathForClass: aClass in: aDirectory
 
 	(aDirectory fileExists: '.gdignore') ifTrue: [^ nil].
