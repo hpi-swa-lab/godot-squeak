@@ -1,4 +1,4 @@
-as yet unclassified
+names
 fullCategoryName: aString
 
 	^ 'Godot-API-', aString

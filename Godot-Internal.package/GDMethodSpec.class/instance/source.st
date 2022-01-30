@@ -1,0 +1,4 @@
+generating
+source
+
+	self subclassResponsibility

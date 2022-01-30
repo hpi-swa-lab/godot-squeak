@@ -1,4 +1,4 @@
 OrderedDictionary {
 	'Godot-Internal.package' : #SquotCypressCodeSerializer,
-	'Godot-API-Builtins.package' : #SquotCypressCodeSerializer
+	'Godot-Builtins.package' : #SquotCypressCodeSerializer
 }

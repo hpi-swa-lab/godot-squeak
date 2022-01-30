@@ -1,24 +1,12 @@
 {
 	"class" : {
-		"baseCategory" : "lege 1/23/2022 00:48",
-		"categoryForObject:" : "lege 1/21/2022 13:40",
-		"deleteAndRegenerateFromSpec:" : "lege 1/21/2022 23:24",
 		"deleteGeneratedCategories" : "lege 1/21/2022 23:23",
+		"forGodotApiJson:" : "lege 1/29/2022 13:01",
 		"fullCategoryName:" : "lege 1/28/2022 19:37",
-		"generateFromSpec:" : "lege 1/20/2022 20:31",
-		"initialize" : "lege 1/21/2022 14:06",
+		"generateGodotApi:" : "lege 1/29/2022 13:02",
 		"squeakClassName:" : "lege 1/22/2022 22:15",
-		"squeakIdentifierName:" : "lege 1/22/2022 22:15",
-		"test" : "lege 1/26/2022 18:21" },
+		"squeakIdentifierName:" : "lege 1/22/2022 22:15" },
 	"instance" : {
-		"allSourcesFor:" : "lege 1/21/2022 20:39",
-		"determineDependencies:" : "lege 1/21/2022 02:25",
-		"generate" : "lege 1/27/2022 17:47",
-		"generateMethod:on:" : "lege 1/27/2022 17:28",
-		"generateObject:inCategory:" : "lege 1/21/2022 15:52",
-		"generateObjectClass:parent:category:" : "lege 1/22/2022 22:23",
-		"generateObjectTree:inCategory:" : "lege 1/21/2022 13:41",
-		"sourceFor:args:defaultArgs:" : "lege 1/27/2022 17:27",
-		"sourceStringsForArgSpecs:defaultArgSpecs:methodName:" : "lege 1/22/2022 22:16",
-		"stream:" : "lege 1/20/2022 20:30",
-		"withProgressDo:" : "lege 1/27/2022 17:48" } }
+		"apiReader:" : "lege 1/29/2022 13:00",
+		"generate" : "lege 1/29/2022 13:27",
+		"stream:" : "lege 1/20/2022 20:30" } }

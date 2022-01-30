@@ -1,4 +1,4 @@
-as yet unclassified
+names
 squeakIdentifierName: aString
 
 	| parts |

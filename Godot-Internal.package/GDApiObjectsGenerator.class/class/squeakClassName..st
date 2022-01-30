@@ -1,4 +1,4 @@
-as yet unclassified
+names
 squeakClassName: aString
 
 	^ 'Godot', aString

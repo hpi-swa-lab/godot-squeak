@@ -1,13 +1,20 @@
 generating
 generate
 
-	| objectSpecs |
-	self withProgressDo: [
-		objectSpecs := Json readFrom: stream.
-		progressStep := 1.0 / (objectSpecs size + 1).
-		progress incrDone: progressStep.
+	| specs |
+	specs := apiReader read.
+
+	specs first
+		do: #generate
+		displayingProgress: [:classSpec | 'Generating {1}...' format: {classSpec name}].
+	specs second
+		do: #generate
+		displayingProgress: [:methodSpec | 'Generating {1}>>{2}...' format: {methodSpec className. methodSpec name}].
+	"| objectSpecs |
+	objectSpecs := Json readFrom: stream.
 	
+	self withProgressSteps: objectSpecs size do: [
 		objectSpecsByName := (objectSpecs collect: [:spec | (spec at: #name) asSymbol -> spec]) asDictionary.
 	
 		self determineDependencies: objectSpecs.
-		topLevel do: [:spec | self generateObjectTree: spec inCategory: GDApiObjectsGenerator baseCategory]]
+		topLevel do: [:spec | self generateObjectTree: spec inCategory: GDApiObjectsGenerator baseCategory]]"

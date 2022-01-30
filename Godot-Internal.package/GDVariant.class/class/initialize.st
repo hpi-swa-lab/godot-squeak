@@ -1,6 +1,8 @@
 class initialization
 initialize
 
+	" GDVariant initialize "
+
 	VariantClasses := Dictionary withAll: {
 		self variantNil -> UndefinedObject.
 		self variantBoolean -> Boolean.
