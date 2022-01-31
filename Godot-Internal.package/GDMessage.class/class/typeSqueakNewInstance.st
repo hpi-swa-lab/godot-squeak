@@ -1,0 +1,4 @@
+constants
+typeSqueakNewInstance
+
+	^ 2

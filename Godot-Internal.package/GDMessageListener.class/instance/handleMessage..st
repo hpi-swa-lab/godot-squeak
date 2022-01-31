@@ -1,6 +1,9 @@
 message handling
 handleMessage: aMessage
 
-	^ messageHandlers at: aMessage type
+	| responseData |
+	responseData := messageHandlers at: aMessage type
 		ifPresent: [ :handler | handler value: aMessage ]
-		ifAbsent: [ self error: 'Unknown message type' ]
+		ifAbsent: [ self error: 'Unknown message type' ].
+	
+	^ self createDataResponse: responseData

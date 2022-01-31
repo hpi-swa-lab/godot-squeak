@@ -3,8 +3,8 @@ fields
 	" self defineFields "
 
 	^ #(
-		(type 'long')
-		(data 'GDMessageData*')
+		(type 'int32_t')
+		(data 'void*')
 		(sem 'char[32]')
-		(result 'void*')
+		(response 'GDMessage*')
 	)

@@ -9,15 +9,12 @@ initialize
 	instances := PluggableDictionary new.
 	instances hashBlock: [:val | val getHandle hash].
 
-	messageHandlers := Dictionary new.
-	messageHandlers at: GDMessageListener messageTypeNewScript put:
-		[:message | self handleNewScript: message data newScriptMessage].
-	messageHandlers at: GDMessageListener messageTypeScriptReload put:
-		[:message | self handleScriptReload: (message data scriptReloadMessage)].
-	messageHandlers at: GDMessageListener messageTypeNewInstance put:
-		[:message | self handleNewInstance: (message data newInstanceMessage)].
-	messageHandlers at: GDMessageListener messageTypeMethodCall put:
-		[:message | self handleMethodCall: (message data methodCallMessage)].
+	messageHandlers := Dictionary withAll: {
+		GDMessage typeSqueakNewScript -> [:message | self handleNewScript: (GDMessageNewScript fromHandle: message data getHandle)].
+		GDMessage typeSqueakScriptReload -> [:message | self handleScriptReload: (GDMessageScriptReload fromHandle: message data getHandle)].
+		GDMessage typeSqueakNewInstance -> [:message | self handleNewInstance: (GDMessageNewInstance fromHandle: message data getHandle)].
+		GDMessage typeSqueakFunctionCall -> [:message | self handleMethodCall: (GDMessageMethodCall fromHandle: message data getHandle)].
+	}.
 	
 	SystemChangeNotifier uniqueInstance
 		notify: self

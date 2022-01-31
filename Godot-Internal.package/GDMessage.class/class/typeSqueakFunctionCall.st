@@ -1,0 +1,4 @@
+constants
+typeSqueakFunctionCall
+
+	^ 3

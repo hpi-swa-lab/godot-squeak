@@ -1,0 +1,4 @@
+constants
+typeSqueakNewScript
+
+	^ 0

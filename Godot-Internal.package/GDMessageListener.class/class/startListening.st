@@ -1,4 +1,4 @@
 listening
 startListening
 
-	^ self new runMessageListenerHighPrio: false
+	^ self instance runMessageListenerHighPrio: false

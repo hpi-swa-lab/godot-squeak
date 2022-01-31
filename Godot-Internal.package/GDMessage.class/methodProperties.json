@@ -1,5 +1,11 @@
 {
 	"class" : {
-		"fields" : "lege 1/13/2022 12:16" },
+		"fields" : "lege 1/31/2022 23:49",
+		"typeGodotFinishProcessing" : "lege 1/31/2022 17:54",
+		"typeGodotFunctionCall" : "lege 1/31/2022 17:54",
+		"typeSqueakFunctionCall" : "lege 1/31/2022 17:54",
+		"typeSqueakNewInstance" : "lege 1/31/2022 17:54",
+		"typeSqueakNewScript" : "lege 1/31/2022 17:54",
+		"typeSqueakScriptReload" : "lege 1/31/2022 17:54" },
 	"instance" : {
 		 } }

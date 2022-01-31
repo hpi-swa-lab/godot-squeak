@@ -1,0 +1,4 @@
+constants
+typeSqueakScriptReload
+
+	^ 1
