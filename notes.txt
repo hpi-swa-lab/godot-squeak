@@ -78,3 +78,8 @@
 
 - Godot always triggers two script reloads if a pluginscript source file changes on disc.
   Once of them in ScriptEditor _reloadsScripts, once in the PluginScript resource loader, called within the same function.
+
+- spinlock vs semaphore:
+  https://stackoverflow.com/questions/195853/spinlock-versus-semaphore
+  https://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instead-of-mutex
+  semaphores might behave like a spinlock for short operations? if that is true, that would be very benificial for us

@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "apiStructDecl.h"
+#include "sqMessage.h"
 #include "gdnativeUtils.h"
 #include "squeakUtils.h"
 
@@ -16,6 +17,10 @@ const char* lib_path = NULL;
 
 godot_pluginscript_language_data* smalltalk_lang_init() {
   printf("smalltalk_lang_init\n");
+  if (!init_sqmessage()) {
+    fprintf(stderr, "Language initialization failed!");
+    exit(1);
+  }
   init_squeak(lib_path);
   return NULL;
 }
@@ -63,6 +68,7 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
   // TODO: put the script functions into manifest.methods
 
+  printf("Script contains %i functions\n", data->functions->num_names);
   for (int i = 0; i < data->functions->num_names; ++i) {
     printf("\t-> %s\n", data->functions->names[i]);
   }
@@ -154,13 +160,13 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
 
   godot_variant ret;
 
-  if (strcmp(method_name, "process_") == 0) {
-    if (++call_count % 100 == 0) {
-      printf("_process has been called %i times\n", call_count);
-    }
-    api->godot_variant_new_nil(&ret);
-    return ret;
-  }
+  /* if (strcmp(method_name, "process_") == 0) { */
+  /*   if (++call_count % 100 == 0) { */
+  /*     printf("_process has been called %i times\n", call_count); */
+  /*   } */
+  /*   api->godot_variant_new_nil(&ret); */
+  /*   return ret; */
+  /* } */
 
   // TODO allow handling of special godot functions like ready and process
   bool can_handle_method = false;
@@ -212,12 +218,6 @@ static godot_pluginscript_language_desc smalltalk_language_desc = {
   .init = &smalltalk_lang_init,
   // called when the ScriptServer is deinitialzed, once in Main::cleanup
   .finish = &smalltalk_lang_finish,
-  // optional
-  /* .reserved_words = (const char *[]){NULL}, */
-  // optional
-  /* .comment_delimiters = (const char *[]){NULL}, */
-  // optional
-  /* .string_delimiters = (const char *[]){NULL}, */
   // this enables naming classes Godot's script creation dialog.
   // the name entered there will be passed to the template creation function
   .has_named_classes = false,

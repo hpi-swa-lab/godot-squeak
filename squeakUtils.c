@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <libgen.h>
 
-#include "sqMessage.h"
 #include "gdnativeUtils.h"
 
 int squeak_main(int argc, char **argv, char **envp);
@@ -69,13 +68,6 @@ void init_squeak(const char* lib_path) {
 void finish_squeak() {
 }
 
-void destroy_script_functions(script_functions_t* script_functions) {
-  for (int i = 0; i < script_functions->num_names; ++i) {
-    free(script_functions->names[i]);
-  }
-  free(script_functions);
-}
-
 // TODO: complete this list
 // TODO: consider remapping every method to the proper smalltalk selector
 //       (colons instead of underscores)
@@ -95,36 +87,3 @@ const char* remap_method_name(const char* method_name) {
   return method_name;
 }
 
-char* squeak_new_script(const char* script_name, const char* parent_name) {
-  message_data_t data;
-  data.new_script.script_name = script_name;
-  data.new_script.parent_name = parent_name;
-  return send_message(SQP_NEW_SCRIPT, &data);
-}
-
-script_functions_t* squeak_reload_script(const char* script_path, const char* script_source) {
-  message_data_t data;
-  data.script_reload.script_path = script_path;
-  data.script_reload.script_source = script_source;
-  return send_message(SQP_SCRIPT_RELOAD, &data);
-}
-
-void squeak_new_instance(const char* script_path, const godot_object* owner) {
-  message_data_t data;
-  data.new_instance.script_path = script_path;
-  data.new_instance.owner = owner;
-  send_message(SQP_NEW_INSTANCE, &data);
-}
-
-void squeak_call_method(const char* method_name, const godot_object* owner, const godot_variant** args, int arg_count, godot_variant* result) {
-  message_data_t data;
-  // is this strdup really necessary here?
-  data.method_call.method_name = strdup(method_name);
-  data.method_call.owner = owner;
-  data.method_call.args = args;
-  data.method_call.arg_count = arg_count;
-  data.method_call.result = result;
-  send_message(SQP_FUNCTION_CALL, &data);
-  printf("method call result: ");
-  free((void*) data.method_call.method_name);
-}
