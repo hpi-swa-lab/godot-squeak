@@ -11,12 +11,13 @@
 static lfqueue_t squeak_queue;
 static lfqueue_t godot_queue;
 
-typedef struct message_t {
+typedef struct {
   int32_t type; // enum MessageType
   void* data;
   sem_t signal;
-  struct message_t* response;
 } message_t;
+
+static message_t* godot_response;
 
 static bool init_queue(lfqueue_t* queue) {
   // TODO not technically thread-safe
@@ -49,15 +50,15 @@ void* process_responses(message_t* message) {
     /*   exit(1); */
     /* } */
 
-    printf("Received response at \t%p\n", message->response);
+    printf("Received response at \t%p\n", godot_response);
 
-    switch (message->response->type) {
+    switch (godot_response->type) {
       case SQP_GODOT_FINISH_PROCESSING:
         printf("SQP_GODOT_FINISH_PROCESSING\n");
         /* sem_destroy(&message->response->signal); */
-        void* result = message->response->data;
+        void* result = godot_response->data;
         printf("result pointer: %p\n", result);
-        free(message->response);
+        free(godot_response);
         return result;
         break;
       case SQP_GODOT_FUNCTION_CALL:
@@ -65,9 +66,12 @@ void* process_responses(message_t* message) {
         // call method
         break;
       default:
-        fprintf(stderr, "Godot received message that it can't handle! %i\n", message->response->type);
+        fprintf(stderr, "Godot received message that it can't handle! %i\n", godot_response->type);
         break;
     }
+
+    // TODO: do this only if debug enabled
+    godot_response->type = SQP_INVALID_MESSAGE;
   }
 }
 
@@ -76,8 +80,6 @@ void* send_message(enum MessageType type, void* data) {
   message_t m;
   m.type = type;
   m.data = data;
-  m.response = NULL;
-  // TODO: consider allocating the answer field on the stack here
   sem_init(&m.signal, 1, 0);
 
   if (lfqueue_enq(&squeak_queue, &m) != 0) {
@@ -97,6 +99,11 @@ void signal_message(message_t *message) {
 // next message or NULL if empty
 message_t *read_message() {
   return (message_t *) lfqueue_single_deq(&squeak_queue);
+}
+
+void squeak_send_response(message_t* message, message_t* response) {
+  godot_response = response;
+  sem_post(&message->signal);
 }
 
 void destroy_script_functions(script_functions_t* script_functions) {

@@ -8,6 +8,8 @@ enum MessageType {
 
   SQP_GODOT_FINISH_PROCESSING = 100,
   SQP_GODOT_FUNCTION_CALL = 101,
+
+  SQP_INVALID_MESSAGE = -1,
 };
 
 bool init_sqmessage();
