@@ -83,3 +83,29 @@
   https://stackoverflow.com/questions/195853/spinlock-versus-semaphore
   https://stackoverflow.com/questions/5869825/when-should-one-use-a-spinlock-instead-of-mutex
   semaphores might behave like a spinlock for short operations? if that is true, that would be very benificial for us
+
+- I'm writing down my thoughts on bidirectional communication here because I forgot them once and tried to do weird stuff
+  - Problem: Sometimes, the handling of a request from Godot leads to Squeak requesting something from Godot and vice versa.
+    Both threads have to be ready to handle a request at all times and cannot freeze without potentially causing a deadlock.
+  - Solution:
+    1. There are only two threads involved in handling a request: Godot (more precisely its game logic thread) and Squeak
+    2. The handling of a request may entail multiple other requests. Let's call this a message exchange.
+    3. Only Godot will ever trigger a message exchange.
+    4. A request starts with some kind of signal that a message is ready and ends by signalling that the request was processed.
+    5. Optionally, between request start and end the handling thread may require the other thread to do something. In that case, it sends a request to it.
+    6. From this follows that only one thread is active at a time. The other can effectively sleep.
+    7. However, if no request is handled at all, neither thread may sleep so neither Godot nor Squeak freeze.
+    8. When 5 occurs, we are guaranteed to have a stack frame handling the previous request.
+    9. Because of 6, synchronization mechanisms between threads are not required per message but only per message exchange.
+    10. From 1 follows that there can only be one message exchange at a time, and thus synchronization mechanisms can be global.
+
+    Process:
+      Starting out:
+      1. Starting out Godot does its own thing and Squeak busy waits for a message in a place that is synchronized between the threads.
+      2. When Godot wants Squeak to do something, it places a message for Squeak and waits for incoming messages.
+      3. Squeak takes the message and processes it.
+
+      Processing (same for both threads):
+      1. When a thread receives a message, it processes it.
+      2. If it needs the other side to do something, it places a message, signals the other side, and waits for a result.
+      3. If it is done processesing, it places the result as a message and signals the other side.

@@ -84,6 +84,10 @@ void godot_print_variant(const godot_variant* message) {
   api->godot_print(&str);
 }
 
+godot_variant godot_call_variant(godot_variant *p_self, const godot_string *p_method, const godot_variant **p_args, const godot_int p_argcount, godot_variant_call_error *r_error) {
+  return api->godot_variant_call(p_self, p_method, p_args, p_argcount, r_error);
+}
+
 const char *get_node_notification_name(int notification) {
   // copied from godot-headers/api.json (Node)
   const char *name;

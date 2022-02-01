@@ -184,7 +184,7 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
   }
 
   printf("smalltalk_call_method %s\n", method_name);
-  squeak_call_method(method_name, data->owner, p_args, p_argcount, &ret);
+  squeak_call_method(method_name, data->owner, p_args, p_argcount, r_error, &ret);
 
   fprintf(stderr, "method returned with %i\n", r_error->error);
 
