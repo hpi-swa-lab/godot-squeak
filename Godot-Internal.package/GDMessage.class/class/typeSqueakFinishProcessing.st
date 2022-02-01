@@ -1,0 +1,4 @@
+constants
+typeSqueakFinishProcessing
+
+	^ 4

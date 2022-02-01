@@ -1,5 +1,9 @@
 as yet unclassified
 doesNotUnderstand: aMessage
 
-	^ self callOnVariant: (aMessage selector copyUpTo: $:)
-		with: aMessage arguments
+	"Try godot functions first, then squeak functions."
+	[^ self callOnVariant: (aMessage selector copyUpTo: $:) with: aMessage arguments]
+		on: GDErrorVariantCall
+		do: [:error |
+			error isInvalidMethod ifFalse: [error signal].
+			^ self callOnVariant: (aMessage selector copyReplaceAll: ':' with: '_') with: aMessage arguments]

@@ -2,8 +2,8 @@ fields
 fields
 	" self defineFields "
 	^ #(
-		(methodName 'char*')
-		(owner 'GDObject*')
+		(methodName 'GDString*')
+		(self 'GDVariant*')
 		(args 'void*')
 		(argCount int)
 		(error 'GDVariantCallError*')

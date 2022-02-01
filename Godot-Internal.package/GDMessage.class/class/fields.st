@@ -5,5 +5,4 @@ fields
 	^ #(
 		(type 'int32_t')
 		(data 'void*')
-		(sem 'char[32]')
 	)

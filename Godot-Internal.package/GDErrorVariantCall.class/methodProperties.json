@@ -1,0 +1,16 @@
+{
+	"class" : {
+		"from:" : "lege 2/1/2022 22:45",
+		"initialize" : "lege 2/1/2022 22:41",
+		"nameForType:" : "lege 2/1/2022 22:39",
+		"typeCallOk" : "lege 2/1/2022 22:37",
+		"typeInstanceIsNull" : "lege 2/1/2022 22:38",
+		"typeInvalidArgument" : "lege 2/1/2022 22:37",
+		"typeInvalidMethod" : "lege 2/1/2022 22:37",
+		"typeTooFewArguments" : "lege 2/1/2022 22:38",
+		"typeTooManyArguments" : "lege 2/1/2022 22:37" },
+	"instance" : {
+		"isInvalidMethod" : "lege 2/1/2022 22:36",
+		"messageText" : "lege 2/1/2022 22:48",
+		"type" : "lege 2/1/2022 22:35",
+		"type:" : "lege 2/1/2022 22:35" } }

@@ -1,0 +1,4 @@
+constants
+typeInvalidArgument
+
+	^ 2

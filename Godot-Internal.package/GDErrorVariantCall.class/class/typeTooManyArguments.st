@@ -1,0 +1,4 @@
+constants
+typeTooManyArguments
+
+	^ 3

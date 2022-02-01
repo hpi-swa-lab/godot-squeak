@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		"TypeNames" ],
+	"commentStamp" : "",
+	"instvars" : [
+		"type" ],
+	"name" : "GDErrorVariantCall",
+	"pools" : [
+		 ],
+	"super" : "GDError",
+	"type" : "normal" }
