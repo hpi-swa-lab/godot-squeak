@@ -18,12 +18,34 @@ void finish_sqmessage();
 
 typedef struct {
   char** names;
-  int num_names;
+  int32_t num_names;
 } script_functions_t;
 
+typedef struct {
+  char** names;
+  int32_t num_names;
+} script_signals_t;
+
+typedef struct {
+  char* name;
+  godot_int type;
+} script_property_t;
+
+typedef struct {
+  int32_t num;
+  script_property_t* properties;
+} all_script_properties_t;
+
+typedef struct {
+  script_functions_t functions;
+  script_signals_t signals;
+} script_description_t;
+
 void destroy_script_functions(script_functions_t* script_functions);
+void destroy_script_signals(script_signals_t* script_signals);
+void destroy_script_property(script_property_t* script_property);
 
 char* squeak_new_script(const char* script_name, const char* parent_name);
-script_functions_t* squeak_reload_script(const char* script_path, const char* script_source);
+script_description_t* squeak_reload_script(const char* script_path, const char* script_source);
 void squeak_new_instance(const char* script_path, const godot_object* owner);
 void squeak_call_method(const char* method_name, const godot_object* owner, const godot_variant** args, int arg_count, godot_variant_call_error* error, godot_variant* result);

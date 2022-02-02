@@ -65,6 +65,32 @@ void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const
   api->godot_variant_destroy(&val_var);
 }
 
+void godot_dictionary_set_int(godot_dictionary *dict, const char *key, godot_int val) {
+  godot_variant key_var;
+  godot_variant val_var;
+
+  godot_variant_new_string_with_value(&key_var, key);
+  api->godot_variant_new_int(&val_var, val);
+
+  api->godot_dictionary_set(dict, &key_var, &val_var);
+
+  api->godot_variant_destroy(&key_var);
+  api->godot_variant_destroy(&val_var);
+}
+
+void godot_array_push_single_entry_dictionary(godot_array *arr, const char *key, const char *val) {
+    godot_dictionary entry;
+    api->godot_dictionary_new(&entry);
+
+    godot_dictionary_set_strings(&entry, key, val);
+
+    godot_variant entry_var;
+    api->godot_variant_new_dictionary(&entry_var, &entry);
+    api->godot_array_push_back(arr, &entry_var);
+
+    api->godot_dictionary_destroy(&entry);
+}
+
 const char* godot_globalize_path(const char *path) {
   godot_variant arg;
   const godot_variant* argp = &arg;
@@ -82,6 +108,13 @@ const char* godot_get_project_root() {
 void godot_print_variant(const godot_variant* message) {
   godot_string str = api->godot_variant_as_string(message);
   api->godot_print(&str);
+}
+
+void godot_print_string(const char* str) {
+  godot_string gstr;
+  godot_string_new_with_value(&gstr, str);
+  api->godot_print(&gstr);
+  api->godot_string_destroy(&gstr);
 }
 
 godot_variant godot_call_variant(godot_variant *p_self, const godot_string *p_method, const godot_variant **p_args, const godot_int p_argcount, godot_variant_call_error *r_error) {

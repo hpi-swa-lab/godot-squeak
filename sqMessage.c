@@ -77,23 +77,23 @@ void* process_responses(message_t* message) {
   ++processing_stack_count;
 
   while (true) {
-    printf("Waiting for response to message of type %i...\n", message->type);
+    /* printf("Waiting for response to message of type %i...\n", message->type); */
     sem_wait(&godot_message_signal);
 
     message_t* response = godot_inbox;
 
     switch (response->type) {
-      case SQP_GODOT_FINISH_PROCESSING:
-        printf("SQP_GODOT_FINISH_PROCESSING\n");
+      case SQP_GODOT_FINISH_PROCESSING:;
+        /* printf("SQP_GODOT_FINISH_PROCESSING\n"); */
         void* result = response->data;
-        free(response);
+        /* free(response); */
         --processing_stack_count;
         return result;
         break;
-      case SQP_GODOT_FUNCTION_CALL:
-        printf("SQP_GODOT_FUNCTION_CALL\n");
+      case SQP_GODOT_FUNCTION_CALL:;
+        /* printf("SQP_GODOT_FUNCTION_CALL\n"); */
         godot_method_call_t* data = (godot_method_call_t*) response->data;
-        printf("Squeak called Godot function: %s\n", godot_string_to_c_str(data->method_name));
+        /* printf("Squeak called Godot function: %s\n", godot_string_to_c_str(data->method_name)); */
         *data->result = godot_call_variant(data->self, data->method_name, data->args, data->arg_count, data->error);
         message_t* r = (message_t*) malloc(sizeof(message_t));
         r->type = SQP_SQUEAK_FINISH_PROCESSING;
@@ -121,10 +121,10 @@ void* send_message(enum MessageType type, void* data) {
   m.data = data;
 
   if (is_currently_processing()) {
-    printf("Currently processing, using signalling mechanism\n");
+    /* printf("Currently processing, using signalling mechanism\n"); */
     godot_send_message(&m);
   } else {
-    printf("Not currently processing, using busy wait mechanism\n");
+    /* printf("Not currently processing, using busy wait mechanism\n"); */
     if (lfqueue_enq(&squeak_queue, &m) != 0) {
       fprintf(stderr, "failed to enqueue");
     }
@@ -138,11 +138,13 @@ message_t *read_message() {
   return (message_t *) lfqueue_single_deq(&squeak_queue);
 }
 
-void destroy_script_functions(script_functions_t* script_functions) {
-  for (int i = 0; i < script_functions->num_names; ++i) {
-    free(script_functions->names[i]);
+void destroy_script_description(script_description_t* description) {
+  for (int i = 0; i < description->functions.num_names; ++i) {
+    free(description->functions.names[i]);
   }
-  free(script_functions);
+  for (int i = 0; i < description->signals.num_names; ++i) {
+    free(description->signals.names[i]);
+  }
 }
 
 typedef struct {
@@ -163,7 +165,7 @@ typedef struct {
   const char* script_source;
 } script_reload_t;
 
-script_functions_t* squeak_reload_script(const char* script_path, const char* script_source) {
+script_description_t* squeak_reload_script(const char* script_path, const char* script_source) {
   script_reload_t data = {
     script_path,
     script_source
@@ -204,6 +206,6 @@ void squeak_call_method(const char* method_name, const godot_object* owner, cons
     result
   };
   send_message(SQP_SQUEAK_FUNCTION_CALL, &data);
-  printf("method call result: ");
+  /* printf("method call result: "); */
   free((void*) data.method_name);
 }

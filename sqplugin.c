@@ -52,7 +52,7 @@ void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, con
 
 typedef struct {
   char* path;
-  script_functions_t* functions;
+  script_description_t* description;
 } smalltalk_script_data_t;
 
 godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_language_data *p_data, const godot_string *p_path, const godot_string *p_source, godot_error *r_error) {
@@ -63,15 +63,8 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
   data->path = strdup(godot_globalize_path(godot_string_to_c_str(p_path)));
 
   char* script_source = strdup(godot_string_to_c_str(p_source));
-  data->functions = squeak_reload_script(data->path, script_source);
+  data->description = squeak_reload_script(data->path, script_source);
   free(script_source);
-
-  // TODO: put the script functions into manifest.methods
-
-  printf("Script contains %i functions\n", data->functions->num_names);
-  for (int i = 0; i < data->functions->num_names; ++i) {
-    printf("\t-> %s\n", data->functions->names[i]);
-  }
 
   godot_pluginscript_script_manifest manifest = {
     .data = data,
@@ -85,16 +78,38 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
   api->godot_array_new(&manifest.signals);
   api->godot_array_new(&manifest.properties);
 
-  godot_dictionary process_fake;
+  printf("Script contains %i functions\n", data->description->functions.num_names);
+  for (int i = 0; i < data->description->functions.num_names; ++i) {
+    printf("\t-> %s\n", data->description->functions.names[i]);
 
-  api->godot_dictionary_new(&process_fake);
-  godot_dictionary_set_strings(&process_fake, "name", "_process");
+    godot_array_push_single_entry_dictionary(
+        &manifest.methods, "name", data->description->functions.names[i]);
+    if (strcmp(data->description->functions.names[i], "process_") == 0) {
+      godot_array_push_single_entry_dictionary(&manifest.methods, "name", "_process");
+    }
+  }
 
-  godot_variant process_fake_var;
-  api->godot_variant_new_dictionary(&process_fake_var, &process_fake);
-  api->godot_array_push_back(&manifest.methods, &process_fake_var);
+  printf("Script contains %i signals\n", data->description->signals.num_names);
+  for (int i = 0; i < data->description->signals.num_names; ++i) {
+    printf("\t-> %s\n", data->description->signals.names[i]);
 
-  api->godot_dictionary_destroy(&process_fake);
+    godot_array_push_single_entry_dictionary(
+        &manifest.signals, "name", data->description->signals.names[i]);
+  }
+
+  /* godot_dictionary properties_dict; */
+  /* api->godot_dictionary_new(&properties_dict); */
+
+  /* godot_dictionary_set_strings(&properties_dict, "name", "test"); */
+  /* godot_dictionary_set_int(&properties_dict, "type", 1); */
+
+  /* godot_variant dict_var; */
+  /* api->godot_variant_new_dictionary(&dict_var, &properties_dict); */
+  /* api->godot_array_push_back(&manifest.properties, &dict_var); */
+
+  /* api->godot_dictionary_destroy(&properties_dict); */
+
+  *r_error = GODOT_OK;
 
   return manifest;
 }
@@ -126,7 +141,7 @@ godot_pluginscript_instance_data *smalltalk_instance_init(godot_pluginscript_scr
   printf("\tscript path: %s\n", ((smalltalk_script_data_t*) p_data)->path);
   smalltalk_instance_data_t* data = malloc(sizeof(smalltalk_instance_data_t));
   data->owner = p_owner;
-  data->functions = ((smalltalk_script_data_t*) p_data)->functions;
+  data->functions = &((smalltalk_script_data_t*) p_data)->description->functions;
   printf("owner: %p\n", p_owner);
   squeak_new_instance(((smalltalk_script_data_t*) p_data)->path, p_owner);
   return data;
@@ -160,14 +175,6 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
 
   godot_variant ret;
 
-  /* if (strcmp(method_name, "process_") == 0) { */
-  /*   if (++call_count % 100 == 0) { */
-  /*     printf("_process has been called %i times\n", call_count); */
-  /*   } */
-  /*   api->godot_variant_new_nil(&ret); */
-  /*   return ret; */
-  /* } */
-
   // TODO allow handling of special godot functions like ready and process
   bool can_handle_method = false;
   for (int i = 0; i < data->functions->num_names; ++i) {
@@ -183,10 +190,21 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
     return ret;
   }
 
-  printf("smalltalk_call_method %s\n", method_name);
-  squeak_call_method(method_name, data->owner, p_args, p_argcount, r_error, &ret);
+  bool is_process = strcmp(method_name, "process_") == 0;
 
-  fprintf(stderr, "method returned with %i\n", r_error->error);
+  if (is_process) {
+    if (++call_count % 100 == 0) {
+      printf("_process has been called %i times\n", call_count);
+    }
+  } else {
+      printf("smalltalk_call_method %s\n", method_name);
+  }
+
+  squeak_call_method(method_name, data->owner, p_args, p_argcount, r_error, &ret);
+  
+  if (!is_process) {
+    fprintf(stderr, "method returned with %i\n", r_error->error);
+  }
 
   // TODO: limited error messages are possible by modifying r_error
 
