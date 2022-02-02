@@ -40,6 +40,7 @@ callMethod: methodName onVariant: aVariant with: argsSequence
 	"TODO: should probably use an ensure here"
 	methodNameGDString destroy.
 	variants do: #destroy.
-	argsPointer free.
+	"TODO: I think Godot frees the memory the variant points to beforehand? crashes sometimes, eg. on connect"
+	"argsPointer free."
 	
 	^ result.

@@ -10,6 +10,7 @@ systemChangeEvent: anEvent
 	
 	"TODO i mean what even is this"
 	class ifNotNil: [
+		class isMeta ifTrue: [class := class soleInstance].
 		((pathToClass includes: class)
 			and: ((anEvent itemKind = SystemChangeNotifier methodKind)
 				or: (anEvent class ~= AddedEvent and: anEvent class ~= RemovedEvent))) ifTrue: [self writeClassToFile: class]]

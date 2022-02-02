@@ -1,20 +1,16 @@
 message handling
 handleScriptReload: scriptReloadData
 
-	| definitions functionNames scriptFunctions |
+	| definitions functionNames scriptDescription class |
 	definitions := TonelParser parseStream: scriptReloadData scriptSource fromCString readStream.
 	GDApi showln: 'handleScriptReload: ', definitions first name.
-	self associatePath: scriptReloadData scriptPath fromCString
-		withClass: (Smalltalk classNamed: definitions first name).
+	class := (Smalltalk classNamed: definitions first name).
+	self associatePath: scriptReloadData scriptPath fromCString withClass: class.
 	self loadDefinitions: definitions.
 	
-	"TODO a similar packing thing happens in callMethod:onVariant:with:, maybe extract?"
-	functionNames := definitions allButFirst collect: [:definition | GDMessageListener squeakToGodotMethodName: definition selector].
-	scriptFunctions := GDScriptFunctions allocateExternal.
-	scriptFunctions numNames: functionNames size.
-	scriptFunctions names: (ExternalType void asPointerType allocateExternal: functionNames size).
-	functionNames withIndexDo: [:name :index || externalString |
-		externalString := (ExternalType char allocateExternal: name size + 1) toCString: name.
-		scriptFunctions names setContentType: ExternalType void asPointerType; at: index put: externalString getHandle].
+	scriptDescription := GDScriptDescription allocateExternal.
+	functionNames := class selectors collect: [:selector | GDMessageListener squeakToGodotMethodName: selector].
+	scriptDescription functions setNames: functionNames allocateExternal: true.
+	scriptDescription signals setNames: class signals allocateExternal: true.
 	
-	^ scriptFunctions
+	^ scriptDescription
