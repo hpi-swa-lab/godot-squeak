@@ -1,6 +1,7 @@
 {
 	"class" : {
-		"fromApiJsonObject:position:" : "lege 1/30/2022 16:28" },
+		"fromApiJsonObject:position:" : "lege 1/30/2022 16:28",
+		"fromApiPropertiesJsonObject:" : "lege 2/2/2022 01:28" },
 	"instance" : {
 		"argumentMethodName" : "lege 1/30/2022 16:25",
 		"argumentParamterName" : "lege 1/30/2022 16:57",

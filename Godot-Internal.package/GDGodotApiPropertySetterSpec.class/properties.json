@@ -6,12 +6,9 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"name",
-		"arguments",
-		"className",
-		"methodCategory" ],
-	"name" : "GDMethodSpec",
+		"setterName" ],
+	"name" : "GDGodotApiPropertySetterSpec",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "GDMethodSpec",
 	"type" : "normal" }

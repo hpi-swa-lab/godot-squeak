@@ -8,7 +8,13 @@ allFromApiJsonObject: aJsonObject forClass: className
 		[:arg :index | GDArgumentSpec fromApiJsonObject: arg position: index]) asOrderedCollection.
 	
 	[arguments notEmpty and: [arguments last hasDefaultValue]] whileTrue: [
-		specs add: (self newNamed: methodName arguments: arguments copy className: className).
+		specs add: (self newNamed: methodName
+			arguments: arguments copy
+			category: self methodCategory
+			className: className).
 		arguments removeLast].
 		
-	^ specs add: (self newNamed: methodName arguments: arguments className: className); yourself
+	^ specs add: (self newNamed: methodName
+		arguments: arguments
+		category: self methodCategory
+		className: className); yourself

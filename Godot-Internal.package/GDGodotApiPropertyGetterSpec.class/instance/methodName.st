@@ -1,4 +1,4 @@
 generating
-nameString
+methodName
 
 	^ self class squeakifyMethodName: name
