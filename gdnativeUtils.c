@@ -52,29 +52,30 @@ void godot_variant_new_string_with_value(godot_variant *var, const char* s) {
   api->godot_string_destroy(&gs);
 }
 
-void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {
+void godot_dictionary_set_variant(godot_dictionary *dict, const char *key, const godot_variant *val) {
   godot_variant key_var;
-  godot_variant val_var;
-
   godot_variant_new_string_with_value(&key_var, key);
-  godot_variant_new_string_with_value(&val_var, val);
 
-  api->godot_dictionary_set(dict, &key_var, &val_var);
+  api->godot_dictionary_set(dict, &key_var, val);
 
   api->godot_variant_destroy(&key_var);
+}
+
+void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val) {
+  godot_variant val_var;
+  godot_variant_new_string_with_value(&val_var, val);
+
+  godot_dictionary_set_variant(dict, key, &val_var);
+
   api->godot_variant_destroy(&val_var);
 }
 
 void godot_dictionary_set_int(godot_dictionary *dict, const char *key, godot_int val) {
-  godot_variant key_var;
   godot_variant val_var;
-
-  godot_variant_new_string_with_value(&key_var, key);
   api->godot_variant_new_int(&val_var, val);
 
-  api->godot_dictionary_set(dict, &key_var, &val_var);
+  godot_dictionary_set_variant(dict, key, &val_var);
 
-  api->godot_variant_destroy(&key_var);
   api->godot_variant_destroy(&val_var);
 }
 

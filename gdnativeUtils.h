@@ -15,6 +15,7 @@ void godot_variant_new_string_with_value(godot_variant *var, const char* s);
 
 void godot_dictionary_set_strings(godot_dictionary *dict, const char *key, const char *val); 
 void godot_dictionary_set_int(godot_dictionary *dict, const char *key, godot_int val);
+void godot_dictionary_set_variant(godot_dictionary *dict, const char* key, const godot_variant* var);
 
 void godot_array_push_single_entry_dictionary(godot_array *arr, const char *key, const char *val);
 

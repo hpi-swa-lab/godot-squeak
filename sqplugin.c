@@ -97,17 +97,26 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
         &manifest.signals, "name", data->description->signals.names[i]);
   }
 
-  /* godot_dictionary properties_dict; */
-  /* api->godot_dictionary_new(&properties_dict); */
+  printf("Script contains %i properties\n", data->description->properties.num);
+  for (int i = 0; i < data->description->properties.num; ++i) {
+    script_property_t* property = &data->description->properties.properties[i];
+    godot_int type = api->godot_variant_get_type(property->default_value);
+    printf("\t -> %s of type %i\n", property->name, type);
 
-  /* godot_dictionary_set_strings(&properties_dict, "name", "test"); */
-  /* godot_dictionary_set_int(&properties_dict, "type", 1); */
+    godot_dictionary properties_dict;
+    api->godot_dictionary_new(&properties_dict);
 
-  /* godot_variant dict_var; */
-  /* api->godot_variant_new_dictionary(&dict_var, &properties_dict); */
-  /* api->godot_array_push_back(&manifest.properties, &dict_var); */
+    godot_dictionary_set_strings(&properties_dict, "name", property->name);
+    godot_dictionary_set_int(&properties_dict, "type", type);
+    godot_dictionary_set_variant(&properties_dict, "default_value", property->default_value);
 
-  /* api->godot_dictionary_destroy(&properties_dict); */
+    godot_variant dict_var;
+    api->godot_variant_new_dictionary(&dict_var, &properties_dict);
+    api->godot_array_push_back(&manifest.properties, &dict_var);
+
+    api->godot_dictionary_destroy(&properties_dict);
+  }
+
 
   *r_error = GODOT_OK;
 
@@ -154,13 +163,18 @@ void smalltalk_instance_finish(godot_pluginscript_instance_data *p_data) {
 }
 
 godot_bool smalltalk_set_prop(godot_pluginscript_instance_data *p_data, const godot_string *p_name, const godot_variant *p_value) {
-  printf("smalltalk_set_prop\n");
-  return false;
+  bool* success_p = squeak_set_property(godot_string_to_c_str(p_name), ((smalltalk_instance_data_t*) p_data)->owner, p_value);
+  bool success = *success_p;
+  free(success_p);
+  return success;
 }
 
 godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const godot_string *p_name, godot_variant *r_ret) {
-  printf("smalltalk_get_prop\n");
-  return false;
+  api->godot_variant_new_nil(r_ret);
+  bool* success_p = squeak_get_property(godot_string_to_c_str(p_name), ((smalltalk_instance_data_t*) p_data)->owner, r_ret);
+  bool success = *success_p;
+  free(success_p);
+  return success;
 }
 
 int call_count = 0;

@@ -109,3 +109,11 @@
       1. When a thread receives a message, it processes it.
       2. If it needs the other side to do something, it places a message, signals the other side, and waits for a result.
       3. If it is done processesing, it places the result as a message and signals the other side.
+
+- Godot apparently saves script properties when they deviate from the default.
+  This means that if we want to ensure that a property is set, we cannot rely on the set_prop mechanism.
+
+- for testing: what is the performance like if we pin the entire process to one core?
+
+- script properties are not automatically updated on script reload
+  related issue? https://github.com/godotengine/godot/issues/37495

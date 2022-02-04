@@ -145,6 +145,10 @@ void destroy_script_description(script_description_t* description) {
   for (int i = 0; i < description->signals.num_names; ++i) {
     free(description->signals.names[i]);
   }
+  for (int i = 0; i < description->properties.num; ++i) {
+    free(description->properties.properties[i].name);
+  }
+  free(description->properties.properties);
 }
 
 typedef struct {
@@ -208,4 +212,34 @@ void squeak_call_method(const char* method_name, const godot_object* owner, cons
   send_message(SQP_SQUEAK_FUNCTION_CALL, &data);
   /* printf("method call result: "); */
   free((void*) data.method_name);
+}
+
+typedef struct {
+  const char* property_name;
+  const godot_object* owner;
+  const godot_variant* value;
+} set_property_t;
+
+bool* squeak_set_property(const char* property_name, const godot_object* owner, const godot_variant* value) {
+  set_property_t data = {
+    property_name,
+    owner,
+    value
+  };
+  return send_message(SQP_SQUEAK_SET_PROPERTY, &data);
+}
+
+typedef struct {
+  const char* property_name;
+  const godot_object* owner;
+  godot_variant* out;
+} get_property_t;
+
+bool* squeak_get_property(const char* property_name, const godot_object* owner, godot_variant* out) {
+  get_property_t data = {
+    property_name,
+    owner,
+    out
+  };
+  return send_message(SQP_SQUEAK_GET_PROPERTY, &data);
 }
