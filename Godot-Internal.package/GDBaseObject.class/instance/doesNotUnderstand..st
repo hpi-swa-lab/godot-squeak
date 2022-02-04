@@ -1,6 +1,8 @@
 as yet unclassified
 doesNotUnderstand: aMessage
 
+	self internalVariant ifNil: [super doesNotUnderstand: aMessage].
+	
 	"Try godot functions first, then squeak functions."
 	[^ self callOnVariant: (aMessage selector copyUpTo: $:) with: aMessage arguments]
 		on: GDErrorVariantCall

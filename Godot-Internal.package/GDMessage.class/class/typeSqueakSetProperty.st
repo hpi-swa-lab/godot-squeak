@@ -1,0 +1,4 @@
+constants
+typeSqueakSetProperty
+
+	^ 5

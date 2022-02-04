@@ -4,4 +4,5 @@ fields
 	^ #(
 		(functions 'GDScriptFunctions')
 		(signals 'GDScriptSignals')
+		(properties 'GDScriptPropertyArray')
 	)

@@ -1,4 +1,0 @@
-constants
-messageTypeScriptReload
-
-	^ 1

@@ -1,4 +1,0 @@
-constants
-messageTypeNewInstance
-
-	^ 2

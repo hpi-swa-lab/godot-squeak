@@ -1,4 +1,5 @@
 as yet unclassified
 originalTypeName
 	
-	^ 'void'
+	"Actually void :)"
+	^ 'int'
