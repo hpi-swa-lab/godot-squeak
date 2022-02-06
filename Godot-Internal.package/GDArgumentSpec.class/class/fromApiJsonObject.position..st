@@ -5,4 +5,4 @@ fromApiJsonObject: aJsonObject position: aNumber
 		name: aJsonObject name;
 		type: aJsonObject type;
 		hasDefaultValue: aJsonObject has_default_value;
-		position: aNumber
+		suffix: aNumber asString

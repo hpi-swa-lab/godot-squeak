@@ -9,7 +9,8 @@
 		"type",
 		"name",
 		"hasDefaultValue",
-		"position" ],
+		"suffix",
+		"isVararg" ],
 	"name" : "GDArgumentSpec",
 	"pools" : [
 		 ],
