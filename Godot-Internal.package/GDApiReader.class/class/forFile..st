@@ -1,4 +1,4 @@
 instance creation
-forJson: aPath
+forFile: aPath
 
 	^ self forStream: (FileStream readOnlyFileNamed: aPath)

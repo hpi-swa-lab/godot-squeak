@@ -1,4 +1,6 @@
 accessing
 methodArgumentString
 
-	^ '{1}: {2}' format: {self argumentMethodName. self argumentParamterName}
+	^ self isSelf
+		ifTrue: ['']
+		ifFalse:['{1}: {2}' format: {self argumentMethodName. self argumentParamterName}]

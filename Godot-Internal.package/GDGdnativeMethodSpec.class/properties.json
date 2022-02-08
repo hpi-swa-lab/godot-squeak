@@ -3,17 +3,13 @@
 	"classinstvars" : [
 		 ],
 	"classvars" : [
-		 ],
+		"BuiltinClassNames",
+		"CToSqueakNames" ],
 	"commentStamp" : "",
 	"instvars" : [
-		"type",
-		"name",
-		"hasDefaultValue",
-		"suffix",
-		"isVararg",
-		"isSelf" ],
-	"name" : "GDArgumentSpec",
+		"apiName" ],
+	"name" : "GDGdnativeMethodSpec",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "GDMethodSpec",
 	"type" : "normal" }

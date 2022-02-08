@@ -3,17 +3,12 @@
 	"classinstvars" : [
 		 ],
 	"classvars" : [
-		 ],
+		"ObjectCategories" ],
 	"commentStamp" : "",
 	"instvars" : [
-		"type",
-		"name",
-		"hasDefaultValue",
-		"suffix",
-		"isVararg",
-		"isSelf" ],
-	"name" : "GDArgumentSpec",
+		 ],
+	"name" : "GDGdnativeApiReader",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "GDApiReader",
 	"type" : "normal" }

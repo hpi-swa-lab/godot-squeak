@@ -1,6 +1,7 @@
 generating
 generateGDNativeApi: aPath
 
+	"TODO: refactor this into the generator system"
 	| apiSpec methods source sourceTemplate types |
 	apiSpec := (Json readFrom: (FileStream readOnlyFileNamed: aPath)) core.
 	
