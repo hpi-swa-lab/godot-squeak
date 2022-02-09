@@ -6,13 +6,9 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"parentName",
-		"name",
-		"category",
-		"isSingleton",
-		"singletonName" ],
-	"name" : "GDClassSpec",
+		"singletonNames" ],
+	"name" : "GDGodotApiSingletonListMethodSpec",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "GDMethodSpec",
 	"type" : "normal" }

@@ -1,14 +1,16 @@
 reading
 read
 
-	| contents classSpecs methodSpecs |
+	| contents classSpecs methodSpecs singletonClassSpecs |
 	contents := Json readFrom: stream.
 	
 	classSpecs := OrderedCollection new.
+	singletonClassSpecs := OrderedCollection new.
 	methodSpecs := OrderedCollection new.
 	
 	contents do: [:classJsonObject | | classSpec |
 		classSpec := classSpecs add: (GDClassSpec fromApiJsonObject: classJsonObject).
+		classSpec isSingleton ifTrue: [singletonClassSpecs add: classSpec].
 		
 		methodSpecs addAll: (classJsonObject methods
 			select: [:methodJsonObject |
@@ -29,4 +31,7 @@ read
 					].
 				propertyMethods])].
 	
-	^ {self class sortAndCategorizeClassSpecs: classSpecs. methodSpecs flatten}
+	^ {
+		self class sortAndCategorizeClassSpecs: classSpecs.
+		{methodSpecs. GDGodotApiSingletonListMethodSpec newFromClassSpecs: singletonClassSpecs} flatten
+	}

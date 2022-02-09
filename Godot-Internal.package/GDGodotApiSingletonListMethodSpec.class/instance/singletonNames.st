@@ -1,0 +1,4 @@
+accessing
+singletonNames
+
+	^ singletonNames

@@ -1,0 +1,4 @@
+constants
+typeSqueakInitGlobals
+
+	^ 7

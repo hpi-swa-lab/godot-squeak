@@ -51,8 +51,10 @@ generateGDNativeApi: aPath
 	}.
 	
 	methods do: [:method | | returnType |
-		returnType := (method return_type findTokens select: [:token | token ~= 'signed']) joinSeparatedBy: ' '.
-		returnType := types at: returnType ifAbsent: [returnType].
+		returnType := (method return_type findTokens
+			select: [:token | token ~= 'signed']
+			thenCollect: [:token | types at: token ifAbsent: [token]]) joinSeparatedBy: ' '.
+		"returnType := types at: returnType ifAbsent: [returnType]."
 		source := sourceTemplate format: {
 			((method name subStrings: '_') allButFirst collect: #capitalized) join withFirstCharacterDownshifted.
 			method arguments notEmpty
