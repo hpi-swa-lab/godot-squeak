@@ -117,3 +117,5 @@
 
 - script properties are not automatically updated on script reload
   related issue? https://github.com/godotengine/godot/issues/37495
+
+- some of the gdnative arguments lead to weird naming. eg 'linearInterpolateB:'

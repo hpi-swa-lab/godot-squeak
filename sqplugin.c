@@ -22,6 +22,7 @@ godot_pluginscript_language_data* smalltalk_lang_init() {
     exit(1);
   }
   init_squeak(lib_path);
+  squeak_init_globals();
   return NULL;
 }
 

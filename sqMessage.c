@@ -243,3 +243,7 @@ bool* squeak_get_property(const char* property_name, const godot_object* owner, 
   };
   return send_message(SQP_SQUEAK_GET_PROPERTY, &data);
 }
+
+void squeak_init_globals() {
+  send_message(SQP_INIT_GLOBALS, NULL);
+}
