@@ -1,0 +1,4 @@
+constants
+variantPoolIntArray
+
+	^ 21

@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal-Generation",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"otherMethodName" ],
+	"name" : "GDGdnativeOperatorMethodSpec",
+	"pools" : [
+		 ],
+	"super" : "GDGdnativeMethodSpec",
+	"type" : "normal" }

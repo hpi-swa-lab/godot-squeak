@@ -1,0 +1,4 @@
+constants
+variantColor
+
+	^ 14

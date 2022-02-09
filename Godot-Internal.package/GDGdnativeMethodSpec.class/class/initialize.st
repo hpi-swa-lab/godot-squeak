@@ -41,3 +41,8 @@ initialize
 			(left isLowercase or: left isDigit) and: (right isUppercase and: right ~= $D)])
 			joinSeparatedBy: '_')
 			asLowercase -> class].
+		
+	"TODO: dirty fix"
+	(CToSqueakNames at: (CToSqueakNames findFirst: [:assoc | assoc key = 'godot_int'])) value: 'Integer'.
+	(CToSqueakNames at: (CToSqueakNames findFirst: [:assoc | assoc key = 'godot_real'])) value: 'Float'.
+	(CToSqueakNames at: (CToSqueakNames findFirst: [:assoc | assoc key = 'godot_bool'])) value: 'Boolean'.

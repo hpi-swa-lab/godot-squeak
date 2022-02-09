@@ -3,7 +3,7 @@ methodArgumentString
 
 	| firstArg methodArguments |
 	methodArguments := arguments.
-	methodArguments first isSelf ifTrue:
+	(methodArguments notEmpty and: [methodArguments first isSelf]) ifTrue:
 		[methodArguments := methodArguments allButFirst].
 	
 	methodArguments isEmpty ifTrue: [^ ''].

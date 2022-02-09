@@ -1,0 +1,4 @@
+constants
+variantPoolColorArray
+
+	^ 26

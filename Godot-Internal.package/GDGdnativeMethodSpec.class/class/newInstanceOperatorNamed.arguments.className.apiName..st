@@ -1,7 +1,7 @@
 instance creation
 newInstanceOperatorNamed: methodName arguments: arguments className: className apiName: apiName
 
-	| otherClass operatorSymbols operatorSymbol otherMethodName |
+	| otherClass operatorSymbols operatorSymbol otherCategory operatorName otherMethodName |
 	
 	operatorSymbols := Dictionary withAll: {
 		'equal' -> '='.
@@ -13,16 +13,28 @@ newInstanceOperatorNamed: methodName arguments: arguments className: className a
 		'divide' -> '/'.
 	}.
 	
-	operatorSymbol := operatorSymbols at: methodName ifAbsent: [
+	operatorName := (methodName piecesCutWhere: [:a :b | a isLowercase and: b isUppercase]) first.
+	operatorSymbol := operatorSymbols at: operatorName ifAbsent: [
 		Transcript showln: 'Operator for ', methodName, ' nyi'.
 		^ #()].
 	otherClass := (self associationForCType: arguments second type) value.
-	otherMethodName := methodName, otherClass.
+	otherCategory := (Smalltalk classNamed: otherClass) category = 'Godot-Builtins'
+		ifTrue: [self privateCategory]
+		ifFalse: [self extensionCategory].
+	otherMethodName := operatorName, className.
 	
 	^ {
-		self newInstanceMethodNamed: otherMethodName
+		GDGdnativeInstanceMethodSpec newInstanceMethodNamed: otherMethodName
 		arguments: {(arguments first copy isSelf: false) name: ''. arguments second copy isSelf: true}
-		category: self operatorCategory
+		category: otherCategory
 		className: otherClass
-		apiName: apiName.
+		apiName: apiName
+		returnsVariant: false "TODO: the proper way would be to look at the return type".
+		
+		(GDGdnativeOperatorMethodSpec
+			newNamed: operatorSymbol
+			arguments: {arguments second}
+			category: self operatorCategory
+			className: className)
+			otherMethodName: otherMethodName
 	}

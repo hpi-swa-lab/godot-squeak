@@ -1,0 +1,4 @@
+constants
+variantPoolByteArray
+
+	^ 20

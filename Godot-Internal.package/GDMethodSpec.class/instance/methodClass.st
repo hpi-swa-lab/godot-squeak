@@ -1,4 +1,8 @@
 accessing
 methodClass
 
-	^ Smalltalk classNamed: className
+	| methodClass |
+	methodClass := Smalltalk classNamed: className.
+	^ self isClassMethod
+		ifTrue: [methodClass class]
+		ifFalse: [methodClass]
