@@ -11,6 +11,7 @@ instantiateGodotScriptNamed: name parent: parentName
 	
 		class compile: GDMessageListener readyCode classified: GDMessageListener scriptMethodCategory.
 		class compile: GDMessageListener processCode classified: GDMessageListener scriptMethodCategory.
+		class compile: GDMessageListener physicsProcessCode classified: GDMessageListener scriptMethodCategory.
 	
 		class]
 	

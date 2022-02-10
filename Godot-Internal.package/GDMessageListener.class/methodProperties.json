@@ -2,6 +2,7 @@
 	"class" : {
 		"godotToSqueakMethodName:" : "lege 1/28/2022 19:25",
 		"instance" : "lege 1/31/2022 16:44",
+		"physicsProcessCode" : "lege 2/10/2022 18:38",
 		"processCode" : "lege 1/28/2022 18:59",
 		"readyCode" : "lege 1/28/2022 18:59",
 		"restart" : "lege 1/31/2022 16:47",
@@ -27,7 +28,7 @@
 		"handleSetProperty:" : "lege 2/4/2022 19:16",
 		"initialize" : "lege 2/9/2022 15:51",
 		"instanceFor:" : "lege 2/4/2022 21:09",
-		"instantiateGodotScriptNamed:parent:" : "lege 1/28/2022 19:21",
+		"instantiateGodotScriptNamed:parent:" : "lege 2/10/2022 18:38",
 		"loadDefinitions:" : "lege 1/28/2022 18:53",
 		"pathForClass:" : "lege 1/28/2022 18:51",
 		"processResponses" : "lege 2/1/2022 18:44",
