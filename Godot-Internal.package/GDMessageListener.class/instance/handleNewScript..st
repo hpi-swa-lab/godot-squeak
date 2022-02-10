@@ -2,7 +2,7 @@ message handling
 handleNewScript: newScriptData
 
 	| name class source parentName |
-	name := newScriptData scriptName fromCString.
+	name := self class scriptPrefix , newScriptData scriptName fromCString.
 	parentName := newScriptData parentName fromCString.
 	GDApi showln: 'new script: ', name, ' parent ', parentName.
 	class := self instantiateGodotScriptNamed: name parent: parentName.

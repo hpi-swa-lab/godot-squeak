@@ -1,0 +1,4 @@
+constants
+scriptPrefix
+
+	^ 'GDS'
