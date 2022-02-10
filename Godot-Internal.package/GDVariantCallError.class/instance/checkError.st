@@ -1,5 +1,4 @@
 as yet unclassified
 checkError
 
-	self errorType ~= GDErrorVariantCall typeCallOk ifTrue: [
-		(GDErrorVariantCall from: self) signal]
+	(GDErrorVariantCall from: self) ifNotNil: [:error | error signal]

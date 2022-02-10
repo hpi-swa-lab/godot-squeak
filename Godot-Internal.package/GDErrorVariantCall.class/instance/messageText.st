@@ -1,4 +1,4 @@
 printing
 messageText
 
-	^ self class nameForType: self type
+	self subclassResponsibility

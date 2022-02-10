@@ -1,4 +1,4 @@
 testing
 isInvalidMethod
 
-	^ false
+	^ true

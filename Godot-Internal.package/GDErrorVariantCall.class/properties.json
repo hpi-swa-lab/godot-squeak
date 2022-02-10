@@ -1,12 +1,12 @@
 {
-	"category" : "Godot-Internal",
+	"category" : "Godot-Internal-Exceptions",
 	"classinstvars" : [
 		 ],
 	"classvars" : [
-		"TypeNames" ],
+		"TypeToSubclass" ],
 	"commentStamp" : "",
 	"instvars" : [
-		"type" ],
+		 ],
 	"name" : "GDErrorVariantCall",
 	"pools" : [
 		 ],

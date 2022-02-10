@@ -7,8 +7,8 @@
 	"commentStamp" : "",
 	"instvars" : [
 		 ],
-	"name" : "GDError",
+	"name" : "GDErrorVariantCallInvalidMethod",
 	"pools" : [
 		 ],
-	"super" : "Error",
+	"super" : "GDErrorVariantCall",
 	"type" : "normal" }

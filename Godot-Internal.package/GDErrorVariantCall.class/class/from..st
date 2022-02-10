@@ -1,4 +1,6 @@
 instance creation
 from: aGDVariantCallError
 
-	^ self new type: aGDVariantCallError errorType
+	^ TypeToSubclass at: aGDVariantCallError errorType
+		ifPresent: [:subclass | subclass new]
+		ifAbsent: [nil]
