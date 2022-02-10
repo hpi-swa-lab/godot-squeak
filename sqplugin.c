@@ -85,8 +85,12 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 
     godot_array_push_single_entry_dictionary(
         &manifest.methods, "name", data->description->functions.names[i]);
+    // TODO: do this for all special methods (see remap function)
     if (strcmp(data->description->functions.names[i], "process_") == 0) {
       godot_array_push_single_entry_dictionary(&manifest.methods, "name", "_process");
+    }
+    if (strcmp(data->description->functions.names[i], "physicsProcess_") == 0) {
+      godot_array_push_single_entry_dictionary(&manifest.methods, "name", "_physics_process");
     }
   }
 

@@ -71,11 +71,12 @@ void finish_squeak() {
 // TODO: complete this list
 // TODO: consider remapping every method to the proper smalltalk selector
 //       (colons instead of underscores)
-#define NUM_SPECIAL_METHODS 3
+#define NUM_SPECIAL_METHODS 4
 static const char* special_methods[NUM_SPECIAL_METHODS][2] = {
   {"_enter_tree", "enterTree_"},
   {"_ready", "ready"},
   {"_process", "process_"},
+  {"_physics_process", "physicsProcess_"},
 };
 
 const char* remap_method_name(const char* method_name) {

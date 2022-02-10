@@ -119,3 +119,13 @@
   related issue? https://github.com/godotengine/godot/issues/37495
 
 - some of the gdnative arguments lead to weird naming. eg 'linearInterpolateB:'
+
+- creating a new image: 
+```
+"Dependencies: JSON, FFI"
+GDApi generateGDNativeApi: 'godot-headers/gdnative_api.json'.
+GDApiObjectsGenerator generateGodotApi: 'godot-headers/api.json'.
+GDApiObjectsGenerator generateGdnativeApi: 'godot-headers/gdnative_api.json'.
+
+GDMessageListener startListening.
+```
