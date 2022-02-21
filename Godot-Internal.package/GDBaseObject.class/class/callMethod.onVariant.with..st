@@ -34,7 +34,7 @@ callMethod: methodName onVariant: aVariant with: argsSequence
 	message data: messageData.
 		
 	GDMessageListener instance sendMessage: message.
-		
+	
 	callError checkError.
 	
 	"TODO: should probably use an ensure here"
