@@ -16,7 +16,7 @@ initialize
 		GDMessage typeSqueakFunctionCall -> [:message | self handleMethodCall: (GDMessageMethodCall fromHandle: message data getHandle)].
 		GDMessage typeSqueakSetProperty -> [:message | self handleSetProperty: (GDSetProperty fromHandle: message data getHandle)].
 		GDMessage typeSqueakGetProperty -> [:message | self handleGetProperty: (GDGetProperty fromHandle: message data getHandle)].
-		GDMessage typeSqueakInitGlobals -> [:message | self handleInitGlobals].
+		GDMessage typeSqueakInitializeEnvironment -> [:message | self handleInitializeEnvironment: (GDMessageInitializeEnvironment fromHandle: message data getHandle)].
 	}.
 	
 	SystemChangeNotifier uniqueInstance

@@ -26,7 +26,7 @@ generateGDNativeApi: aPath
 		'godot_vector2' -> 'GDVector2'.
 		'godot_rect2' -> 'GDRect2'.
 		'godot_vector3' -> 'GDVector3'.
-		'godot_transform2d' -> 'GDTransform2d'.
+		'godot_transform2d' -> 'GDTransform2D'.
 		'godot_plane' -> 'GDPlane'.
 		'godot_quat' -> 'GDQuat'.
 		'godot_aabb' -> 'GDAabb'.

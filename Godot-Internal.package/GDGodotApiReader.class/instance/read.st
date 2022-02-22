@@ -24,9 +24,11 @@ read
 			thenCollect: [:propertyJsonObject | | propertyMethods |
 				propertyMethods := OrderedCollection new.
 				(propertyJsonObject name includes: $/) ifFalse: [
-					propertyJsonObject getter ifNotEmpty: [propertyMethods add: (
+					(propertyJsonObject getter notEmpty
+						and: (propertyJsonObject getter beginsWith: '_') not) ifTrue: [propertyMethods add: (
 							GDGodotApiPropertyGetterSpec fromAPIJsonObject: propertyJsonObject className: classSpec name)].
-					propertyJsonObject setter ifNotEmpty: [propertyMethods add: (
+					(propertyJsonObject setter notEmpty
+						and: ((propertyJsonObject setter beginsWith: '_') not)) ifTrue: [propertyMethods add: (
 							GDGodotApiPropertySetterSpec fromAPIJsonObject: propertyJsonObject className: classSpec name)].
 					].
 				propertyMethods])].

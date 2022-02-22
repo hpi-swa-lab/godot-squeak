@@ -1,0 +1,4 @@
+constants
+typeSqueakInitializeEnvironment
+
+	^ 7
