@@ -244,6 +244,13 @@ bool* squeak_get_property(const char* property_name, const godot_object* owner, 
   return send_message(SQP_SQUEAK_GET_PROPERTY, &data);
 }
 
-void squeak_init_globals() {
-  send_message(SQP_INIT_GLOBALS, NULL);
+typedef struct {
+  bool in_editor;
+} initialize_environment_t;
+
+void squeak_initialize_environment(bool in_editor) {
+  initialize_environment_t data = {
+    in_editor
+  };
+  send_message(SQP_INITIALIZE, &data);
 }

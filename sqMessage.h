@@ -8,7 +8,7 @@ enum MessageType {
   SQP_SQUEAK_FINISH_PROCESSING = 4,
   SQP_SQUEAK_SET_PROPERTY = 5,
   SQP_SQUEAK_GET_PROPERTY = 6,
-  SQP_INIT_GLOBALS = 7,
+  SQP_INITIALIZE = 7,
 
   SQP_GODOT_FINISH_PROCESSING = 100,
   SQP_GODOT_FUNCTION_CALL = 101,
@@ -54,4 +54,4 @@ void squeak_call_method(const char* method_name, const godot_object* owner, cons
 // TODO: consider returning a bool directly instead of a pointer
 bool* squeak_set_property(const char* property_name, const godot_object* owner, const godot_variant* value);
 bool* squeak_get_property(const char* property_name, const godot_object* owner, godot_variant* out);
-void squeak_init_globals();
+void squeak_initialize_environment(bool in_editor);

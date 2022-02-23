@@ -14,6 +14,7 @@ const godot_gdnative_core_1_1_api_struct *api_1_1 = NULL;
 const godot_gdnative_core_1_2_api_struct *api_1_2 = NULL;
 const godot_gdnative_ext_pluginscript_api_struct *pluginscript_api = NULL;
 const char* lib_path = NULL;
+bool in_editor;
 
 godot_pluginscript_language_data* smalltalk_lang_init() {
   printf("smalltalk_lang_init\n");
@@ -22,7 +23,7 @@ godot_pluginscript_language_data* smalltalk_lang_init() {
     exit(1);
   }
   init_squeak(lib_path);
-  squeak_init_globals();
+  squeak_initialize_environment(in_editor);
   return NULL;
 }
 
@@ -296,6 +297,9 @@ void GDN_EXPORT sqplug_gdnative_init(godot_gdnative_init_options *p_options) {
 
   lib_path = strdup(godot_string_to_c_str(p_options->active_library_path));
   printf("Active library path: %s\n", lib_path);
+
+  in_editor = p_options->in_editor;
+  printf("In editor: %s\n", in_editor ? "true" : "false");
 
   for (int i = 0; i < api->num_extensions; ++i) {
     switch (api->extensions[i]->type) {
