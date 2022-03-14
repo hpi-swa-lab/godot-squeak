@@ -1,7 +1,7 @@
 #include "sqMessage.h"
 
 #include "gdnativeUtils.h"
-#include "lfqueue/lfqueue.h"
+#include <lfqueue/lfqueue.h>
 
 #include <semaphore.h>
 #include <stdio.h>

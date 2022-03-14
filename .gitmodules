@@ -5,3 +5,6 @@
 	path = lfqueue
 	url = git@github.com:Taymindis/lfqueue.git
 	ignore = dirty
+[submodule "thirdparty/lfqueue"]
+	path = thirdparty/lfqueue
+	url = git@github.com:Taymindis/lfqueue.git

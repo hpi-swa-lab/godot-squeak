@@ -1,33 +1,39 @@
+SOURCEDIR=src
 BUILDDIR=build
+SCRIPTSDIR=scripts
 TARGET=$(BUILDDIR)/libsqplugin.so
 GDNATIVE_BINDINGS=gdnativeSqueakBindings.gen.c
-SOURCES=sqplugin.c gdnativeUtils.c squeakUtils.c sqMessage.c $(GDNATIVE_BINDINGS)
-OBJECTS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.o))
-DEPS=$(addprefix $(BUILDDIR)/,$(SOURCES:.c=.d))
+SOURCE_NAMES=sqplugin.c gdnativeUtils.c squeakUtils.c sqMessage.c $(GDNATIVE_BINDINGS)
+SOURCES=$(addprefix $(SOURCEDIR)/,$(SOURCE_NAMES))
+OBJECTS=$(addprefix $(BUILDDIR)/,$(SOURCE_NAMES:.c=.o))
+DEPS=$(addprefix $(BUILDDIR)/,$(SOURCE_NAMES:.c=.d))
+
+$(info ${DEPS})
 
 CC=gcc
 CFLAGS=-std=c11 -Wall -g
+INC=-Ithirdparty -Igodot-headers
 
 all: $(TARGET)
 
 # requires a symlink to run.sh called smalltalkCI (https://github.com/hpi-swa/smalltalkCI)
-$(GDNATIVE_BINDINGS):
-	SPEC_FILE="${CURDIR}/godot-headers/gdnative_api.json" OUTPUT_FILE="${CURDIR}/$@" smalltalkCI -s "Squeak64-5.3" generateGDNativeCBindingsConfig.ston
+$(SOURCEDIR)/$(GDNATIVE_BINDINGS):
+	SPEC_FILE="${CURDIR}/godot-headers/gdnative_api.json" OUTPUT_FILE="${CURDIR}/$@" smalltalkCI -s "Squeak64-5.3" $(SCRIPTSDIR)/generateGDNativeCBindingsConfig.ston
 
-$(BUILDDIR)/%.o: %.c
-	$(CC) $(CFLAGS) -pthread -fPIC -c -Igodot-headers $< -o $@
+$(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
+	$(CC) $(CFLAGS) -pthread -fPIC -c $(INC) $< -o $@
 
 liblfqueue.so:
-	cd lfqueue && mkdir -p build && cd build && cmake .. && make && cp liblfqueue.so "../../build"
+	cd thirdparty/lfqueue && mkdir -p build && cd build && cmake .. && cmake --build . && cp liblfqueue.so $(CURDIR)/$(BUILDDIR)
 
 $(TARGET): $(OBJECTS) liblfqueue.so
 	$(CC) $(CFLAGS) -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin -lsqueak -llfqueue -rdynamic -shared $(OBJECTS) -o $@
 
 .PHONY: clean
 clean:
-	rm -rf build $(GDNATIVE_BINDINGS)
+	rm -rf $(BUILDDIR) $(SOURCEDIR)/$(GDNATIVE_BINDINGS)
 
-$(BUILDDIR)/%.d: %.c
+$(BUILDDIR)/%.d: $(SOURCEDIR)/%.c
 	$(CC) $(CFLAGS) -MM -MG -MF $@ -MP -MT $@ -MT $(<:.c=.o) $<
 
 include $(DEPS)
