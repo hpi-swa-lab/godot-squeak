@@ -6,14 +6,18 @@ baseline: spec
 		spec
 			package: 'JSON'
 				with: [spec repository: 'http://www.squeaksource.com/JSON'];
-			package: 'FFI-Kernel'
-				with: [spec repository: 'http://source.squeakfoundation.org/FFI'].
+			project: 'FFI' with: [
+				spec
+					className: 'ConfigurationOfFFI';
+					repository: 'http://www.squeaksource.com/MetacelloRepository';
+					versionString: #development;
+					loads: #('Core')].
 		
 		spec
 			package: 'Godot-Builtins';
 			package: 'Godot-Internal' with: [
 				spec
-					requires: #('JSON' 'FFI-Kernel' 'Godot-Builtins');
+					requires: #('JSON' 'FFI' 'Godot-Builtins');
 					postLoadDoIt: #postLoadInternal].
 		
 		spec group: 'default'
