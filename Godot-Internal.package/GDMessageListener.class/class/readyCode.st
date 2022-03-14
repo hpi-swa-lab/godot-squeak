@@ -1,4 +1,5 @@
 constants
 readyCode
 	^ 'ready
+	
 	^ nil'

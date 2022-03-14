@@ -4,9 +4,10 @@ handleScriptReload: scriptReloadData
 	| definitions scriptDescription class |
 	definitions := TonelParser parseStream: scriptReloadData scriptSource fromCString readStream.
 	GDApi showln: 'handleScriptReload: ', definitions first name.
-	class := (Smalltalk classNamed: definitions first name).
-	self associatePath: scriptReloadData scriptPath fromCString withClass: class.
 	self loadDefinitions: definitions.
+	class := (Smalltalk classNamed: definitions first name).
+	scriptReloadData scriptPath fromCString "TODO: this is a temporary fix. The actual solution is figuring out why we receive empty paths here"
+		ifNotEmpty: [:path |self associatePath: path withClass: class].
 	
 	scriptDescription := GDScriptDescription allocateExternal.
 	scriptDescription functions setNames: class functionNames allocateExternal: true.

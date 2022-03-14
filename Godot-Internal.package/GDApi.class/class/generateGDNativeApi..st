@@ -33,7 +33,7 @@ generateGDNativeApi: aPath
 		'godot_basis' -> 'GDBasis'.
 		'godot_transform' -> 'GDTransform'.
 		'godot_color' -> 'GDColor'.
-		'godot_node_path' -> 'GDNode_path'.
+		'godot_node_path' -> 'GDNodePath'.
 		'godot_rid' -> 'GDRid'.
 		'godot_object' -> 'GDObject'.
 		'godot_dictionary' -> 'GDDictionary'.
