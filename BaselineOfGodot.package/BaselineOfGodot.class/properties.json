@@ -1,0 +1,14 @@
+{
+	"category" : "BaselineOfGodot",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "BaselineOfGodot",
+	"pools" : [
+		 ],
+	"super" : "BaselineOf",
+	"type" : "normal" }

@@ -1,4 +1,4 @@
 using
-generateGdnativeApi: aPath
+generateGdnativeApi: aJsonStream
 
-	(self new apiReader: (GDGdnativeApiReader forFile: aPath)) generate
+	(self new apiReader: (GDGdnativeApiReader forStream: aJsonStream)) generate

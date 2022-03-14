@@ -1,4 +1,4 @@
 instance creation
-forGodotApiJson: aPath
+forGodotApiJson: aJsonStream
 
-	^ self new apiReader: (GDGodotApiReader forFile: aPath)
+	^ self new apiReader: (GDGodotApiReader forStream: aJsonStream)

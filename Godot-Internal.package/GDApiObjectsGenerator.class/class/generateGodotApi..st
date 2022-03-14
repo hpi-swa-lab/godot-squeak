@@ -1,4 +1,4 @@
 using
-generateGodotApi: aPath
+generateGodotApi: aJsonStream
 
-	(self forGodotApiJson: aPath) generate
+	(self forGodotApiJson: aJsonStream) generate

@@ -1,9 +1,9 @@
 generating
-generateGDNativeApi: aPath
+generateGDNativeApi: aJsonStream
 
 	"TODO: refactor this into the generator system"
 	| apiSpec methods source sourceTemplate types |
-	apiSpec := (Json readFrom: (FileStream readOnlyFileNamed: aPath)) core.
+	apiSpec := (Json readFrom: aJsonStream) core.
 	
 	methods := OrderedCollection new.
 	[apiSpec notNil] whileTrue: [
