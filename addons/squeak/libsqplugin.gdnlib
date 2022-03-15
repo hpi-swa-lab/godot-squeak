@@ -1,0 +1,14 @@
+[general]
+
+singleton=true
+load_once=true
+symbol_prefix="sqplug_"
+reloadable=false
+
+[entry]
+
+X11.64="res://addons/squeak/libsqplugin.so"
+
+[dependencies]
+
+X11.64=[ "res://addons/squeak/libsqueak.so", "res://addons/squeak/liblfqueue.so" ]
