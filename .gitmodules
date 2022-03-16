@@ -1,13 +1,13 @@
 [submodule "godot-headers"]
-	path = godot-headers
+	path = plugin/godot-headers
 	url = git@github.com:godotengine/godot-headers.git
 [submodule "lfqueue"]
 	path = lfqueue
 	url = git@github.com:Taymindis/lfqueue.git
 	ignore = dirty
 [submodule "thirdparty/lfqueue"]
-	path = thirdparty/lfqueue
+	path = plugin/thirdparty/lfqueue
 	url = git@github.com:Taymindis/lfqueue.git
 [submodule "thirdparty/opensmalltalk-vm/opensmalltalk-vm"]
-	path = thirdparty/opensmalltalk-vm/opensmalltalk-vm
+	path = plugin/thirdparty/opensmalltalk-vm/opensmalltalk-vm
 	url = git@github.com:OpenSmalltalk/opensmalltalk-vm.git
