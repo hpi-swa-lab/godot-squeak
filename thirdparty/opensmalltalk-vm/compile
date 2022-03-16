@@ -1,0 +1,13 @@
+#!/bin/bash
+
+cd opensmalltalk-vm
+
+git reset --hard && git clean -f -d
+git apply ../dynamiclib.patch
+
+scripts/updateSCCSVersions
+(cd building/linux64x64/squeak.cog.spur/build && ./mvm)
+
+meson setup builddir
+cd builddir
+ninja

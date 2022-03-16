@@ -1,0 +1,468 @@
+diff --git a/building/linux64x64/squeak.cog.spur/build/mvm b/building/linux64x64/squeak.cog.spur/build/mvm
+index 1d28bf99f..f2e82beeb 100755
+--- a/building/linux64x64/squeak.cog.spur/build/mvm
++++ b/building/linux64x64/squeak.cog.spur/build/mvm
+@@ -25,12 +25,7 @@ if [ $# -ge 1 ]; then
+ fi
+ 
+ if ../../../../scripts/checkSCCSversion ; then exit 1; fi
+-echo -n "clean? "
+-read a
+-case $a in
+-n|no|N|NO)	echo "ok but this isn't safe!!";;
+-*)			test -f Makefile && make reallyclean
+-esac
++test -f Makefile && make reallyclean
+ test -f plugins.int || (test -f ../plugins.int && cp -p ../plugins.int . || cp -p ../../plugins.int .)
+ test -f plugins.ext || (test -f ../plugins.ext && cp -p ../plugins.ext . || cp -p ../../plugins.ext .)
+ test -f config.h || ../../../../platforms/unix/config/configure --without-npsqueak \
+@@ -46,4 +41,4 @@ rm -f vm/sqUnixMain.o # nuke version info
+ rm -rf ../../../../products/$INSTALLDIR
+ # prefer make install prefix=`readlink -f \`pwd\`/../../../../products/$INSTALLDIR`
+ # but older linux readlinks lack the -f flag
+-make install-squeak install-plugins prefix=`(cd ../../../../;pwd)`/products/$INSTALLDIR 2>&1 | tee LOG ; test ${PIPESTATUS[0]} -eq 0
++make -j6 install-squeak install-plugins prefix=`(cd ../../../../;pwd)`/products/$INSTALLDIR 2>&1 | tee LOG ; test ${PIPESTATUS[0]} -eq 0
+diff --git a/meson.build b/meson.build
+new file mode 100644
+index 000000000..1bdc1efc9
+--- /dev/null
++++ b/meson.build
+@@ -0,0 +1,292 @@
++project('opensmalltalk-vm', 'c')
++
++fs = import('fs')
++
++add_global_arguments('-DLSB_FIRST=1', language : 'c')
++add_global_arguments('-D__USE_GNU=1', language : 'c')
++add_global_arguments('-D_GNU_SOURCE=1', language : 'c')
++add_global_arguments('-DHAVE_CONFIG_H=1', language : 'c')
++# TODO: use only with actual builtins
++add_global_arguments('-DSQUEAK_BUILTIN_PLUGIN=1', language : 'c')
++add_global_arguments('-DBIT_IDENTICAL_FLOATING_POINT=1', language : 'c')
++add_global_arguments('-DNO_FFI_TEST=1', language : 'c')
++
++# FIXME sqAssert.h's assert is making use of those -- should find better fix
++add_global_arguments('-Wno-unused-value', language : 'c')
++
++plugins = [
++    {'name': 'vm', 'core': true},
++    {'name': 'os', 'core': true},
++    {'name': 'ADPCMCodecPlugin'},
++    {'name': 'ADPCMCodecPlugin'},
++    {'name': 'AioPlugin'},
++    {'name': 'AsynchFilePlugin', 'extra_sources': ['platforms/unix/plugins/AsynchFilePlugin/sqUnixAsynchFile.c']},
++    {'name': 'B2DPlugin'},
++    {'name': 'BitBltPlugin'},
++    {'name': 'BMPReadWriterPlugin'},
++    {'name': 'CroquetPlugin', 'extra_sources': ['platforms/Cross/plugins/CroquetPlugin/TriBoxStub.c']},
++    {'name': 'HostWindowPlugin', 'extra_sources': ['platforms/unix/plugins/HostWindowPlugin/sqUnixHostWindowPlugin.c']},
++    {'name': 'ZipPlugin'},
++    {'name': 'DropPlugin', 'extra_sources': ['platforms/unix/plugins/DropPlugin/sqUnixDragDrop.c']},
++    {'name': 'DSAPrims'},
++    {'name': 'FFTPlugin'},
++    {'name': 'FileCopyPlugin', 'extra_sources': ['platforms/unix/plugins/FileCopyPlugin/sqUnixFileCopyPlugin.c']},
++    {'name': 'FilePlugin', 'extra_sources': ['platforms/Cross/plugins/FilePlugin/sqFilePluginBasicPrims.c', 'platforms/unix/plugins/FilePlugin/sqUnixFile.c']},
++    {'name': 'Float64ArrayPlugin'},
++    {'name': 'FloatArrayPlugin'},
++    {
++      'name': 'FloatMathPlugin',
++      'extra_sources': [
++        'platforms/Cross/third-party/fdlibm/e_acos.c',
++        'platforms/Cross/third-party/fdlibm/e_acos.c',
++        'platforms/Cross/third-party/fdlibm/e_cosh.c',
++        'platforms/Cross/third-party/fdlibm/e_sinh.c',
++        'platforms/Cross/third-party/fdlibm/e_fmod.c',
++        'platforms/Cross/third-party/fdlibm/e_sqrt.c',
++        'platforms/Cross/third-party/fdlibm/e_log.c',
++        'platforms/Cross/third-party/fdlibm/e_pow.c',
++        'platforms/Cross/third-party/fdlibm/e_exp.c',
++        'platforms/Cross/third-party/fdlibm/e_acosh.c',
++        'platforms/Cross/third-party/fdlibm/e_log10.c',
++        'platforms/Cross/third-party/fdlibm/e_atan2.c',
++        'platforms/Cross/third-party/fdlibm/e_atanh.c',
++        'platforms/Cross/third-party/fdlibm/e_log.c',
++        'platforms/Cross/third-party/fdlibm/e_asin.c',
++        'platforms/Cross/third-party/fdlibm/e_hypot.c',
++      ]
++    },
++    {'name': 'IA32ABI', 'extra_sources': ['platforms/Cross/plugins/IA32ABI/xabicc.c']},
++    {'name': 'JoystickTabletPlugin', 'extra_sources': ['platforms/unix/plugins/JoystickTabletPlugin/sqUnixJoystickTablet.c']},
++    {'name': 'JPEGReaderPlugin'},
++    {'name': 'JPEGReadWriter2Plugin', 'extra_sources': ['platforms/Cross/plugins/JPEGReadWriter2Plugin/sqJPEGReadWriter2Plugin.c', 'platforms/Cross/plugins/JPEGReadWriter2Plugin/jmemdatasrc.c']},
++    {'name': 'Klatt'},
++    {'name': 'LargeIntegers'},
++    {'name': 'Matrix2x3Plugin'},
++    {'name': 'MiscPrimitivePlugin'},
++    {
++      'name': 'Mpeg3Plugin',
++      'extra_sources': [
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/libmpeg3.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/bitstream.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/changesForSqueak.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/libmpeg3.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/mpeg3atrack.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/mpeg3demux.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/mpeg3io.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/mpeg3title.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/mpeg3vtrack.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/getpicture.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/headers.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/idct.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/macroblocks.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/mmxtest.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/motion.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/mpeg3video.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/output.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/reconstruct.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/seek.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/slice.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video/vlc.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/dct.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/header.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/layer1.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/layer2.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/layer3.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/mpeg3audio.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/pcm.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/synthesizers.c',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio/tables.c',
++      ],
++      'extra_inc': [
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/audio',
++        'platforms/Cross/plugins/Mpeg3Plugin/libmpeg/video',
++      ]
++    },
++  {'name': 'RePlugin', 'extra_sources': ['platforms/Cross/plugins/RePlugin/pcre.c', 'platforms/Cross/plugins/RePlugin/study.c']},
++  {'name': 'SecurityPlugin', 'extra_sources': ['platforms/unix/plugins/SecurityPlugin/sqUnixSecurity.c']},
++  {'name': 'SerialPlugin', 'extra_sources': ['platforms/unix/plugins/SerialPlugin/sqUnixSerial.c']},
++  {'name': 'SqueakSSL', 'extra_sources': ['platforms/unix/plugins/SqueakSSL/sqUnixSSL.c']},
++  {'name': 'SocketPlugin', 'extra_sources': ['platforms/unix/plugins/SocketPlugin/sqUnixSocket.c']},
++  {'name': 'SoundCodecPrims', 'extra_sources': ['platforms/Cross/plugins/SoundCodecPrims/sqSoundCodecPluginBasicPrims.c']},
++  {'name': 'SoundGenerationPlugin'},
++  {'name': 'SoundPlugin', 'extra_sources': ['platforms/unix/plugins/SoundPlugin/sqUnixSound.c']},
++  {'name': 'StarSqueakPlugin'},
++  {'name': 'SurfacePlugin', 'extra_sources': ['platforms/Cross/plugins/SurfacePlugin/SurfacePlugin.c']},
++  {'name': 'VMProfileLinuxSupportPlugin'},
++  {'name': 'SqueakFFIPrims', 'extra_sources': [
++    'platforms/Cross/plugins/SqueakFFIPrims/sqFFIPlugin.c',
++    'platforms/Cross/plugins/SqueakFFIPrims/sqManualSurface.c'
++  ]},
++  # {'name': 'UnixOSProcessPlugin'},
++]
++
++plugin_sources = []
++plugin_inc = []
++sqNamedPrims_head_h = ''
++sqNamedPrims_tail_h = 'sqExport *pluginExports[] = {\n'
++
++foreach p : plugins
++  folder = 'src/plugins' / p['name']
++  platform_folder = 'platforms/Cross/plugins' / p['name']
++  src = folder / p['name'] + '.c'
++
++  sqNamedPrims_head_h += 'extern sqExport ' + p['name'] + '_exports[];\n'
++  sqNamedPrims_tail_h += '\t' + p['name'] + '_exports,\n'
++
++  if 'core' not in p
++    if fs.is_file(src)
++      plugin_sources += src
++    endif
++    if fs.is_dir(folder)
++      plugin_inc += folder
++    endif
++    if fs.is_dir(platform_folder)
++      plugin_inc += platform_folder
++    endif
++    if 'extra_sources' in p
++      plugin_sources += p['extra_sources']
++    endif
++    if 'extra_inc' in p
++      plugin_inc += p['extra_inc']
++    endif
++  endif
++endforeach
++
++sqNamedPrims_h = custom_target('sqNamedPrims.h',
++    output: ['sqNamedPrims.h'],
++    command: ['sh', '-c', 'echo "$0" > sqNamedPrims.h', sqNamedPrims_head_h + sqNamedPrims_tail_h + '\tNULL\n};'])
++
++# Add Display and Sound plugins
++plugin_sources += [
++  # 'platforms/unix/vm-display-null/sqUnixDisplayNull.c',
++  'platforms/unix/vm-display-X11/sqUnixX11.c', 'platforms/unix/vm-display-X11/sqUnixMozilla.c',
++  'platforms/unix/vm-sound-null/sqUnixSoundNull.c'
++  ]
++plugin_inc += [
++  'platforms/unix/plugins/B3DAcceleratorPlugin',
++  'platforms/Cross/plugins/B3DAcceleratorPlugin',
++  'platforms/Cross/plugins/FilePlugin',
++  ]
++
++inc = include_directories([
++  'building/linux64x64/squeak.cog.spur/build',
++  'platforms/Cross/vm',
++  'platforms/Cross/plugins',
++  'platforms/unix/vm',
++  'src/spur64.cog',
++  'processors/IA32/bochs/cpu'
++  ])
++
++vm_common_source = [
++    'platforms/Cross/vm/sq.h',
++    'platforms/Cross/vm/sqAssert.h',
++    'platforms/Cross/vm/sqAtomicOps.h',
++    'platforms/Cross/vm/sqCircularQueue.h',
++    'platforms/Cross/vm/sqCogStackAlignment.h',
++    'platforms/Cross/vm/sqExternalSemaphores.c',
++    'platforms/Cross/vm/sqHeapMap.c',
++    'platforms/Cross/vm/sqMemoryAccess.h',
++    'platforms/Cross/vm/sqMemoryFence.h',
++    'platforms/Cross/vm/sqPath.h',
++    'platforms/Cross/vm/sqNamedPrims.c',
++    'platforms/Cross/vm/sqPath.c',
++    'platforms/Cross/vm/sqSCCSVersion.h',
++    'platforms/Cross/vm/sqTextEncoding.h',
++    'platforms/Cross/vm/sqTextEncoding.c',
++    'platforms/Cross/vm/sqTicker.c',
++    'platforms/Cross/vm/sqVirtualMachine.h',
++    'platforms/Cross/vm/sqVirtualMachine.c',
++    ]
++
++vm_platform_sources = [
++    'platforms/unix/vm/aio.c',
++    'platforms/unix/vm/debug.c',
++    'platforms/unix/vm/sqUnixCharConv.c',
++    'platforms/unix/vm/sqUnixExternalPrims.c',
++    'platforms/unix/vm/osExports.c',
++    'platforms/unix/vm/sqUnixHeartbeat.c',
++    'platforms/unix/vm/sqUnixMain.c',
++    'platforms/unix/vm/sqUnixSpurMemory.c',
++    'platforms/unix/vm/sqUnixThreads.c',
++    'platforms/unix/vm/sqUnixVMProfile.c',
++    ]
++
++vm_core_sources = [
++    'src/spur64.cog/gcc3x-cointerp.c',
++    'src/spur64.cog/cogit.c',
++    ]
++
++vm_generated_sources = [
++    'building/linux64x64/squeak.cog.spur/build/version.c',
++    sqNamedPrims_h
++    ]
++
++vm_sources = []
++vm_sources += vm_core_sources
++vm_sources += vm_common_source
++vm_sources += vm_platform_sources
++vm_sources += vm_generated_sources
++vm_sources += plugin_sources
++
++cc = meson.get_compiler('c')
++thread_dep = dependency('threads')
++m_dep = cc.find_library('m', required : false)
++dl_dep = cc.find_library('dl', required : true)
++jpeg_dep = cc.find_library('jpeg', required : true)
++
++xrender_dep = cc.find_library('Xrender', required : true)
++gl_dep = cc.find_library('GL', required : true)
++Xext_dep = cc.find_library('Xext', required : true)
++x11_dep = cc.find_library('X11', required : true)
++sm_dep = cc.find_library('SM', required : true)
++ice_dep = cc.find_library('ICE', required : true)
++
++vm_deps = [thread_dep, dl_dep, m_dep, jpeg_dep]
++vm_deps += [xrender_dep, gl_dep, Xext_dep, x11_dep, sm_dep, ice_dep]
++
++build_as_module = true
++
++if build_as_module
++  add_global_arguments('-DBUILD_AS_MODULE=1', '-DDEBUGVM=1', language : 'c')
++  squeak = shared_module('squeak', vm_sources,
++      include_directories: [inc, plugin_inc],
++      dependencies : vm_deps)
++  sqplugin = shared_module('sqplugin', 'sqplugin.c')
++  executable('runner', ['runner.c'],
++    export_dynamic : true,
++    include_directories: [inc],
++    dependencies: [thread_dep],
++    link_with: [squeak, sqplugin])
++else
++  executable('squeak', vm_sources,
++      include_directories: [inc, plugin_inc],
++      export_dynamic : true,
++      dependencies : vm_deps)
++endif
++
++# inc_extern = include_directories([
++#   'building/linux64x64/squeak.cog.spur/build',
++#   'platforms/unix/vm',
++#   'platforms/Cross/vm',
++#   'src/spur64.cog',
++#   ])
++# 
++# shared_module('vm-display-null', ['platforms/unix/vm-display-null/sqUnixDisplayNull.c'],
++#     include_directories : [inc_extern],
++#     name_prefix : '',
++#     dependencies : [])
++# shared_module('vm-sound-null', ['platforms/unix/vm-sound-null/sqUnixSoundNull.c'],
++#     include_directories : [inc_extern],
++#     name_prefix : '',
++#     dependencies : [])
++#
++# shared_module('vm-display-X11', ['platforms/unix/vm-display-X11/sqUnixX11.c', 'platforms/unix/vm-display-X11/sqUnixMozilla.c'],
++#     include_directories : [
++#       inc_extern,
++#       'platforms/unix/plugins/B3DAcceleratorPlugin',
++#       'platforms/Cross/plugins/B3DAcceleratorPlugin',
++#       'platforms/Cross/plugins/FilePlugin',
++#     ],
++#     name_prefix : '',
++#     dependencies : [xrender_dep, gl_dep, Xext_dep, x11_dep, sm_dep, ice_dep])
+diff --git a/platforms/unix/vm-display-X11/sqUnixMozilla.c b/platforms/unix/vm-display-X11/sqUnixMozilla.c
+index 088634139..3616d8eb7 100644
+--- a/platforms/unix/vm-display-X11/sqUnixMozilla.c
++++ b/platforms/unix/vm-display-X11/sqUnixMozilla.c
+@@ -72,7 +72,7 @@ sqInt byteSizeOf(sqInt);
+ void *firstIndexableField(sqInt);
+ sqInt push(sqInt);
+ sqInt pop(sqInt);
+-sqInt positive32BitIntegerFor(sqInt);
++sqInt positive32BitIntegerFor(unsigned int iv);
+ sqInt nilObject(void);
+ sqInt instantiateClassindexableSize(sqInt, sqInt);
+ sqInt classByteArray(void);
+diff --git a/platforms/unix/vm-display-X11/sqUnixX11.c b/platforms/unix/vm-display-X11/sqUnixX11.c
+index c3c408b97..80b4f4125 100644
+--- a/platforms/unix/vm-display-X11/sqUnixX11.c
++++ b/platforms/unix/vm-display-X11/sqUnixX11.c
+@@ -347,7 +347,7 @@ int noTitle=		0;
+ int fullScreen=		0;
+ int fullScreenDirect=	0;
+ int iconified=		0;
+-int withSpy=		0;
++int _withSpy=		0;
+ 
+ /*xxx REMOVE REFS TO THESE IN sqUnixSound*.* */
+ 
+@@ -7471,7 +7471,7 @@ display_parseEnvironment(void)
+     }
+ 
+   if (getenv("SQUEAK_LAZY"))		sleepWhenUnmapped= 1;
+-  if (getenv("SQUEAK_SPY"))		withSpy= 1;
++  if (getenv("SQUEAK_SPY"))		_withSpy= 1;
+ #if !defined (INIT_INPUT_WHEN_KEY_PRESSED)
+   if (getenv("SQUEAK_NOINTL"))		initInput= initInputNone;
+ #else
+diff --git a/platforms/unix/vm/sqUnixGlobals.h b/platforms/unix/vm/sqUnixGlobals.h
+index fc17a3690..18ea98600 100644
+--- a/platforms/unix/vm/sqUnixGlobals.h
++++ b/platforms/unix/vm/sqUnixGlobals.h
+@@ -3,7 +3,7 @@
+ 
+ #include "sqMemoryAccess.h"
+ 
+-extern sqInt forceInterruptCheck(void);
++extern void forceInterruptCheck(void);
+ 
+ #if 1 /* use global structure */
+ 
+diff --git a/platforms/unix/vm/sqUnixMain.c b/platforms/unix/vm/sqUnixMain.c
+index 3ec73b318..e3eee7fd7 100644
+--- a/platforms/unix/vm/sqUnixMain.c
++++ b/platforms/unix/vm/sqUnixMain.c
+@@ -2029,8 +2029,11 @@ imgInit(void)
+ # define mtfsfi(fpscr)
+ #endif
+ 
+-int
+-main(int argc, char **argv, char **envp)
++extern struct SqModule sound_null;
++extern struct SqModule display_X11;
++
++__attribute__((visibility("default"))) int
++squeak_main(int argc, char **argv, char **envp)
+ {
+   /* check the interpreter's size assumptions for basic data types */
+   if (sizeof(int) != 4) error("This C compiler's integers are not 32 bits.");
+@@ -2092,6 +2095,8 @@ main(int argc, char **argv, char **envp)
+     modules= &vm_Module;
+   vm_Module.parseEnvironment();
+   parseArguments(argc, argv);
++  dpy = display_X11.makeInterface();
++  snd = sound_null.makeInterface();
+   if ((!dpy) || (!snd))
+     loadModules();
+ #if !DEBUG
+diff --git a/runner.c b/runner.c
+new file mode 100644
+index 000000000..7830aea1e
+--- /dev/null
++++ b/runner.c
+@@ -0,0 +1,44 @@
++#include <stdio.h>
++#include <pthread.h>
++#include <unistd.h>
++
++int squeak_main(int argc, char **argv, char **envp);
++int osCogStackPageHeadroom();
++
++typedef struct {
++	int argc;
++	char **argv;
++	char **envp;
++} Args;
++
++void init_squeak_callbacks(void (*cb)());
++void call_callback();
++
++void* run_squeak(void* a) {
++	Args* args = (Args*) a;
++	squeak_main(args->argc, args->argv, args->envp);
++	return 0;
++}
++
++int main(int argc, char **argv, char **envp) {
++	osCogStackPageHeadroom();
++	pthread_t thread;
++	pthread_attr_t tattr;
++	size_t size;
++	pthread_attr_init(&tattr);
++	pthread_attr_getstacksize(&tattr, &size);
++	pthread_attr_setstacksize(&tattr, size * 4);
++	printf("Calling from runner\n");
++	Args args = { argc, argv, envp };
++	pthread_create(&thread, &tattr, run_squeak, (void*) &args);
++
++	for (int i = 10; i > 0; --i) {
++		printf("Calling callback in %i\n", i);
++		sleep(1);
++	}
++	printf("Calling callback\n");
++	call_callback();
++
++	pthread_join(thread, NULL);
++	return 0;
++}
+diff --git a/sqplugin.c b/sqplugin.c
+new file mode 100644
+index 000000000..a40238879
+--- /dev/null
++++ b/sqplugin.c
+@@ -0,0 +1,15 @@
++#include <stdio.h>
++
++static void (*callback)() = NULL;
++
++void init_squeak_callbacks(void (*cb)()) {
++	fprintf(stderr, "Succesfully init callback!\n");
++	callback = cb;
++	callback();
++}
++
++void call_callback() {
++	printf("Callback address: %p\n", callback);
++	callback();
++}
++

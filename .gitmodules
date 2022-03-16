@@ -8,3 +8,6 @@
 [submodule "thirdparty/lfqueue"]
 	path = thirdparty/lfqueue
 	url = git@github.com:Taymindis/lfqueue.git
+[submodule "thirdparty/opensmalltalk-vm/opensmalltalk-vm"]
+	path = thirdparty/opensmalltalk-vm/opensmalltalk-vm
+	url = git@github.com:OpenSmalltalk/opensmalltalk-vm.git

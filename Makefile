@@ -23,10 +23,13 @@ $(SOURCEDIR)/$(GDNATIVE_BINDINGS):
 $(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
 	$(CC) $(CFLAGS) -pthread -fPIC -c $(INC) $< -o $@
 
-liblfqueue.so:
+$(BUILDDIR)/liblfqueue.so:
 	cd thirdparty/lfqueue && mkdir -p build && cd build && cmake .. && cmake --build . && cp liblfqueue.so $(CURDIR)/$(BUILDDIR)
 
-$(TARGET): $(OBJECTS) liblfqueue.so
+$(BUILDDIR)/libsqueak.so:
+	cd thirdparty/opensmalltalk-vm && ./compile && cp opensmalltalk-vm/builddir/libsqueak.so $(CURDIR)/$@
+
+$(TARGET): $(OBJECTS) $(BUILDDIR)/liblfqueue.so $(BUILDDIR)/libsqueak.so
 	$(CC) $(CFLAGS) -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin -lsqueak -llfqueue -rdynamic -shared $(OBJECTS) -o $@
 
 .PHONY: clean
