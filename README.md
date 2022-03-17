@@ -1,8 +1,18 @@
 # Godot-Squeak
 
+Godot-Squeak is a Squeak/Smalltalk language binding for the Godot game engine.
+
+Using this language binding, we now have access to the Squeak environment and ecosystem during development with Godot.
+This includes the Squeak debugger and advanced projects like [Sandblocks](https://github.com/hpi-swa/sandblocks).
+Workflows within Godot and Squeak remain largely unchanged and interact well with each other.
+Furthermore, the code used to define Godot logic is very similar to its GDScript-equivalent while being idiomatic Smalltalk.
+We thus expect that this language binding is easy and intuitive to use for Godot and Smalltalk developers alike.
+
 Developed for the Programming Experience seminar WS21/22.
 
 Note: This project was developed for Godot 3.3 and may not work with other versions.
+
+Currently only supports Linux.
 
 ## Building the Plugin
 
@@ -47,7 +57,7 @@ ln -s "$PWD/addons" path/to/godot-project
 ```
 
 A Squeak image named `squeak.image` must be placed in `plugin/addons/squeak/image`.
-See [creating the image](#creating-the-image)
+See [creating the image](#creating-the-image).
 
 ## Usage
 
@@ -126,12 +136,10 @@ Example:
 
 ```Smalltalk
 GDSCustomScript>>customProperty
-  
   <export: '[true]'>
   ^ customProperty
 
 GDSCustomScript>>customProperty: value
-
   customProperty := value
 ```
 
@@ -141,7 +149,6 @@ The names of any signals that the script can emit should be returned in the clas
 
 ```Smalltalk
 GDSCustomScript class>>signals
-
   ^ #('signalOne' 'signalTwo')
 ```
 
