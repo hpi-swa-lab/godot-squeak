@@ -1,0 +1,4 @@
+constants
+typeGodotFinishProcessing
+
+	^ 100

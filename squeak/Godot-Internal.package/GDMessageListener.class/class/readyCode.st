@@ -1,0 +1,5 @@
+constants
+readyCode
+	^ 'ready
+	
+	^ nil'

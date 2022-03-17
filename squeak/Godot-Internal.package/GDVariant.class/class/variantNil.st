@@ -1,0 +1,4 @@
+constants
+variantNil
+
+	^ 0

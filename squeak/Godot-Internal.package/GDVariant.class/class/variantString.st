@@ -1,0 +1,4 @@
+constants
+variantString
+
+	^ 4

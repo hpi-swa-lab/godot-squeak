@@ -1,0 +1,25 @@
+{
+	"class" : {
+		"fromApiJsonObject:position:" : "lege 2/6/2022 14:39",
+		"fromApiPropertiesJsonObject:" : "lege 2/6/2022 14:39",
+		"fromCJsonTuple:position:" : "lege 2/7/2022 17:27",
+		"newVararg" : "lege 2/6/2022 14:39" },
+	"instance" : {
+		"argumentMethodName" : "lege 1/30/2022 16:25",
+		"argumentParamterName" : "lege 2/8/2022 15:55",
+		"hasDefaultValue" : "lege 1/30/2022 15:07",
+		"hasDefaultValue:" : "lege 1/29/2022 11:47",
+		"initialize" : "lege 2/8/2022 16:38",
+		"isSelf" : "lege 2/7/2022 17:25",
+		"isSelf:" : "lege 2/7/2022 17:26",
+		"isVararg" : "lege 2/6/2022 13:59",
+		"isVararg:" : "lege 2/6/2022 14:00",
+		"methodArgumentString" : "lege 2/8/2022 15:55",
+		"name" : "lege 1/29/2022 14:06",
+		"name:" : "lege 1/29/2022 11:46",
+		"removeUnderscores:" : "lege 1/30/2022 16:25",
+		"suffix:" : "lege 2/6/2022 14:40",
+		"type" : "lege 2/8/2022 15:11",
+		"type:" : "lege 1/29/2022 11:46",
+		"typeIsGDString" : "lege 2/9/2022 01:35",
+		"typeIsGDVariant" : "lege 2/9/2022 00:41" } }

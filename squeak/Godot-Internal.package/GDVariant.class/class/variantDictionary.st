@@ -1,0 +1,4 @@
+constants
+variantDictionary
+
+	^ 18

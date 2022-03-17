@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal-Generation",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"stream" ],
+	"name" : "GDApiReader",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

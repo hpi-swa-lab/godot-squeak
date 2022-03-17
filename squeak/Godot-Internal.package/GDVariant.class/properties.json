@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		"VariantClasses" ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GDVariant",
+	"pools" : [
+		 ],
+	"super" : "ExternalStructure",
+	"type" : "normal" }

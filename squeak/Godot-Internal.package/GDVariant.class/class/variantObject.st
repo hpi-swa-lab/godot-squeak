@@ -1,0 +1,4 @@
+constants
+variantObject
+
+	^ 17

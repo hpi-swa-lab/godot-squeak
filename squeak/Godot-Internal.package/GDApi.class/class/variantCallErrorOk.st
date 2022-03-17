@@ -1,0 +1,4 @@
+constants
+variantCallErrorOk
+
+	^ 0

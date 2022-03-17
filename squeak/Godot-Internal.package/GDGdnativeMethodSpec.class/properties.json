@@ -1,0 +1,15 @@
+{
+	"category" : "Godot-Internal-Generation",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		"BuiltinClassNames",
+		"CToSqueakNames" ],
+	"commentStamp" : "",
+	"instvars" : [
+		"apiName" ],
+	"name" : "GDGdnativeMethodSpec",
+	"pools" : [
+		 ],
+	"super" : "GDMethodSpec",
+	"type" : "normal" }

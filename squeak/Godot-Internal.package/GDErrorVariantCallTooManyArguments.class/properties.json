@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal-Exceptions",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GDErrorVariantCallTooManyArguments",
+	"pools" : [
+		 ],
+	"super" : "GDErrorVariantCall",
+	"type" : "normal" }

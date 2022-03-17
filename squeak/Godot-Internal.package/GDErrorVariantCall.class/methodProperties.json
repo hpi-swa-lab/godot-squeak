@@ -1,0 +1,13 @@
+{
+	"class" : {
+		"from:" : "lege 2/10/2022 20:33",
+		"initialize" : "lege 2/10/2022 20:25",
+		"typeCallOk" : "lege 2/1/2022 22:37",
+		"typeInstanceIsNull" : "lege 2/1/2022 22:38",
+		"typeInvalidArgument" : "lege 2/1/2022 22:37",
+		"typeInvalidMethod" : "lege 2/1/2022 22:37",
+		"typeTooFewArguments" : "lege 2/1/2022 22:38",
+		"typeTooManyArguments" : "lege 2/1/2022 22:37" },
+	"instance" : {
+		"isInvalidMethod" : "lege 2/10/2022 20:23",
+		"messageText" : "lege 2/10/2022 20:23" } }

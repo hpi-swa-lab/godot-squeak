@@ -1,0 +1,18 @@
+{
+	"category" : "Godot-Internal-Generation",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"parentName",
+		"name",
+		"category",
+		"isSingleton",
+		"singletonName" ],
+	"name" : "GDClassSpec",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,8 @@
+fields
+fields
+	" self defineFields "
+	
+	^ #(
+		(names 'void*')
+		(numNames 'int32_t')
+	)

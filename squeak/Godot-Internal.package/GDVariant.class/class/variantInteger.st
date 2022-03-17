@@ -1,0 +1,4 @@
+constants
+variantInteger
+
+	^ 2

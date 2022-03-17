@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal-Exceptions",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GDErrorVariantCallInstanceIsNull",
+	"pools" : [
+		 ],
+	"super" : "GDErrorVariantCall",
+	"type" : "normal" }

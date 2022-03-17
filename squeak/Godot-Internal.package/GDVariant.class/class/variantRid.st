@@ -1,0 +1,4 @@
+constants
+variantRid
+
+	^ 16

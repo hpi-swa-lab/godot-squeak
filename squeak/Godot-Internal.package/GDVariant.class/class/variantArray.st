@@ -1,0 +1,4 @@
+constants
+variantArray
+
+	^ 19

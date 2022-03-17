@@ -1,0 +1,14 @@
+{
+	"category" : "Godot-Internal-Generation",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"setterName" ],
+	"name" : "GDGodotApiPropertySetterSpec",
+	"pools" : [
+		 ],
+	"super" : "GDMethodSpec",
+	"type" : "normal" }

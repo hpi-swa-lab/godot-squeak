@@ -1,0 +1,4 @@
+constants
+variantQuat
+
+	^ 10

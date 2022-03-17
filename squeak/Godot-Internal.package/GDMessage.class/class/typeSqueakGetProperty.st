@@ -1,0 +1,4 @@
+constants
+typeSqueakGetProperty
+
+	^ 6

@@ -1,0 +1,4 @@
+constants
+variantPoolRealArray
+
+	^ 22

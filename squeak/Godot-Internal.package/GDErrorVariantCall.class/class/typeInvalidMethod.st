@@ -1,0 +1,4 @@
+constants
+typeInvalidMethod
+
+	^ 1

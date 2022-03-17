@@ -1,0 +1,4 @@
+explorer
+explorerContentsProperties
+	
+	^ self explorerContentsScriptProperties, self explorerContentsGodotProperties
