@@ -1,0 +1,92 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://scenes/paddle/Paddle.tscn" type="PackedScene" id=1]
+[ext_resource path="res://scenes/ball/Ball.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scenes/wall/Wall.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/prstartk.tres" type="DynamicFont" id=4]
+[ext_resource path="res://scenes/fpsCounter/FpsCounter.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scenes/goal/Goal.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/score/Score.tscn" type="PackedScene" id=7]
+
+[node name="Main" type="Node2D"]
+
+[node name="Player Paddle" parent="." instance=ExtResource( 1 )]
+position = Vector2( 100, 300 )
+
+[node name="CPU Paddle" parent="." instance=ExtResource( 1 )]
+position = Vector2( 924, 300 )
+speed = 120.0
+isPlayer = false
+
+[node name="Upper Wall" parent="." instance=ExtResource( 3 )]
+position = Vector2( 512, 0 )
+
+[node name="Lower Wall" parent="." instance=ExtResource( 3 )]
+position = Vector2( 512, 600 )
+
+[node name="Ball" parent="." instance=ExtResource( 2 )]
+position = Vector2( 512, 300 )
+speed = 300.0
+
+[node name="Player Goal" parent="." instance=ExtResource( 6 )]
+position = Vector2( -75, 300 )
+
+[node name="CPU Goal" parent="." instance=ExtResource( 6 )]
+position = Vector2( 1099, 300 )
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+margin_top = 433.0
+margin_right = 1024.0
+margin_bottom = 602.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+margin_left = 426.0
+margin_top = 44.0
+margin_right = 598.0
+margin_bottom = 124.0
+
+[node name="Pause Button" type="Button" parent="CenterContainer/VBoxContainer"]
+margin_right = 172.0
+margin_bottom = 38.0
+custom_fonts/font = ExtResource( 4 )
+toggle_mode = true
+pressed = true
+text = "Pause"
+
+[node name="Reset Button" type="Button" parent="CenterContainer/VBoxContainer"]
+margin_top = 42.0
+margin_right = 172.0
+margin_bottom = 80.0
+custom_fonts/font = ExtResource( 4 )
+text = "Reset"
+
+[node name="CenterContainer2" type="CenterContainer" parent="."]
+margin_right = 1024.0
+margin_bottom = 169.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Score" parent="CenterContainer2" instance=ExtResource( 7 )]
+margin_left = 432.0
+margin_top = 68.0
+margin_right = 592.0
+margin_bottom = 100.0
+
+[node name="FpsCounter" parent="." instance=ExtResource( 5 )]
+margin_left = 9.36566
+margin_top = 5.90054
+margin_right = 49.3657
+margin_bottom = 19.9005
+
+[connection signal="score" from="Player Goal" to="Ball" method="reset"]
+[connection signal="score" from="Player Goal" to="CenterContainer2/Score" method="incrementCpuScore"]
+[connection signal="score" from="CPU Goal" to="Ball" method="reset"]
+[connection signal="score" from="CPU Goal" to="CenterContainer2/Score" method="incrementPlayerScore"]
+[connection signal="toggled" from="CenterContainer/VBoxContainer/Pause Button" to="Player Paddle" method="paused_"]
+[connection signal="toggled" from="CenterContainer/VBoxContainer/Pause Button" to="CPU Paddle" method="paused_"]
+[connection signal="toggled" from="CenterContainer/VBoxContainer/Pause Button" to="Ball" method="paused_"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/Reset Button" to="Ball" method="reset"]

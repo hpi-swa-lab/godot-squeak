@@ -14,6 +14,9 @@ Note: This project was developed for Godot 3.3 and may not work with other versi
 
 Currently only supports Linux.
 
+![Screenshot of the Godot editor and Squeak windows side-by-side](editor.png)
+![Screenshot of a debugging session for a running game](runningGame.png)
+
 ## Building the Plugin
 
 ```bash
@@ -75,6 +78,8 @@ Only one message listener process should be active.
 You can attach Smalltalk scripts to Nodes just like you would with GDScript.
 Make sure to select Smalltalk as the language in the script creation window.
 Creating a script will create a corresponding class in the `Godot-Scripts` category within Squeak.
+
+![Screenshot of the script creation dialog](scriptCreationDialog.png)
 
 Just like in Godot, the script inherits from the respective Godot object.
 This means that it has access to all of its parent's methods and properties via `self`.
