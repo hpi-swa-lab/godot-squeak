@@ -1,7 +1,8 @@
 # Godot-Squeak
 
-Godot-Squeak is a Squeak/Smalltalk language binding for the Godot game engine.
+Godot-Squeak is a Squeak/Smalltalk language binding for the [Godot game engine](https://github.com/godotengine/godot).
 
+This is achieved by compiling a Squeak VM as a shared library and running it in a thread alongside Godot.
 Using this language binding, we now have access to the Squeak environment and ecosystem during development with Godot.
 This includes the Squeak debugger and advanced projects like [Sandblocks](https://github.com/hpi-swa/sandblocks).
 Workflows within Godot and Squeak remain largely unchanged and interact well with each other.
@@ -12,7 +13,7 @@ Developed for the Programming Experience seminar WS21/22.
 
 Note: This project was developed for Godot 3.3 and may not work with other versions.
 
-Currently only supports Linux.
+Currently only supported on Linux.
 
 ![Screenshot of the Godot editor and Squeak windows side-by-side](editor.png)
 ![Screenshot of a debugging session for a running game](runningGame.png)
@@ -63,6 +64,12 @@ A Squeak image named `squeak.image` must be placed in `plugin/addons/squeak/imag
 See [creating the image](#creating-the-image).
 
 ## Usage
+
+You need to start Godot with the LD_LIBRARY_PATH containing the path to `plugin/addons/squeak`.
+
+```bash
+LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/path/to/plugin/addons/squeak" ./Godot
+```
 
 For the plugin to work, a message listener process must be running in Squeak.
 If the process is not running, you may start it with
