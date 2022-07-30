@@ -21,8 +21,9 @@ Currently only supported on Linux.
 ## Building the Plugin
 
 ```bash
+git submodule update --init
 cd plugin
-make
+PATH=$PATH:/path/to/smalltalkci/bin make
 ```
 
 ## Creating the Image

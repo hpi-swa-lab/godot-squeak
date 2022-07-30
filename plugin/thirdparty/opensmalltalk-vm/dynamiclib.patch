@@ -1,33 +1,9 @@
-diff --git a/building/linux64x64/squeak.cog.spur/build/mvm b/building/linux64x64/squeak.cog.spur/build/mvm
-index 1d28bf99f..f2e82beeb 100755
---- a/building/linux64x64/squeak.cog.spur/build/mvm
-+++ b/building/linux64x64/squeak.cog.spur/build/mvm
-@@ -25,12 +25,7 @@ if [ $# -ge 1 ]; then
- fi
- 
- if ../../../../scripts/checkSCCSversion ; then exit 1; fi
--echo -n "clean? "
--read a
--case $a in
--n|no|N|NO)	echo "ok but this isn't safe!!";;
--*)			test -f Makefile && make reallyclean
--esac
-+test -f Makefile && make reallyclean
- test -f plugins.int || (test -f ../plugins.int && cp -p ../plugins.int . || cp -p ../../plugins.int .)
- test -f plugins.ext || (test -f ../plugins.ext && cp -p ../plugins.ext . || cp -p ../../plugins.ext .)
- test -f config.h || ../../../../platforms/unix/config/configure --without-npsqueak \
-@@ -46,4 +41,4 @@ rm -f vm/sqUnixMain.o # nuke version info
- rm -rf ../../../../products/$INSTALLDIR
- # prefer make install prefix=`readlink -f \`pwd\`/../../../../products/$INSTALLDIR`
- # but older linux readlinks lack the -f flag
--make install-squeak install-plugins prefix=`(cd ../../../../;pwd)`/products/$INSTALLDIR 2>&1 | tee LOG ; test ${PIPESTATUS[0]} -eq 0
-+make -j6 install-squeak install-plugins prefix=`(cd ../../../../;pwd)`/products/$INSTALLDIR 2>&1 | tee LOG ; test ${PIPESTATUS[0]} -eq 0
 diff --git a/meson.build b/meson.build
 new file mode 100644
 index 000000000..1bdc1efc9
 --- /dev/null
 +++ b/meson.build
-@@ -0,0 +1,292 @@
+@@ -0,0 +1,301 @@
 +project('opensmalltalk-vm', 'c')
 +
 +fs = import('fs')
@@ -187,11 +163,22 @@ index 000000000..1bdc1efc9
 +    output: ['sqNamedPrims.h'],
 +    command: ['sh', '-c', 'echo "$0" > sqNamedPrims.h', sqNamedPrims_head_h + sqNamedPrims_tail_h + '\tNULL\n};'])
 +
++version_c = custom_target('version.c',
++    output: ['version.c'],
++    command: ['sh', '-c', 'echo $0 > version.c', '
++int vm_serial= 1;
++char *vm_date= "generic";
++char *cc_version= "clang";
++char *ux_version= "meson-build-generic";'])
++
++
 +# Add Display and Sound plugins
 +plugin_sources += [
 +  # 'platforms/unix/vm-display-null/sqUnixDisplayNull.c',
-+  'platforms/unix/vm-display-X11/sqUnixX11.c', 'platforms/unix/vm-display-X11/sqUnixMozilla.c',
-+  'platforms/unix/vm-sound-null/sqUnixSoundNull.c'
++  'platforms/unix/vm-display-X11/sqUnixX11.c',
++  'platforms/unix/vm-display-X11/sqUnixMozilla.c',
++  'platforms/unix/vm-sound-null/sqUnixSoundNull.c',
++  'platforms/unix/vm/sqUnixDisplayHelpers.c'
 +  ]
 +plugin_inc += [
 +  'platforms/unix/plugins/B3DAcceleratorPlugin',
@@ -248,7 +235,7 @@ index 000000000..1bdc1efc9
 +    ]
 +
 +vm_generated_sources = [
-+    'building/linux64x64/squeak.cog.spur/build/version.c',
++    version_c,
 +    sqNamedPrims_h
 +    ]
 +
@@ -301,7 +288,7 @@ index 000000000..1bdc1efc9
 +#   'platforms/Cross/vm',
 +#   'src/spur64.cog',
 +#   ])
-+# 
++#
 +# shared_module('vm-display-null', ['platforms/unix/vm-display-null/sqUnixDisplayNull.c'],
 +#     include_directories : [inc_extern],
 +#     name_prefix : '',

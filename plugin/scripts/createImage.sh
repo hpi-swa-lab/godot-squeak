@@ -2,7 +2,7 @@
 
 set -e
 
-IMAGE_URL="http://files.squeak.org/trunk/Squeak6.0alpha-21475-64bit/Squeak6.0alpha-21475-64bit-202112201228-Linux-x64.tar.gz"
+IMAGE_URL="http://files.squeak.org/6.0/Squeak6.0-22104-64bit/Squeak6.0-22104-64bit-202206021410-Linux-x64.tar.gz"
 
 output_dir=${1:-godot-squeak-image}
 tempdir=$(mktemp -d)

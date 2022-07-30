@@ -16,9 +16,9 @@ INC=-Ithirdparty -Igodot-headers
 
 all: $(TARGET)
 
-# requires a symlink to run.sh called smalltalkCI (https://github.com/hpi-swa/smalltalkCI)
+# requires a symlink to run.sh called smalltalkci (https://github.com/hpi-swa/smalltalkCI)
 $(SOURCEDIR)/$(GDNATIVE_BINDINGS):
-	SPEC_FILE="${CURDIR}/godot-headers/gdnative_api.json" OUTPUT_FILE="${CURDIR}/$@" smalltalkCI -s "Squeak64-5.3" $(SCRIPTSDIR)/generateGDNativeCBindingsConfig.ston
+	SPEC_FILE="${CURDIR}/godot-headers/gdnative_api.json" OUTPUT_FILE="${CURDIR}/$@" smalltalkci --headful -s "Squeak64-5.3" $(SCRIPTSDIR)/generateGDNativeCBindingsConfig.ston
 
 $(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
 	$(CC) $(CFLAGS) -pthread -fPIC -c $(INC) $< -o $@
