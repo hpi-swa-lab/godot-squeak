@@ -17,26 +17,50 @@ typedef struct {
   void* data;
 } message_t;
 
+#if SOCKETS
+#define _GNU_SOURCE
+#include <dlfcn.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <unistd.h>
+int socket_fd;
+#else
 // TODO: volatile?
 static message_t* godot_inbox;
 static message_t* squeak_inbox;
 
 static sem_t godot_message_signal;
 static sem_t squeak_message_signal;
+#endif
 
+// Squeak FFI API functions
+#if !SOCKETS
 void squeak_send_message(message_t* message) {
   godot_inbox = message;
   sem_post(&godot_message_signal);
 }
 
-void godot_send_message(message_t* message) {
-  squeak_inbox = message;
-  sem_post(&squeak_message_signal);
-}
-
 message_t* squeak_read_message_blocking() {
   sem_wait(&squeak_message_signal);
   return squeak_inbox;
+}
+
+// next message or NULL if empty
+message_t *read_message() {
+  return (message_t *) lfqueue_single_deq(&squeak_queue);
+}
+#endif
+
+void godot_send_message(message_t* message) {
+#if SOCKETS
+  char *data = "test";
+  printf("SENDING\n");
+  if (send(socket_fd, data, strlen(data), 0) < 0) {perror("Send failed"); }
+  printf("SENT\n");
+#else
+  squeak_inbox = message;
+  sem_post(&squeak_message_signal);
+#endif
 }
 
 static bool init_queue(lfqueue_t* queue) {
@@ -49,15 +73,34 @@ static bool init_queue(lfqueue_t* queue) {
 }
 
 bool init_sqmessage() {
+#if SOCKETS
+  void *sym = dlsym(0, "encode_variant");
+  printf("%p\n", sym);
+  socket_fd = socket(AF_INET , SOCK_STREAM , 0);
+  if (socket_fd == -1) { perror("creating socket"); return false; }
+
+  struct sockaddr_in server;
+  char *host = getenv("SQ_HOST");
+  char *port = getenv("SQ_PORT");
+  server.sin_addr.s_addr = inet_addr(host ? host : "127.0.0.1");
+  server.sin_family = AF_INET;
+  server.sin_port = htons(atoi(port ? port : "8000"));
+  if (connect(socket_fd, (struct sockaddr *) &server, sizeof(server)) < 0) { perror("connect"); return false; }
+#else
   // TODO handle failure cases
   sem_init(&godot_message_signal, 0, 0);
   sem_init(&squeak_message_signal, 0, 0);
+#endif
   return init_queue(&squeak_queue) && init_queue(&godot_queue);
 }
 
 void finish_sqmessage() {
+#if SOCKETS
+  close(socket_fd);
+#else
   sem_destroy(&godot_message_signal);
   sem_destroy(&squeak_message_signal);
+#endif
   lfqueue_destroy(&squeak_queue);
   lfqueue_destroy(&godot_queue);
 }
@@ -78,9 +121,29 @@ void* process_responses(message_t* message) {
 
   while (true) {
     /* printf("Waiting for response to message of type %i...\n", message->type); */
+#if SOCKETS
+    char response_data[4096];
+    memset(response_data, 0, sizeof(response_data));
+    size_t total = sizeof(response_data) - 1;
+    size_t received = 0;
+    do {
+      size_t bytes = read(socket_fd, response_data + received, total - received);
+      if (bytes < 0) {
+        fprintf(stderr, "error reading data from socket\n");
+      }
+      if (bytes == 0)
+        break;
+      received += bytes;
+    } while (received < total);
+    if (received == total) {
+      fprintf(stderr, "message was too long to receive\n");
+    }
+    message_t* response = NULL;
+#else
     sem_wait(&godot_message_signal);
 
     message_t* response = godot_inbox;
+#endif
 
     switch (response->type) {
       case SQP_GODOT_FINISH_PROCESSING:;
@@ -122,6 +185,7 @@ void* send_message(enum MessageType type, void* data) {
 
   if (is_currently_processing()) {
     /* printf("Currently processing, using signalling mechanism\n"); */
+    printf("GO\n");
     godot_send_message(&m);
   } else {
     /* printf("Not currently processing, using busy wait mechanism\n"); */
@@ -131,11 +195,6 @@ void* send_message(enum MessageType type, void* data) {
   }
 
   return process_responses(&m);
-}
-
-// next message or NULL if empty
-message_t *read_message() {
-  return (message_t *) lfqueue_single_deq(&squeak_queue);
 }
 
 void destroy_script_description(script_description_t* description) {
@@ -249,8 +308,12 @@ typedef struct {
 } initialize_environment_t;
 
 void squeak_initialize_environment(bool in_editor) {
+  #if SOCKETS
+  godot_variant data = godot_variant_new_bool(in_editor);
+  #else
   initialize_environment_t data = {
     in_editor
   };
+  #endif
   send_message(SQP_INITIALIZE, &data);
 }

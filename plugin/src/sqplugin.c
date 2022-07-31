@@ -22,7 +22,9 @@ godot_pluginscript_language_data* smalltalk_lang_init() {
     fprintf(stderr, "Language initialization failed!");
     exit(1);
   }
+#if !SOCKETS
   init_squeak(lib_path);
+#endif
   squeak_initialize_environment(in_editor);
   return NULL;
 }

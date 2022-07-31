@@ -1,4 +1,5 @@
 #include <gdnative_api_struct.gen.h>
+#define SOCKETS 1
 
 enum MessageType {
   SQP_SQUEAK_NEW_SCRIPT = 0,
