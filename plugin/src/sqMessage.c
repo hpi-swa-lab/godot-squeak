@@ -24,6 +24,7 @@ typedef struct
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include "marshalls.h"
 int socket_fd;
 #else
 // TODO: volatile?
@@ -58,13 +59,19 @@ message_t *read_message()
 void godot_send_message(message_t *message)
 {
 #if SOCKETS
-  char *data = "test";
-  printf("SENDING\n");
-  if (send(socket_fd, data, strlen(data), 0) < 0)
+  int data_len;
+  encode_variant(message->data, NULL, &data_len, false, 0);
+  uint32_t message_size = sizeof(uint32_t) * 2 + sizeof(uint8_t) * data_len;
+  uint8_t *buffer = malloc(message_size);
+  buffer[0] = message->type;
+  // TODO assert ranges
+  buffer[sizeof(uint32_t)] = data_len;
+  encode_variant(message->data, buffer + sizeof(uint32_t) * 2, &data_len, false, 0);
+
+  if (send(socket_fd, buffer, message_size, 0) < 0)
   {
     perror("Send failed");
   }
-  printf("SENT\n");
 #else
   squeak_inbox = message;
   sem_post(&squeak_message_signal);
@@ -354,7 +361,8 @@ typedef struct
 void squeak_initialize_environment(bool in_editor)
 {
 #if SOCKETS
-  godot_variant data = godot_variant_new_bool(in_editor);
+  godot_variant data;
+  godot_variant_new_bool(&data, in_editor);
 #else
   initialize_environment_t data = {
       in_editor};
