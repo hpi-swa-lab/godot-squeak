@@ -8,6 +8,7 @@
 #include "sqMessage.h"
 #include "gdnativeUtils.h"
 #include "squeakUtils.h"
+#include <sys/time.h>
 
 const godot_gdnative_core_api_struct *api = NULL;
 const godot_gdnative_core_1_1_api_struct *api_1_1 = NULL;
@@ -25,7 +26,14 @@ godot_pluginscript_language_data* smalltalk_lang_init() {
 #if !SOCKETS
   init_squeak(lib_path);
 #endif
+  struct timeval t1, t2;
+  for (int i = 0; i < 20; i++) {
+  gettimeofday(&t1, NULL);
   squeak_initialize_environment(in_editor);
+  gettimeofday(&t2, NULL);
+  printf("squeak_initialize_environment took %f seconds\n", (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1000000.0);
+  }
+
   return NULL;
 }
 

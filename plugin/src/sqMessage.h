@@ -1,5 +1,5 @@
 #include <gdnative_api_struct.gen.h>
-#define SOCKETS 1
+#define SOCKETS 0
 
 enum MessageType
 {

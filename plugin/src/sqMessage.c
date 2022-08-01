@@ -62,16 +62,18 @@ void godot_send_message(message_t *message)
   int data_len;
   encode_variant(message->data, NULL, &data_len, false, 0);
   uint32_t message_size = sizeof(uint32_t) * 2 + sizeof(uint8_t) * data_len;
-  uint8_t *buffer = malloc(message_size);
+  uint8_t *buffer = calloc(sizeof(uint8_t), message_size);
   buffer[0] = message->type;
   // TODO assert ranges
   buffer[sizeof(uint32_t)] = data_len;
   encode_variant(message->data, buffer + sizeof(uint32_t) * 2, &data_len, false, 0);
 
+  printf("SEDING %d %d %d\n", message->type, data_len, message_size);
   if (send(socket_fd, buffer, message_size, 0) < 0)
   {
     perror("Send failed");
   }
+  free(buffer);
 #else
   squeak_inbox = message;
   sem_post(&squeak_message_signal);
@@ -92,8 +94,6 @@ static bool init_queue(lfqueue_t *queue)
 bool init_sqmessage()
 {
 #if SOCKETS
-  void *sym = dlsym(0, "encode_variant");
-  printf("%p\n", sym);
   socket_fd = socket(AF_INET, SOCK_STREAM, 0);
   if (socket_fd == -1)
   {
@@ -144,6 +144,29 @@ typedef struct
 
 static int processing_stack_count = 0;
 
+#if SOCKETS
+void read_header(uint32_t *type, uint32_t *data_len)
+{
+  uint8_t buffer[8];
+  size_t total = 8;
+  size_t received = 0;
+  do
+  {
+    size_t bytes = read(socket_fd, buffer + received, total - received);
+    if (bytes < 0)
+    {
+      fprintf(stderr, "error reading data from socket\n");
+    }
+    if (bytes == 0)
+      break;
+    received += bytes;
+  } while (received < total);
+
+  *type = buffer[0];
+  *data_len = buffer[sizeof(uint32_t)];
+}
+#endif
+
 void *process_responses(message_t *message)
 {
   ++processing_stack_count;
@@ -152,13 +175,15 @@ void *process_responses(message_t *message)
   {
     /* printf("Waiting for response to message of type %i...\n", message->type); */
 #if SOCKETS
-    char response_data[4096];
-    memset(response_data, 0, sizeof(response_data));
-    size_t total = sizeof(response_data) - 1;
+    uint32_t type, total;
+    read_header(&type, &total);
+    int len = total;
+
+    uint8_t *buffer = calloc(total, sizeof(uint8_t));
     size_t received = 0;
     do
     {
-      size_t bytes = read(socket_fd, response_data + received, total - received);
+      size_t bytes = read(socket_fd, buffer + received, total - received);
       if (bytes < 0)
       {
         fprintf(stderr, "error reading data from socket\n");
@@ -167,11 +192,20 @@ void *process_responses(message_t *message)
         break;
       received += bytes;
     } while (received < total);
-    if (received == total)
+
+    godot_variant data;
+    if (len > 0)
     {
-      fprintf(stderr, "message was too long to receive\n");
+      decode_variant(&data, buffer, len, NULL, false, 0);
     }
-    message_t *response = NULL;
+    else
+    {
+      godot_variant_new_nil(&data);
+    }
+    free(buffer);
+
+    message_t m = {type, &data};
+    message_t *response = &m;
 #else
     sem_wait(&godot_message_signal);
 
@@ -209,7 +243,11 @@ void *process_responses(message_t *message)
 
 bool is_currently_processing()
 {
+#if SOCKETS
+  return true;
+#else
   return processing_stack_count > 0;
+#endif
 }
 
 // we send a message to squeak and wait for it to be handled
@@ -222,7 +260,6 @@ void *send_message(enum MessageType type, void *data)
   if (is_currently_processing())
   {
     /* printf("Currently processing, using signalling mechanism\n"); */
-    printf("GO\n");
     godot_send_message(&m);
   }
   else
