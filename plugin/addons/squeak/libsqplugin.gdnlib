@@ -7,8 +7,10 @@ reloadable=false
 
 [entry]
 
+Android.arm64-v8a="res://addons/squeak/libsqplugin-android.so"
 X11.64="res://addons/squeak/libsqplugin.so"
 
 [dependencies]
 
+Android.arm64-v8a=[  ]
 X11.64=[ "res://addons/squeak/libsqueak.so", "res://addons/squeak/liblfqueue.so" ]

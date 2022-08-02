@@ -9,9 +9,6 @@
 #define __USE_XOPEN_EXTENDED
 #include <string.h>
 
-static lfqueue_t squeak_queue;
-static lfqueue_t godot_queue;
-
 typedef struct
 {
   int32_t type; // enum MessageType
@@ -30,6 +27,9 @@ int socket_fd;
 // TODO: volatile?
 static message_t *godot_inbox;
 static message_t *squeak_inbox;
+
+static lfqueue_t squeak_queue;
+static lfqueue_t godot_queue;
 
 static sem_t godot_message_signal;
 static sem_t squeak_message_signal;
@@ -112,12 +112,13 @@ bool init_sqmessage()
     perror("connect");
     return false;
   }
+  return true;
 #else
   // TODO handle failure cases
   sem_init(&godot_message_signal, 0, 0);
   sem_init(&squeak_message_signal, 0, 0);
-#endif
   return init_queue(&squeak_queue) && init_queue(&godot_queue);
+#endif
 }
 
 void finish_sqmessage()
@@ -127,9 +128,9 @@ void finish_sqmessage()
 #else
   sem_destroy(&godot_message_signal);
   sem_destroy(&squeak_message_signal);
-#endif
   lfqueue_destroy(&squeak_queue);
   lfqueue_destroy(&godot_queue);
+#endif
 }
 
 typedef struct
@@ -243,11 +244,7 @@ void *process_responses(message_t *message)
 
 bool is_currently_processing()
 {
-#if SOCKETS
-  return true;
-#else
   return processing_stack_count > 0;
-#endif
 }
 
 // we send a message to squeak and wait for it to be handled
@@ -257,6 +254,9 @@ void *send_message(enum MessageType type, void *data)
   m.type = type;
   m.data = data;
 
+#if SOCKETS
+  godot_send_message(&m);
+#else
   if (is_currently_processing())
   {
     /* printf("Currently processing, using signalling mechanism\n"); */
@@ -270,6 +270,7 @@ void *send_message(enum MessageType type, void *data)
       fprintf(stderr, "failed to enqueue");
     }
   }
+#endif
 
   return process_responses(&m);
 }

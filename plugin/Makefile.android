@@ -1,0 +1,24 @@
+CC=/home/tom/Apps/android-sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android30-clang
+CFLAGS=-target aarch64-linux-android30
+
+SOURCEDIR=src
+BUILDDIR=build
+GDNATIVE_BINDINGS=gdnativeSqueakBindings.gen.c
+SOURCE_NAMES=sqplugin.c gdnativeUtils.c squeakUtils.c sqMessage.c marshalls.c $(GDNATIVE_BINDINGS)
+TARGET=$(BUILDDIR)/libsqplugin-android.so
+OBJECTS=$(addprefix $(BUILDDIR)/,$(SOURCE_NAMES:.c=.o))
+INC=-Ithirdparty -Igodot-headers
+DEPS=$(addprefix $(BUILDDIR)/,$(SOURCE_NAMES:.c=.d))
+
+all: $(TARGET)
+
+$(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
+	$(CC) $(CFLAGS) -fPIC -c $(INC) $< -o $@
+
+$(TARGET): $(OBJECTS)
+	$(CC) $(CFLAGS) -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin -rdynamic -shared $(OBJECTS) -o $@
+
+$(BUILDDIR)/%.d: $(SOURCEDIR)/%.c
+	$(CC) $(CFLAGS) -MM -MG -MF $@ -MP -MT $@ -MT $(<:.c=.o) $<
+
+$(shell mkdir -p $(BUILDDIR))

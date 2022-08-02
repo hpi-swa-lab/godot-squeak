@@ -178,7 +178,7 @@ Error decode_variant(godot_variant *r_variant, const uint8_t *p_buffer, int p_le
 	case GODOT_VARIANT_TYPE_STRING:
 	{
 		godot_string str;
-		Error err = _decode_string(buf, len, r_len, &str);
+		Error err = _decode_string(&buf, &len, r_len, &str);
 		godot_variant_new_string(r_variant, &str);
 		godot_string_destroy(&str);
 		if (err)
@@ -616,7 +616,7 @@ Error decode_variant(godot_variant *r_variant, const uint8_t *p_buffer, int p_le
 	case GODOT_VARIANT_TYPE_STRING_NAME:
 	{
 		String str;
-		Error err = _decode_string(buf, len, r_len, str);
+		Error err = _decode_string(&buf, &len, r_len, str);
 		if (err)
 		{
 			return err;
@@ -660,7 +660,7 @@ Error decode_variant(godot_variant *r_variant, const uint8_t *p_buffer, int p_le
 			for (uint32_t i = 0; i < total; i++)
 			{
 				godot_string str;
-				Error err = _decode_string(buf, len, r_len, &str);
+				Error err = _decode_string(&buf, &len, r_len, &str);
 				if (err)
 				{
 					return err;
@@ -752,7 +752,7 @@ Error decode_variant(godot_variant *r_variant, const uint8_t *p_buffer, int p_le
 			ERR_FAIL_COND_V(!p_allow_objects, ERR_UNAUTHORIZED);
 
 			godot_string str;
-			Error err = _decode_string(buf, len, r_len, &str);
+			Error err = _decode_string(&buf, &len, r_len, &str);
 			if (err)
 			{
 				return err;
@@ -782,7 +782,7 @@ Error decode_variant(godot_variant *r_variant, const uint8_t *p_buffer, int p_le
 				for (int i = 0; i < count; i++)
 				{
 					str = String();
-					err = _decode_string(buf, len, r_len, str);
+					err = _decode_string(&buf, &len, r_len, str);
 					if (err)
 					{
 						return err;
@@ -831,7 +831,7 @@ Error decode_variant(godot_variant *r_variant, const uint8_t *p_buffer, int p_le
 	case GODOT_VARIANT_TYPE_SIGNAL:
 	{
 		String name;
-		Error err = _decode_string(buf, len, r_len, name);
+		Error err = _decode_string(&buf, &len, r_len, name);
 		if (err)
 		{
 			return err;
@@ -1105,7 +1105,7 @@ Error decode_variant(godot_variant *r_variant, const uint8_t *p_buffer, int p_le
 		for (int32_t i = 0; i < count; i++)
 		{
 			godot_string str;
-			Error err = _decode_string(buf, len, r_len, &str);
+			Error err = _decode_string(&buf, &len, r_len, &str);
 			if (err)
 			{
 				return err;
@@ -1923,7 +1923,7 @@ Error encode_variant(godot_variant *p_variant, uint8_t *r_buffer, int *r_len, bo
 			godot_variant value = godot_dictionary_get(&d, &key);
 
 			int len;
-			Error err = encode_variant(&key, buf, len, p_full_objects, p_depth + 1);
+			Error err = encode_variant(&key, buf, &len, p_full_objects, p_depth + 1);
 			ERR_FAIL_COND_V(err, err);
 			ERR_FAIL_COND_V(len % 4, ERR_BUG);
 			*r_len += len;
@@ -1932,7 +1932,7 @@ Error encode_variant(godot_variant *p_variant, uint8_t *r_buffer, int *r_len, bo
 				buf += len;
 			}
 
-			err = encode_variant(&value, buf, len, p_full_objects, p_depth + 1);
+			err = encode_variant(&value, buf, &len, p_full_objects, p_depth + 1);
 			ERR_FAIL_COND_V(err, err);
 			ERR_FAIL_COND_V(len % 4, ERR_BUG);
 			*r_len += len;
@@ -1959,7 +1959,7 @@ Error encode_variant(godot_variant *p_variant, uint8_t *r_buffer, int *r_len, bo
 		{
 			godot_variant val = godot_array_get(&v, i);
 			int len;
-			Error err = encode_variant(&val, buf, len, p_full_objects, p_depth + 1);
+			Error err = encode_variant(&val, buf, &len, p_full_objects, p_depth + 1);
 			ERR_FAIL_COND_V(err, err);
 			ERR_FAIL_COND_V(len % 4, ERR_BUG);
 			*r_len += len;

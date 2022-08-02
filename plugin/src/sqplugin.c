@@ -31,6 +31,12 @@ godot_pluginscript_language_data* smalltalk_lang_init() {
   gettimeofday(&t1, NULL);
   squeak_initialize_environment(in_editor);
   gettimeofday(&t2, NULL);
+  
+  char buffer[2048];
+  sprintf(buffer, "squeak_initialize_environment took %f seconds\n", (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1000000.0);
+  godot_string s;
+  godot_string_new_with_value(&s, buffer);
+  godot_print(&s);
   printf("squeak_initialize_environment took %f seconds\n", (t2.tv_sec - t1.tv_sec) + (t2.tv_usec - t1.tv_usec) / 1000000.0);
   }
 
