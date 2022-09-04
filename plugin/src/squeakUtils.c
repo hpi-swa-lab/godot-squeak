@@ -1,10 +1,12 @@
+#include <string.h>
 #include "squeakUtils.h"
 
+#define SOCKETS 1
+#if !SOCKETS
 #include <pthread.h>
 #include <semaphore.h>
 #include <stdio.h>
 #define __USE_XOPEN_EXTENDED
-#include <string.h>
 #include <stdlib.h>
 #include <libgen.h>
 
@@ -67,6 +69,8 @@ void init_squeak(const char* lib_path) {
 
 void finish_squeak() {
 }
+#endif
+
 
 // TODO: complete this list
 // TODO: consider remapping every method to the proper smalltalk selector
@@ -87,4 +91,3 @@ const char* remap_method_name(const char* method_name) {
   }
   return method_name;
 }
-

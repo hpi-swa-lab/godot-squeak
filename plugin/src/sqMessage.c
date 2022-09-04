@@ -1,3 +1,5 @@
+#define SOCKETS 1
+#if !SOCKETS
 #include "sqMessage.h"
 
 #include "gdnativeUtils.h"
@@ -384,11 +386,37 @@ typedef struct
 
 bool *squeak_get_property(const char *property_name, const godot_object *owner, godot_variant *out)
 {
+#if SOCKETS
+  godot_variant owner_variant;
+  godot_variant_new_object(&owner_variant, owner);
+
+  godot_dictionary message_dict;
+  godot_dictionary_new(&message_dict);
+  godot_dictionary_set_strings(&message_dict, "property_name", property_name);
+  godot_dictionary_set_variant(&message_dict, "owner", owner_variant);
+
+  godot_variant data;
+  godot_variant_new_dictionary(&data, message_dict);
+#else
   get_property_t data = {
       property_name,
       owner,
       out};
-  return send_message(SQP_SQUEAK_GET_PROPERTY, &data);
+#endif
+  void *ret = send_message(SQP_SQUEAK_GET_PROPERTY, &data);
+#if SOCKETS
+  godot_variant_new_copy(out, ((message_t *)ret)->data);
+  godot_variant_destroy(&data);
+  godot_variant_destroy(&owner_variant);
+  godot_dictionary_destroy(&message_dict);
+
+  // TODO can also return false if the prop doesn't exist --> gotta return two values from squeak
+  bool *success_p = malloc(sizeof(bool));
+  *success_p = true;
+  return success_p;
+#else
+  return ret;
+#endif
 }
 
 typedef struct
@@ -407,3 +435,5 @@ void squeak_initialize_environment(bool in_editor)
 #endif
   send_message(SQP_INITIALIZE, &data);
 }
+
+#endif
