@@ -120,7 +120,21 @@ char *squeak_new_script(const char *script_name, const char *parent_name)
 
 script_description_t *squeak_reload_script(const char *script_path, const char *script_source)
 {
+    godot_variant data, response;
+
+    godot_dictionary dict;
+    godot_dictionary_new(&dict);
+    godot_dictionary_set_strings(&dict, "script_path", script_path);
+    godot_dictionary_set_strings(&dict, "script_source", script_source);
+
+    godot_variant_new_dictionary(&data, &dict);
+
     script_description_t *script = calloc(1, sizeof(script_description_t));
+    // TODO send message
+
+    godot_variant_destroy(&response);
+    godot_variant_destroy(&data);
+    godot_dictionary_destroy(&dict);
     return script;
 }
 
@@ -151,6 +165,9 @@ void squeak_initialize_environment(bool in_editor)
     godot_variant_new_nil(&data);
 
     send_message(SQP_INITIALIZE, &data, &response);
+
+    godot_variant_destroy(&data);
+    godot_variant_destroy(&response);
 }
 
 #endif
