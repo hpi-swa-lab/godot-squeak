@@ -4,7 +4,7 @@ newInstanceMethods: aJsonObject name: name classAssociation: classAssociation
 	| methodName specs arguments apiName returnsVariant |
 	"TODO: consider automatically converting GDStrings to Strings instead"
 	methodName := name = 'asString' ifTrue: ['asGDString'] ifFalse: [name].
-	arguments := aJsonObject arguments collectWithIndex: [:argTuple :index |
+	arguments := aJsonObject arguments withIndexCollect: [:argTuple :index |
 		GDArgumentSpec fromCJsonTuple: argTuple position: index].
 	apiName := self apiNameFromJsonObject: aJsonObject.
 	returnsVariant := aJsonObject return_type beginsWith: 'godot_variant'.
