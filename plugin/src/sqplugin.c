@@ -145,8 +145,6 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
   godot_variant_destroy(&data);
   godot_dictionary_destroy(&dict);
 
-  return manifest;
-
   *r_error = GODOT_OK;
 
   return manifest;
