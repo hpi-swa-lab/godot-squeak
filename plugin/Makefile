@@ -15,7 +15,7 @@ CC=gcc
 CFLAGS=-std=c11 -Wall -g
 INC=-Ithirdparty -Igodot-headers
 
-all: $(TARGET)
+all: $(TARGET) squeak_gd_funcs.so
 
 # requires a symlink to run.sh called smalltalkci (https://github.com/hpi-swa/smalltalkCI)
 $(SOURCEDIR)/$(GDNATIVE_BINDINGS):
@@ -31,7 +31,7 @@ $(BUILDDIR)/libsqueak.so:
 	cd thirdparty/opensmalltalk-vm && ./compile && cp opensmalltalk-vm/builddir/libsqueak.so $(CURDIR)/$@
 
 $(TARGET): $(OBJECTS) $(if $(SOCKETS) $(BUILDDIR)/liblfqueue.so,) $(if $(SOCKETS) $(BUILDDIR)/libsqueak.so,)
-	$(CC) $(CFLAGS) -g -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin $(if $(SOCKETS) ,-lsqueak -llfqueue) -rdynamic -shared $(OBJECTS) -o $@
+	$(CC) $(CFLAGS) -Wl,--no-as-needed -L. -Lbuild -Wl,-rpath=sqPlugin $(if $(SOCKETS) ,-lsqueak -llfqueue) -rdynamic -shared $(OBJECTS) -o $@
 
 .PHONY: clean all
 clean:

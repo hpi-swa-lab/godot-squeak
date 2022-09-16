@@ -31,11 +31,14 @@ godot_pluginscript_language_data *smalltalk_lang_init()
     fprintf(stderr, "Language initialization failed!");
     exit(1);
   }
-#if !SOCKETS
-  init_squeak(lib_path);
-#endif
 
-  squeak_initialize_environment(in_editor);
+  godot_variant data, response;
+  godot_variant_new_nil(&data);
+
+  send_message(SQP_INITIALIZE, &data, &response);
+
+  godot_variant_destroy(&data);
+  godot_variant_destroy(&response);
 #if 0
   // FIXME experiment to test latency
   struct timeval t1, t2;
@@ -66,18 +69,22 @@ void smalltalk_lang_finish()
 godot_string smalltalk_get_template_source_code(godot_pluginscript_language_data *p_data, const godot_string *p_class_name, const godot_string *p_base_class_name)
 {
   godot_string template;
-  // TODO: are this strdups necessary?
-  char *class_name = strdup(godot_string_to_c_str(p_class_name));
-  char *parent_name = strdup(godot_string_to_c_str(p_base_class_name));
-  char *template_str = squeak_new_script(class_name, parent_name);
 
-  godot_string_new_with_value(&template, template_str);
+  godot_dictionary dict;
+  godot_dictionary_new(&dict);
+  godot_dictionary_set_godot_string(&dict, "script_name", *p_class_name);
+  godot_dictionary_set_godot_string(&dict, "parent_name", *p_base_class_name);
 
-  free(class_name);
-  free(parent_name);
-  free(template_str);
+  godot_variant data;
+  godot_variant_new_dictionary(&data, &dict);
 
-  return template;
+  godot_variant response;
+  send_message(SQP_SQUEAK_SCRIPT_RELOAD, &data, &response);
+
+  godot_string string = godot_variant_as_string(&response);
+  godot_variant_destroy(&response);
+
+  return string;
 }
 
 void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, const godot_string *p_variable, const godot_variant *p_value)
@@ -88,7 +95,6 @@ void smalltalk_add_global_constant(godot_pluginscript_language_data *p_data, con
 typedef struct
 {
   char *path;
-  script_description_t *description;
 } smalltalk_script_data_t;
 
 godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_language_data *p_data, const godot_string *p_path, const godot_string *p_source, godot_error *r_error)
@@ -96,72 +102,52 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
   printf("smalltalk_script_init\n");
   printf("\tpath: %s\n", godot_string_to_c_str(p_path));
 
-  smalltalk_script_data_t *data = malloc(sizeof(smalltalk_script_data_t));
-  data->path = strdup(godot_globalize_path(godot_string_to_c_str(p_path)));
+  godot_string script_path = godot_string_globalize_path(*p_path);
+  godot_dictionary dict;
+  godot_dictionary_new(&dict);
+  godot_dictionary_set_godot_string(&dict, "script_path", script_path);
+  godot_dictionary_set_godot_string(&dict, "script_source", *p_source);
 
-  char *script_source = strdup(godot_string_to_c_str(p_source));
-  data->description = squeak_reload_script(data->path, script_source);
-  free(script_source);
+  godot_variant data;
+  godot_variant_new_dictionary(&data, &dict);
+
+  godot_variant response;
+  send_message(SQP_SQUEAK_SCRIPT_RELOAD, &data, &response);
+  godot_dictionary dict_response = godot_variant_as_dictionary(&response);
 
   godot_pluginscript_script_manifest manifest = {
-      .data = data,
+      .data = NULL,
       .is_tool = false,
   };
 
-  api->godot_string_name_new_data(&manifest.name, "");
-  api->godot_string_name_new_data(&manifest.base, "");
-  api->godot_dictionary_new(&manifest.member_lines);
-  api->godot_array_new(&manifest.methods);
-  api->godot_array_new(&manifest.signals);
-  api->godot_array_new(&manifest.properties);
+  godot_string_name_new_data(&manifest.name, "");
+  godot_string_name_new_data(&manifest.base, "");
+  godot_dictionary_new(&manifest.member_lines);
 
-  printf("Script contains %i functions\n", data->description->functions.num_names);
-  for (int i = 0; i < data->description->functions.num_names; ++i)
-  {
-    printf("\t-> %s\n", data->description->functions.names[i]);
+  godot_variant field_var;
+  field_var = godot_dictionary_get_strings(&dict_response, "methods");
+  godot_array methods = godot_variant_as_array(&field_var);
+  godot_array_new_copy(&manifest.methods, &methods);
+  godot_array_destroy(&methods);
+  godot_variant_destroy(&field_var);
 
-    godot_array_push_single_entry_dictionary(
-        &manifest.methods, "name", data->description->functions.names[i]);
-    // TODO: do this for all special methods (see remap function)
-    if (strcmp(data->description->functions.names[i], "process_") == 0)
-    {
-      godot_array_push_single_entry_dictionary(&manifest.methods, "name", "_process");
-    }
-    if (strcmp(data->description->functions.names[i], "physicsProcess_") == 0)
-    {
-      godot_array_push_single_entry_dictionary(&manifest.methods, "name", "_physics_process");
-    }
-  }
+  field_var = godot_dictionary_get_strings(&dict_response, "signals");
+  godot_array signals = godot_variant_as_array(&field_var);
+  godot_array_new_copy(&manifest.signals, &signals);
+  godot_array_destroy(&signals);
+  godot_variant_destroy(&field_var);
 
-  printf("Script contains %i signals\n", data->description->signals.num_names);
-  for (int i = 0; i < data->description->signals.num_names; ++i)
-  {
-    printf("\t-> %s\n", data->description->signals.names[i]);
+  field_var = godot_dictionary_get_strings(&dict_response, "properties");
+  godot_array properties = godot_variant_as_array(&field_var);
+  godot_array_new_copy(&manifest.properties, &properties);
+  godot_array_destroy(&properties);
+  godot_variant_destroy(&field_var);
 
-    godot_array_push_single_entry_dictionary(
-        &manifest.signals, "name", data->description->signals.names[i]);
-  }
+  godot_variant_destroy(&response);
+  godot_variant_destroy(&data);
+  godot_dictionary_destroy(&dict);
 
-  printf("Script contains %i properties\n", data->description->properties.num);
-  for (int i = 0; i < data->description->properties.num; ++i)
-  {
-    script_property_t *property = &data->description->properties.properties[i];
-    godot_int type = api->godot_variant_get_type(property->default_value);
-    printf("\t -> %s of type %i\n", property->name, type);
-
-    godot_dictionary properties_dict;
-    api->godot_dictionary_new(&properties_dict);
-
-    godot_dictionary_set_strings(&properties_dict, "name", property->name);
-    godot_dictionary_set_int(&properties_dict, "type", type);
-    godot_dictionary_set_variant(&properties_dict, "default_value", property->default_value);
-
-    godot_variant dict_var;
-    api->godot_variant_new_dictionary(&dict_var, &properties_dict);
-    api->godot_array_push_back(&manifest.properties, &dict_var);
-
-    api->godot_dictionary_destroy(&properties_dict);
-  }
+  return manifest;
 
   *r_error = GODOT_OK;
 
@@ -171,7 +157,6 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
 void smalltalk_script_finish(godot_pluginscript_script_data *p_data)
 {
   printf("smalltalk_script_finish\n");
-  printf("DON'T FORGET TO FREE THE STUFF HERE YO\n");
   /* smalltalk_script_data_t* data = ((smalltalk_script_data_t*) p_data); */
   /* if (data->path != NULL) { */
   /*   free(data->path); */
@@ -188,7 +173,6 @@ void smalltalk_script_finish(godot_pluginscript_script_data *p_data)
 typedef struct
 {
   godot_object *owner;
-  script_functions_t *functions;
 } smalltalk_instance_data_t;
 
 // if this function returns NULL, Godot considers the initialization failed
@@ -198,9 +182,25 @@ godot_pluginscript_instance_data *smalltalk_instance_init(godot_pluginscript_scr
   printf("\tscript path: %s\n", ((smalltalk_script_data_t *)p_data)->path);
   smalltalk_instance_data_t *data = malloc(sizeof(smalltalk_instance_data_t));
   data->owner = p_owner;
-  data->functions = &((smalltalk_script_data_t *)p_data)->description->functions;
-  printf("owner: %p\n", p_owner);
-  squeak_new_instance(((smalltalk_script_data_t *)p_data)->path, p_owner);
+
+  godot_variant owner_var;
+  godot_variant_new_object(&owner_var, p_owner);
+
+  godot_dictionary dict;
+  godot_dictionary_new(&dict);
+  godot_dictionary_set_strings(&dict, "script_path", ((smalltalk_script_data_t *)p_data)->path);
+  godot_dictionary_set(&dict, "owner", &owner_var);
+
+  godot_variant data;
+  godot_variant_new_dictionary(&data, &dict);
+
+  godot_variant response;
+  send_message(SQP_SQUEAK_NEW_INSTANCE, &data, &response);
+
+  godot_variant_destroy(&response);
+  godot_variant_destroy(&data);
+  godot_variant_destroy(&owner_var);
+
   return data;
 }
 
@@ -213,19 +213,47 @@ void smalltalk_instance_finish(godot_pluginscript_instance_data *p_data)
 
 godot_bool smalltalk_set_prop(godot_pluginscript_instance_data *p_data, const godot_string *p_name, const godot_variant *p_value)
 {
-  bool *success_p = squeak_set_property(godot_string_to_c_str(p_name), ((smalltalk_instance_data_t *)p_data)->owner, p_value);
-  bool success = *success_p;
-  free(success_p);
-  return success;
+  godot_variant owner;
+  godot_variant_new_object(&owner, ((smalltalk_instance_data_t *)p_data)->owner);
+
+  godot_variant data;
+  godot_dictionary request;
+  godot_dictionary_new(&request);
+  godot_dictionary_set_godot_string(&request, "name", *p_name);
+  godot_dictionary_set_variant(&request, "value", p_value);
+  godot_dictionary_set_variant(&request, "object", &owner);
+
+  godot_variant response;
+  send_message(SQP_SQUEAK_SET_PROPERTY, &data, &response);
+
+  godot_bool res = godot_variant_as_bool(&response);
+  godot_variant_destroy(&response);
+  godot_variant_destroy(&owner);
+  godot_variant_destroy(&data);
+  godot_dictionary_destroy(&request);
+
+  return res;
 }
 
 godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const godot_string *p_name, godot_variant *r_ret)
 {
-  api->godot_variant_new_nil(r_ret);
-  bool *success_p = squeak_get_property(godot_string_to_c_str(p_name), ((smalltalk_instance_data_t *)p_data)->owner, r_ret);
-  bool success = *success_p;
-  free(success_p);
-  return success;
+  godot_variant owner;
+  godot_variant_new_object(&owner, ((smalltalk_instance_data_t *)p_data)->owner);
+
+  godot_variant data;
+  godot_dictionary request;
+  godot_dictionary_new(&request);
+  godot_dictionary_set_godot_string(&request, "name", *p_name);
+  godot_dictionary_set_variant(&request, "object", &owner);
+
+  godot_variant response;
+  send_message(SQP_SQUEAK_SET_PROPERTY, &data, &response);
+
+  godot_bool res = godot_variant_as_bool(&response);
+  godot_variant_destroy(&response);
+  godot_variant_destroy(&owner);
+  godot_variant_destroy(&data);
+  godot_dictionary_destroy(&request);
 }
 
 int call_count = 0;
@@ -233,74 +261,48 @@ int notification_count = 0;
 
 godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
                                     const godot_string_name *p_method, const godot_variant **p_args,
-                                    int p_argcount, godot_variant_call_error *r_error)
+                                    int argcount, godot_variant_call_error *r_error)
 {
-  const char *method_name = remap_method_name(godot_string_name_to_c_str(p_method));
-
   smalltalk_instance_data_t *data = (smalltalk_instance_data_t *)p_data;
 
-  godot_variant ret;
+  godot_variant owner;
+  godot_variant_new_object(&owner, data->owner);
 
-  // TODO allow handling of special godot functions like ready and process
-  bool can_handle_method = false;
-  for (int i = 0; i < data->functions->num_names; ++i)
+  godot_array args;
+  godot_array_new(&args);
+  godot_array_resize(&args, argcount);
+  for (int i = 0; i < argcount; ++i)
   {
-    if (strcmp(method_name, data->functions->names[i]) == 0)
-    {
-      can_handle_method = true;
-      break;
-    }
+    godot_array_append(&args, p_args[i]);
   }
-  if (!can_handle_method)
-  {
-    printf("Cannot handle method %s\n", method_name);
-    r_error->error = GODOT_CALL_ERROR_CALL_ERROR_INVALID_METHOD;
-    api->godot_variant_new_nil(&ret);
-    return ret;
-  }
+  godot_variant args_var;
+  godot_variant_new_array(&args_var, &args);
 
-  bool is_process = strcmp(method_name, "process_") == 0;
+  godot_variant method_name_var;
+  const char *method_name = remap_method_name(godot_string_name_to_c_str(p_method));
+  godot_variant_new_string_with_value(&method_name_var, method_name);
 
-  if (is_process)
-  {
-    if (++call_count % 100 == 0)
-    {
-      printf("_process has been called %i times\n", call_count);
-    }
-  }
-  else
-  {
-    printf("smalltalk_call_method %s\n", method_name);
-  }
+  godot_dictionary request;
+  godot_dictionary_set_variant(&request, "object", &owner);
+  godot_dictionary_set_variant(&request, "method_name", &method_name_var);
+  godot_dictionary_set_variant(&request, "arguments", &args_var);
 
-  squeak_call_method(method_name, data->owner, p_args, p_argcount, r_error, &ret);
+  godot_variant response;
+  send_message(SQP_SQUEAK_FUNCTION_CALL, &data, &response);
 
-  if (!is_process)
-  {
-    fprintf(stderr, "method returned with %i\n", r_error->error);
-  }
+  godot_dictionary res = godot_variant_as_dictionary(&response);
+  // result should be nil on error
+  godot_variant result = godot_dictionary_get_strings(&res, "result");
+  godot_variant success = godot_dictionary_get_strings(&res, "success");
 
-  // TODO: limited error messages are possible by modifying r_error
+  r_error->error = godot_variant_as_bool(&success) ? GODOT_CALL_ERROR_CALL_OK : GODOT_CALL_ERROR_CALL_ERROR_INVALID_METHOD;
 
-  /* api->godot_variant_new_nil(&var); */
-  return ret;
+  return result;
 }
 
 void smalltalk_notification(godot_pluginscript_instance_data *p_data, int p_notification)
 {
   const char *notification_name = get_node_notification_name(p_notification);
-
-  if (strcmp(notification_name, "NOTIFICATION_PROCESS") == 0)
-  {
-    if (++notification_count % 100 == 0)
-    {
-      printf("NOTIFICATION_PROCESS occurred %i times\n", call_count);
-    }
-  }
-  else
-  {
-    printf("smalltalk_notification %s\n", notification_name);
-  }
 }
 
 // required fields are in modules/gdnative/pluginscript/register_types.cpp:_check_language_desc
