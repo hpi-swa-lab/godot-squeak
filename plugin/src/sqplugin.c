@@ -110,7 +110,7 @@ godot_pluginscript_script_manifest smalltalk_script_init(godot_pluginscript_lang
   godot_variant_new_dictionary(&data, &dict);
 
   godot_variant response;
-  send_message(SQP_SQUEAK_SCRIPT_RELOAD, &data, &response);
+  send_message(SQP_SQUEAK_NEW_SCRIPT, &data, &response);
   godot_dictionary dict_response = godot_variant_as_dictionary(&response);
 
   godot_pluginscript_script_manifest manifest = {
@@ -245,7 +245,7 @@ godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const go
   godot_dictionary_set_variant(&request, "object", &owner);
 
   godot_variant response;
-  send_message(SQP_SQUEAK_SET_PROPERTY, &data, &response);
+  send_message(SQP_SQUEAK_GET_PROPERTY, &data, &response);
 
   godot_bool res = godot_variant_as_bool(&response);
   godot_variant_destroy(&response);
