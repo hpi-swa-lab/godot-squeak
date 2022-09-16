@@ -68,8 +68,6 @@ void smalltalk_lang_finish()
 
 godot_string smalltalk_get_template_source_code(godot_pluginscript_language_data *p_data, const godot_string *p_class_name, const godot_string *p_base_class_name)
 {
-  godot_string template;
-
   godot_dictionary dict;
   godot_dictionary_new(&dict);
   godot_dictionary_set_godot_string(&dict, "script_name", *p_class_name);
@@ -189,16 +187,16 @@ godot_pluginscript_instance_data *smalltalk_instance_init(godot_pluginscript_scr
   godot_dictionary dict;
   godot_dictionary_new(&dict);
   godot_dictionary_set_strings(&dict, "script_path", ((smalltalk_script_data_t *)p_data)->path);
-  godot_dictionary_set(&dict, "owner", &owner_var);
+  godot_dictionary_set_variant(&dict, "owner", &owner_var);
 
-  godot_variant data;
-  godot_variant_new_dictionary(&data, &dict);
+  godot_variant request;
+  godot_variant_new_dictionary(&request, &dict);
 
   godot_variant response;
-  send_message(SQP_SQUEAK_NEW_INSTANCE, &data, &response);
+  send_message(SQP_SQUEAK_NEW_INSTANCE, &request, &response);
 
   godot_variant_destroy(&response);
-  godot_variant_destroy(&data);
+  godot_variant_destroy(&request);
   godot_variant_destroy(&owner_var);
 
   return data;
@@ -254,6 +252,7 @@ godot_bool smalltalk_get_prop(godot_pluginscript_instance_data *p_data, const go
   godot_variant_destroy(&owner);
   godot_variant_destroy(&data);
   godot_dictionary_destroy(&request);
+  return res;
 }
 
 int call_count = 0;
@@ -287,8 +286,10 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
   godot_dictionary_set_variant(&request, "method_name", &method_name_var);
   godot_dictionary_set_variant(&request, "arguments", &args_var);
 
+  godot_variant request_var;
+  godot_variant_new_dictionary(&request_var, &request);
   godot_variant response;
-  send_message(SQP_SQUEAK_FUNCTION_CALL, &data, &response);
+  send_message(SQP_SQUEAK_FUNCTION_CALL, &request_var, &response);
 
   godot_dictionary res = godot_variant_as_dictionary(&response);
   // result should be nil on error
@@ -302,7 +303,7 @@ godot_variant smalltalk_call_method(godot_pluginscript_instance_data *p_data,
 
 void smalltalk_notification(godot_pluginscript_instance_data *p_data, int p_notification)
 {
-  const char *notification_name = get_node_notification_name(p_notification);
+  // char *notification_name = get_node_notification_name(p_notification);
 }
 
 // required fields are in modules/gdnative/pluginscript/register_types.cpp:_check_language_desc
